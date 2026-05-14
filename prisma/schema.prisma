@@ -1,0 +1,512 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+  STUDENT
+  INSTRUCTOR
+  MODERATOR
+  CONTENT_MANAGER
+  AI_MANAGER
+  PAYMENT_MANAGER
+  CONTEST_ADMIN
+  ANALYTICS_ADMIN
+}
+
+enum Difficulty {
+  BEGINNER
+  INTERMEDIATE
+  ADVANCED
+}
+
+enum TaskStatus {
+  TODO
+  IN_PROGRESS
+  SUBMITTED
+  PASSED
+  FAILED
+}
+
+model User {
+  id              String   @id @default(uuid())
+  username        String   @unique
+  email           String   @unique
+  passwordHash    String
+  role            Role     @default(STUDENT)
+  xp              Int      @default(0)
+  level           Int      @default(1)
+  coins           Int      @default(0)
+  avatarUrl       String?
+  bio             String?
+  isEmailVerified    Boolean  @default(false)
+  googleId           String?  @unique
+  githubId           String?  @unique
+  age                Int?
+  country            String?
+  onboardingComplete Boolean  @default(false)
+  streakCount        Int      @default(0)
+  lastStreakDate  DateTime?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  refreshToken      RefreshToken?
+  enrollments       Enrollment[]
+  lessonProgress    LessonProgress[]
+  taskSubmissions   TaskSubmission[]
+  achievements      UserAchievement[]
+  rewards           UserReward[]
+  notifications     Notification[]
+  activityLogs      ActivityLog[]
+  accounts          Account[]
+  sessions          Session[]
+  emailVerification EmailVerification?
+  passwordResets    PasswordReset[]
+  payments          Payment[]
+  subscription      Subscription?
+  tokenBalance      TokenBalance?
+  tokenUsages       TokenUsage[]
+  contestEntries    ContestParticipant[]
+
+  @@index([xp(sort: Desc)])       // leaderboard
+  @@index([level])
+  @@index([createdAt])
+  @@map("users")
+}
+
+model RefreshToken {
+  id        String   @id @default(uuid())
+  userId    String   @unique
+  token     String
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("refresh_tokens")
+}
+
+model Course {
+  id          String     @id @default(uuid())
+  title       String
+  description String?
+  category    String
+  difficulty  Difficulty @default(BEGINNER)
+  xpReward    Int        @default(100)
+  orderIndex  Int        @default(0)
+  isActive    Boolean    @default(true)
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  lessons     Lesson[]
+  enrollments Enrollment[]
+
+  @@index([isActive, orderIndex]) // course list
+  @@index([category])
+  @@index([difficulty])
+  @@map("courses")
+}
+
+model Lesson {
+  id         String   @id @default(uuid())
+  courseId   String
+  title      String
+  content    String?
+  xpReward   Int      @default(50)
+  orderIndex Int      @default(0)
+  createdAt  DateTime @default(now())
+
+  course   Course           @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  tasks    Task[]
+  progress LessonProgress[]
+
+  @@index([courseId, orderIndex]) // lesson list
+  @@map("lessons")
+}
+
+model Task {
+  id            String  @id @default(uuid())
+  lessonId      String
+  title         String
+  titleEn       String?
+  description   String
+  descriptionEn String?
+  taskType      String  @default("quiz")
+  options       Json?
+  optionsEn     Json?
+  answer        Int?
+  starterCode   String?
+  testCases     Json?
+  xpReward      Int     @default(20)
+  orderIndex    Int     @default(0)
+
+  lesson      Lesson           @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  submissions TaskSubmission[]
+
+  @@index([lessonId, orderIndex])
+  @@map("tasks")
+}
+
+model Enrollment {
+  id          String    @id @default(uuid())
+  userId      String
+  courseId    String
+  enrolledAt  DateTime  @default(now())
+  completedAt DateTime?
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, courseId])
+  @@map("enrollments")
+}
+
+model LessonProgress {
+  id          String    @id @default(uuid())
+  userId      String
+  lessonId    String
+  completed   Boolean   @default(false)
+  completedAt DateTime?
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  lesson Lesson @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, lessonId])
+  @@index([userId, completed])
+  @@map("lesson_progress")
+}
+
+model TaskSubmission {
+  id          String     @id @default(uuid())
+  userId      String
+  taskId      String
+  status      TaskStatus @default(SUBMITTED)
+  selected    Int?
+  code        String?
+  xpEarned    Int        @default(0)
+  submittedAt DateTime   @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  task Task @relation(fields: [taskId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, taskId])
+  @@index([userId, status])     // progress queries
+  @@index([taskId])
+  @@map("task_submissions")
+}
+
+model Achievement {
+  id           String   @id @default(uuid())
+  title        String
+  description  String
+  icon         String   @default("🏆")
+  xpReward     Int      @default(0)
+  condition    String
+  type         String   @default("PROGRESSION_BASED")
+  rarity       String   @default("COMMON")
+  rewardType   String   @default("XP")
+  rewardAmount Int      @default(0)
+  createdAt    DateTime @default(now())
+
+  userAchievements UserAchievement[]
+
+  @@map("achievements")
+}
+
+model UserAchievement {
+  id            String   @id @default(uuid())
+  userId        String
+  achievementId String
+  unlockedAt    DateTime @default(now())
+
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  achievement Achievement @relation(fields: [achievementId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, achievementId])
+  @@index([userId, unlockedAt(sort: Desc)])
+  @@map("user_achievements")
+}
+
+model Reward {
+  id          String   @id @default(uuid())
+  title       String
+  description String
+  icon        String   @default("🎁")
+  type        String   @default("badge")
+  value       Int      @default(0)
+  createdAt   DateTime @default(now())
+
+  userRewards UserReward[]
+
+  @@map("rewards")
+}
+
+model UserReward {
+  id         String    @id @default(uuid())
+  userId     String
+  rewardId   String
+  claimedAt  DateTime?
+  assignedAt DateTime  @default(now())
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  reward Reward @relation(fields: [rewardId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, rewardId])
+  @@map("user_rewards")
+}
+
+model Notification {
+  id        String   @id @default(uuid())
+  userId    String
+  title     String
+  message   String
+  type      String   @default("info")
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, isRead])      // unread filter
+  @@index([createdAt(sort: Desc)])
+  @@map("notifications")
+}
+
+model ActivityLog {
+  id        String   @id @default(uuid())
+  userId    String
+  action    String
+  meta      Json?
+  ip        String?
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt(sort: Desc)])
+  @@map("activity_logs")
+}
+
+model Account {
+  id                String  @id @default(uuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@map("accounts")
+}
+
+model Session {
+  id           String   @id @default(uuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+  @@map("verification_tokens")
+}
+
+model EmailVerification {
+  id        String   @id @default(uuid())
+  userId    String   @unique
+  token     String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("email_verifications")
+}
+
+model PasswordReset {
+  id        String   @id @default(uuid())
+  userId    String
+  token     String   @unique
+  expiresAt DateTime
+  used      Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("password_resets")
+}
+
+// ── PAYMENT SYSTEM ────────────────────────────────────
+
+enum Plan {
+  FREE
+  PRO
+  VIP
+}
+
+enum PaymentType {
+  SUBSCRIPTION
+  TOKEN
+  CONTEST
+  CERTIFICATE
+  BOOST
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  REJECTED
+  REFUNDED
+}
+
+enum PaymentMethod {
+  MANUAL
+  SOCIALPAY
+  QPAY
+  MONPAY
+}
+
+model Payment {
+  id            String        @id @default(uuid())
+  userId        String
+  type          PaymentType
+  amount        Int           // MNT
+  status        PaymentStatus @default(PENDING)
+  method        PaymentMethod @default(MANUAL)
+  screenshotUrl String?
+  note          String?
+  adminNote     String?
+  approvedBy    String?
+  approvedAt    DateTime?
+  metadata      Json?         // contest_id, token_amount, plan, etc
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  user          User          @relation(fields: [userId], references: [id])
+
+  @@index([userId, status])
+  @@index([status, createdAt(sort: Desc)])
+  @@map("payments")
+}
+
+model Subscription {
+  id         String   @id @default(uuid())
+  userId     String   @unique
+  plan       Plan     @default(FREE)
+  startDate  DateTime @default(now())
+  endDate    DateTime?
+  autoRenew  Boolean  @default(false)
+  paymentId  String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  user       User     @relation(fields: [userId], references: [id])
+
+  @@map("subscriptions")
+}
+
+model TokenBalance {
+  id        String   @id @default(uuid())
+  userId    String   @unique
+  balance   Int      @default(0)
+  totalUsed Int      @default(0)
+  updatedAt DateTime @updatedAt
+
+  user      User     @relation(fields: [userId], references: [id])
+
+  @@map("token_balances")
+}
+
+model TokenUsage {
+  id        String   @id @default(uuid())
+  userId    String
+  action    String   // hint, explanation, solution, review
+  cost      Int
+  taskId    String?
+  createdAt DateTime @default(now())
+
+  user      User     @relation(fields: [userId], references: [id])
+
+  @@index([userId, createdAt(sort: Desc)])
+  @@map("token_usages")
+}
+
+model AdminLog {
+  id        String   @id @default(uuid())
+  adminId   String
+  action    String
+  targetId  String?
+  details   Json?
+  ip        String?
+  createdAt DateTime @default(now())
+
+  @@map("admin_logs")
+}
+
+model Contest {
+  id            String   @id @default(uuid())
+  title         String
+  description   String
+  startDate     DateTime
+  endDate       DateTime
+  entryFree     Int      @default(0)
+  entryPro      Int      @default(3000)
+  entryVip      Int      @default(0)
+  prizeFirst    Int      @default(200000)
+  prizeSecond   Int      @default(150000)
+  prizeThird    Int      @default(120000)
+  status        String   @default("ACTIVE") // ACTIVE | ENDED | UPCOMING
+  taskCount     Int      @default(5)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  participants  ContestParticipant[]
+
+  @@index([status, endDate])     // active contest filter
+  @@map("contests")
+}
+
+model ContestParticipant {
+  id         String   @id @default(uuid())
+  contestId  String
+  userId     String
+  score      Int      @default(0)
+  rank       Int?
+  paymentId  String?
+  joinedAt   DateTime @default(now())
+
+  contest    Contest  @relation(fields: [contestId], references: [id])
+  user       User     @relation(fields: [userId], references: [id])
+
+  @@unique([contestId, userId])
+  @@index([contestId, score(sort: Desc)])
+  @@map("contest_participants")
+}
+
+// ── SYSTEM CONFIG ─────────────────────────────────────
+model SystemConfig {
+  key       String   @id
+  value     String
+  updatedAt DateTime @updatedAt
+  updatedBy String?
+
+  @@map("system_configs")
+}

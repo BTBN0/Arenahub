@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --c:  #61dafb;
+      --c2: rgba(97,218,251,.12);
+      --bg: #080e1c;
+      --bg2:#0b1220;
+      --hp: #ff2d55;
+      --ok: #00ff41;
+      --xp: #f7df1e;
+      --muted: #3a4d6a;
+      --text: #c8d8f0;
+      --border: rgba(97,218,251,.16);
+    }
+    *{box-sizing:border-box;margin:0;padding:0;}
+    html,body{
+      background:var(--bg);
+      color:var(--text);
+      font-family:'Share Tech Mono','Courier New',monospace;
+      font-size:14px;
+      min-height:100%;
+    }
+    body{ padding:14px; }
+
+    /* ── Idle screen ─────────────────────────────── */
+    #idle{
+      display:flex; flex-direction:column;
+      align-items:center; justify-content:center;
+      height:calc(100vh - 28px); gap:14px;
+    }
+    #idle-logo{
+      font-size:13px; letter-spacing:6px; color:var(--c);
+      text-shadow:0 0 24px rgba(97,218,251,.5);
+    }
+    #idle-grid{
+      display:grid; grid-template-columns:repeat(6,1fr); gap:4px;
+      opacity:.15;
+    }
+    #idle-grid span{
+      width:10px; height:10px;
+      border:1px solid var(--c);
+      display:block;
+    }
+    #idle-hint{
+      font-size:10px; letter-spacing:3px; color:var(--muted);
+    }
+
+    /* ── Error ───────────────────────────────────── */
+    #error-box{
+      background:rgba(255,45,85,.07);
+      border-left:3px solid #ff2d55;
+      padding:10px 14px; margin-bottom:10px;
+      font-size:12px; color:#ff6680;
+      white-space:pre-wrap; display:none;
+      border-radius:0 4px 4px 0;
+    }
+    #error-box::before{ content:'⚠ ERROR\A'; font-size:10px; color:#ff2d55; letter-spacing:2px; }
+
+    /* ── Typography ──────────────────────────────── */
+    h1,h2,h3{
+      font-family:'Share Tech Mono',monospace;
+      letter-spacing:2px; margin-bottom:8px;
+    }
+    h1{ font-size:20px; color:var(--c); text-shadow:0 0 12px rgba(97,218,251,.4); }
+    h2{ font-size:16px; color:var(--c); }
+    h3{ font-size:13px; color:#8898b8; }
+    p{ color:#6a7f9a; line-height:1.8; margin-bottom:6px; }
+    ul,ol{ list-style:none; padding:0; }
+    li{
+      padding:5px 10px; margin:3px 0;
+      border-left:2px solid var(--border);
+      color:#8898b8; font-size:13px;
+    }
+
+    /* ── Controls ────────────────────────────────── */
+    button{
+      cursor:pointer;
+      background:var(--c2);
+      border:1px solid var(--c);
+      color:var(--c);
+      padding:6px 16px;
+      font-family:'Share Tech Mono',monospace;
+      font-size:13px; border-radius:3px;
+      margin:3px; transition:background .15s;
+      letter-spacing:1px;
+    }
+    button:hover{ background:rgba(97,218,251,.22); }
+    button:active{ transform:scale(.97); }
+    button.danger{
+      border-color:var(--hp); color:var(--hp);
+      background:rgba(255,45,85,.08);
+    }
+    button.success{
+      border-color:var(--ok); color:var(--ok);
+      background:rgba(0,255,65,.08);
+    }
+    input,textarea{
+      background:rgba(97,218,251,.04);
+      border:1px solid var(--border);
+      color:var(--text); padding:6px 10px;
+      font-family:'Share Tech Mono',monospace;
+      border-radius:3px; outline:none; width:100%;
+    }
+    input:focus,textarea:focus{
+      border-color:var(--c);
+      box-shadow:0 0 8px rgba(97,218,251,.18);
+    }
+
+    /* ── Layout helpers ──────────────────────────── */
+    .row{ display:flex; gap:10px; align-items:center; }
+    .col{ display:flex; flex-direction:column; gap:8px; }
+    .grid-2{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+    .grid-3{ display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; }
+    .flex-1{ flex:1; }
+
+    /* ── Card ────────────────────────────────────── */
+    .card{
+      background:var(--bg2);
+      border:1px solid var(--border);
+      border-radius:5px; padding:14px;
+    }
+    .card.glow{
+      box-shadow:0 0 12px rgba(97,218,251,.08), inset 0 0 20px rgba(97,218,251,.03);
+    }
+
+    /* ── Game stat bars ──────────────────────────── */
+    .stat{
+      display:flex; align-items:center; gap:10px;
+      padding:4px 0; font-size:12px;
+    }
+    .stat-label{
+      min-width:46px; color:var(--muted);
+      font-size:10px; letter-spacing:1px; text-transform:uppercase;
+    }
+    .bar{
+      flex:1; height:8px; border-radius:4px;
+      background:rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.08);
+      overflow:hidden;
+    }
+    .bar-fill{
+      height:100%; border-radius:4px;
+      transition:width .4s ease;
+    }
+    .bar-fill.hp  { background:linear-gradient(90deg,#c0002a,#ff2d55,#ff6680); }
+    .bar-fill.xp  { background:linear-gradient(90deg,#c4a800,#f7df1e,#ffe84d); }
+    .bar-fill.mp  { background:linear-gradient(90deg,#0090c8,#61dafb,#a0eaff); }
+    .bar-fill.ok  { background:linear-gradient(90deg,#00a830,#00ff41); }
+    .bar-val{
+      min-width:44px; text-align:right;
+      font-size:12px; color:var(--text);
+    }
+
+    /* ── Score ───────────────────────────────────── */
+    .score{
+      font-size:32px; color:var(--c);
+      text-shadow:0 0 18px rgba(97,218,251,.55);
+      letter-spacing:5px; font-family:'Share Tech Mono',monospace;
+    }
+    .score-sm{
+      font-size:18px; color:var(--c);
+      text-shadow:0 0 10px rgba(97,218,251,.4);
+      letter-spacing:3px;
+    }
+
+    /* ── Tag badges ──────────────────────────────── */
+    .tag{
+      display:inline-flex; align-items:center;
+      padding:3px 10px; border-radius:3px;
+      font-size:11px; letter-spacing:1px; margin:2px;
+      font-family:'Share Tech Mono',monospace;
+    }
+    .tag.enemy { background:rgba(255,45,85,.12);  border:1px solid #ff2d55; color:#ff6680; }
+    .tag.player{ background:rgba(0,255,65,.1);    border:1px solid #00ff41; color:#00ff41; }
+    .tag.item  { background:rgba(247,223,30,.1);  border:1px solid #f7df1e; color:#f7df1e; }
+    .tag.info  { background:rgba(97,218,251,.1);  border:1px solid #61dafb; color:#61dafb; }
+    .tag.dead  { background:rgba(255,255,255,.05);border:1px solid #2a3a50; color:#3a4a60; }
+
+    /* ── Level badge ─────────────────────────────── */
+    .level-badge{
+      display:inline-flex; align-items:center; justify-content:center;
+      width:36px; height:36px;
+      border:2px solid var(--xp);
+      color:var(--xp); font-size:16px; font-weight:700;
+      border-radius:50%;
+      text-shadow:0 0 10px rgba(247,223,30,.5);
+      box-shadow:0 0 10px rgba(247,223,30,.15);
+    }
+
+    /* ── Enemy card ──────────────────────────────── */
+    .enemy-card{
+      background:rgba(255,45,85,.06);
+      border:1px solid rgba(255,45,85,.25);
+      border-radius:4px; padding:10px 14px;
+      display:flex; align-items:center; gap:12px;
+    }
+    .enemy-name{ color:#ff6680; font-size:13px; flex:1; }
+
+    /* ── Status dot ──────────────────────────────── */
+    .dot{
+      width:8px; height:8px; border-radius:50%;
+      display:inline-block; margin-right:6px;
+    }
+    .dot.on { background:var(--ok); box-shadow:0 0 6px var(--ok); }
+    .dot.off{ background:#2a3a50; }
+
+    /* ── Divider ─────────────────────────────────── */
+    hr{ border:none; border-top:1px solid var(--border); margin:12px 0; }
+
+    /* ── Animations ──────────────────────────────── */
+    @keyframes pulse{ 0%,100%{opacity:1} 50%{opacity:.3} }
+    @keyframes slideIn{ from{opacity:0;transform:translateY(-8px)} to{opacity:1;transform:none} }
+    @keyframes fadeIn{ from{opacity:0} to{opacity:1} }
+    @keyframes glow{
+      0%,100%{ text-shadow:0 0 8px rgba(97,218,251,.4); }
+      50%{ text-shadow:0 0 20px rgba(97,218,251,.8), 0 0 40px rgba(97,218,251,.3); }
+    }
+    .pulse{ animation:pulse 1.5s infinite; }
+    .slide-in{ animation:slideIn .25s ease; }
+    .fade-in{ animation:fadeIn .4s ease; }
+    .glow-anim{ animation:glow 2s ease-in-out infinite; }
+
+    /* Entry animation for root children */
+    #root > *{ animation:slideIn .2s ease; }
+
+    /* ── Pixel border ────────────────────────────── */
+    .pixel-border{
+      border:2px solid var(--c);
+      box-shadow:0 0 12px rgba(97,218,251,.2),inset 0 0 12px rgba(97,218,251,.04);
+    }
+
+    /* ── Game screen wrapper ─────────────────────── */
+    .game-screen{
+      background:var(--bg2);
+      border:1px solid var(--border);
+      border-radius:6px; padding:16px;
+      min-height:80px;
+    }
+
+    /* ── Progress bar (task) ─────────────────────── */
+    .task-progress{
+      height:6px; background:rgba(255,255,255,.06);
+      border-radius:3px; overflow:hidden; margin:8px 0;
+    }
+    .task-progress-fill{
+      height:100%; background:var(--c);
+      transition:width .5s ease;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="idle">
+    <div id="idle-grid">
+      <span></span><span></span><span></span>
+      <span></span><span></span><span></span>
+      <span></span><span></span><span></span>
+      <span></span><span></span><span></span>
+    </div>
+    <div id="idle-logo">⬡ REACT GAME BUILDER</div>
+    <div id="idle-hint">▶ RUN хийж live preview харна уу</div>
+  </div>
+
+  <div id="error-box"></div>
+  <div id="root"></div>
+
+  <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <script>
+    // Expose hooks globally so user code works without React. prefix
+    var useState      = React.useState;
+    var useEffect     = React.useEffect;
+    var useRef        = React.useRef;
+    var useCallback   = React.useCallback;
+    var useMemo       = React.useMemo;
+    var useReducer    = React.useReducer;
+    var useContext    = React.useContext;
+    var createContext = React.createContext;
+    var Fragment      = React.Fragment;
+    var memo          = React.memo;
+
+    var _logs = [];
+    var _origLog   = console.log;
+    var _origWarn  = console.warn;
+    var _origError = console.error;
+
+    console.log = function() {
+      var msg = Array.prototype.slice.call(arguments)
+        .map(function(x){ return typeof x==='object' ? JSON.stringify(x) : String(x); })
+        .join(' ');
+      _logs.push(msg);
+    };
+    console.warn  = console.log;
+    console.error = function() {
+      var msg = 'ERR: ' + Array.prototype.slice.call(arguments).join(' ');
+      _logs.push(msg);
+    };
+
+    var _reactRoot = null;
+
+    function resetUI() {
+      if (_reactRoot) {
+        try { _reactRoot.unmount(); } catch(e) {}
+        _reactRoot = null;
+      }
+      document.getElementById('root').innerHTML = '';
+      var eb = document.getElementById('error-box');
+      eb.style.display = 'none';
+      eb.textContent = '';
+    }
+
+    function showError(msg) {
+      var box = document.getElementById('error-box');
+      box.textContent = msg;
+      box.style.display = 'block';
+    }
+
+    function runCode(code) {
+      _logs = [];
+      resetUI();
+      document.getElementById('idle').style.display = 'none';
+      try {
+        var transformed = Babel.transform(code, {
+          presets: ['react'],
+          filename: 'app.jsx'
+        }).code;
+        eval(transformed);
+        window.parent.postMessage({ type: 'react-result', logs: _logs.slice(), error: null }, '*');
+      } catch(err) {
+        showError(err.message);
+        _logs.push('ERROR: ' + err.message);
+        window.parent.postMessage({ type: 'react-result', logs: _logs.slice(), error: err.message }, '*');
+      }
+    }
+
+    window.addEventListener('message', function(e) {
+      if (!e.data) return;
+      if (e.data.type === 'react-run') {
+        runCode(e.data.code);
+      } else if (e.data.type === 'react-reset') {
+        resetUI();
+        document.getElementById('idle').style.display = 'flex';
+        _logs = [];
+      }
+    });
+
+    window.parent.postMessage({ type: 'react-ready' }, '*');
+  </script>
+</body>
+</html>

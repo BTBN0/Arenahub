@@ -1,0 +1,518 @@
+'use client'
+import { useState, useEffect } from 'react'
+import dynamic from 'next/dynamic'
+
+const AuthModal = dynamic(() => import('@/components/ui/AuthModal'), { ssr: false })
+
+const COURSES = [
+  { n:'01', t:'HTML',        sub:'Game World Foundation', c:'#00e5ff' },
+  { n:'02', t:'CSS',         sub:'Game Style System',     c:'#bf5af2' },
+  { n:'03', t:'JavaScript',  sub:'Real Game Logic',       c:'#ffd700' },
+  { n:'04', t:'Advanced JS', sub:'Game Logic Deep',       c:'#ff6600' },
+  { n:'05', t:'React',       sub:'Game UI System',        c:'#00ff41' },
+  { n:'06', t:'Node.js',     sub:'Game Backend',          c:'#68d391' },
+  { n:'07', t:'Database',    sub:'Multiplayer System',    c:'#4488ff' },
+  { n:'08', t:'Deploy',      sub:'Final Game Launch',     c:'#ffd700' },
+]
+
+const FEATURES = [
+  {
+    icon: '⚔', col: '#00e5ff', title: 'ТОГЛООМЖУУЛСАН СУРГАЛТ',
+    desc: 'Task бүрийг шийдэх тусам тоглоомд ахиц гарна. Зөв хариулт → enemy устгана. Буруу хариулт → HP хасагдана.',
+    extra: { label: 'XP PROGRESS', pct: 70, col: '#00e5ff' },
+  },
+  {
+    icon: '🏆', col: '#ffd700', title: 'ДЭЛХИЙН LEADERBOARD',
+    desc: 'Монгол болон дэлхийн тоглогчидтой XP-р өрсөлдөж, шилдэг 10-т орж нэрээ мөнхлүүлээрэй.',
+    badge: 'LIVE',
+    ranks: [['#1','DARKCODE','#ffd700'],['#2','PIXEL_MAN','#a0a8b8'],['#3','BYTE_Q','#bf5af2']],
+  },
+  {
+    icon: '📈', col: '#00ff41', title: 'ЯВЦЫН ДЭВШИЛ',
+    desc: '8 course, 56 lesson бүрийн дэвшлийг real-time харж мотивациа хадгал.',
+    bars: [['HTML→CSS','85','#00e5ff'],['JavaScript','60','#ffd700'],['React+Node','30','#00ff41']],
+  },
+  {
+    icon: '🤖', col: '#ff2d55', title: 'AI AGENT ДЭМЖЛЭГ', badge2: 'ШИНЭ',
+    desc: 'Task шийдэхэд гацвал ArenaHub-ын AI agent танд hint өгнө, тайлбарлана, жишээ бичиж өгнө.',
+    cta: 'AI АШИГЛАХ →',
+  },
+]
+
+const PLANS = [
+  {
+    id:'free', icon:'🆓', label:'АНХДАГЧ', price:'₮0', period:'', col:'#5a6a8a',
+    highlight:false, badge:'', desc:'Эхлэгчдэд зориулсан үндсэн эрх',
+    features:[{t:'2 курс (HTML + CSS)',ok:true},{t:'Өдөрт 10 task',ok:true},{t:'Leaderboard харах',ok:true},{t:'5 AI token / өдөр',ok:true},{t:'Бүх 8 курс',ok:false},{t:'Progress analytics',ok:false},{t:'Contest оролцоо',ok:false}],
+    btn:'ЭХЛЭХ',
+  },
+  {
+    id:'pro', icon:'⭐', label:'PRO', price:'₮17,000', period:'/сар', col:'#00e5ff',
+    highlight:true, badge:'ХАМГИЙН АЛДАРТАЙ', desc:'Бүх курс + AI token + Analytics',
+    features:[{t:'Бүх 8 курс unlock',ok:true},{t:'Хязгааргүй task',ok:true},{t:'Leaderboard оролцох',ok:true},{t:'100 AI token / сар',ok:true},{t:'Progress analytics',ok:true},{t:'Contest (₮3,000 хямд)',ok:true},{t:'Exclusive badge',ok:false}],
+    btn:'▶ PRO БОЛОХ',
+  },
+  {
+    id:'vip', icon:'💎', label:'VIP', price:'₮34,000', period:'/сар', col:'#ffd700',
+    highlight:false, badge:'💎 PREMIUM', desc:'Pro бүх боломж + дэвшилтэт AI',
+    features:[{t:'Pro бүх боломж',ok:true},{t:'400 AI token / сар',ok:true},{t:'Deep AI explanation',ok:true},{t:'Contest ҮНЭГҮЙ',ok:true},{t:'Leaderboard highlight',ok:true},{t:'Exclusive badge + frame',ok:true},{t:'Early access feature',ok:true}],
+    btn:'💎 VIP БОЛОХ',
+  },
+]
+
+const KF = `
+@keyframes scan  { 0%{top:-80px} 100%{top:100%} }
+@keyframes ping  { 0%{transform:scale(1);opacity:.8} 100%{transform:scale(2.4);opacity:0} }
+@keyframes fadeUp{ from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:none} }
+.lp-nav-lnk:hover { color:var(--text) !important; }
+.lp-card-hover:hover { transform:translateY(-2px); }
+`
+
+interface LbEntry { username: string; xp: number }
+
+function GhostBtn({ label, col, onClick }: { label: string; col: string; onClick: () => void }) {
+  return (
+    <button onClick={onClick}
+      style={{ fontFamily:'var(--fp)', fontSize:7, letterSpacing:2, padding:'10px 22px',
+        cursor:'pointer', background:'transparent', color:col,
+        border:`1px solid ${col}55`, transition:'all .2s' }}
+      onMouseEnter={e => { e.currentTarget.style.background = `${col}18`; e.currentTarget.style.borderColor = col }}
+      onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.borderColor = `${col}55` }}>
+      {label}
+    </button>
+  )
+}
+
+export default function LandingClient({ initialLb }: { initialLb: LbEntry[] }) {
+  const [modal,    setModal]    = useState<'login' | null>(null)
+  const [scrolled, setScrolled] = useState(false)
+  const [lb, setLb] = useState<(LbEntry & { rank: number })[]>(
+    initialLb.map((u, i) => ({ ...u, rank: i + 1 }))
+  )
+
+  useEffect(() => {
+    const fn = () => setScrolled(window.scrollY > 40)
+    window.addEventListener('scroll', fn)
+    fetch('/api/leaderboard').then(r => r.json()).then(d => {
+      if (d.ok && d.users?.length) setLb(d.users.slice(0,6).map((u: LbEntry, i: number) => ({ ...u, rank: i + 1 })))
+    }).catch(() => {})
+    return () => window.removeEventListener('scroll', fn)
+  }, [])
+
+  const top3 = lb.slice(0, 3)
+  const rest  = lb.slice(3)
+
+  return (
+    <div style={{ minHeight:'100vh', color:'var(--text)', position:'relative', zIndex:1 }}>
+      <style>{KF}</style>
+
+      {/* scan line */}
+      <div style={{ position:'fixed', left:0, right:0, height:80, pointerEvents:'none', zIndex:0,
+        background:'linear-gradient(180deg,transparent,rgba(0,229,255,.012),transparent)',
+        animation:'scan 8s linear infinite' }} />
+
+      {/* ── NAV ──────────────────────────────────────────────────── */}
+      <nav style={{
+        display:'flex', alignItems:'center', justifyContent:'space-between',
+        padding:'0 48px', height:56,
+        background: scrolled ? 'rgba(8,12,20,.98)' : 'rgba(8,12,20,.75)',
+        borderBottom:`1px solid ${scrolled ? '#151d30' : 'transparent'}`,
+        position:'sticky', top:0, zIndex:200,
+        backdropFilter:'blur(16px)', transition:'all .3s',
+      }}>
+        <div style={{ display:'flex', alignItems:'center', gap:12 }}>
+          <img src="/logo.svg" alt="ArenaHub" width={26} height={26} style={{display:'block'}}/>
+          <div>
+            <div style={{ fontFamily:'var(--fp)', fontSize:9, color:'#fff', letterSpacing:2, lineHeight:1 }}>ARENAHUB</div>
+            <div style={{ fontFamily:'var(--fp)', fontSize:4, color:'#1a3050', letterSpacing:3 }}>IT СУРГАЛТ · GAME</div>
+          </div>
+        </div>
+
+        <div style={{ display:'flex', gap:2, alignItems:'center' }}>
+          {([['FEATURES','features','#00e5ff'],['COURSES','courses','#00ff41'],['PRICING','pricing','#ffd700']] as [string,string,string][]).map(([t,id,col])=>(
+            <button key={t} className="lp-nav-lnk"
+              onClick={()=>document.getElementById(id)?.scrollIntoView({behavior:'smooth'})}
+              style={{ fontFamily:'var(--fp)', fontSize:5, letterSpacing:2, padding:'8px 14px',
+                background:'none', border:'none', color:'#3a4560', cursor:'pointer', transition:'color .15s' }}
+              onMouseEnter={e=>{ e.currentTarget.style.color=col }}
+              onMouseLeave={e=>{ e.currentTarget.style.color='#3a4560' }}>
+              {t}
+            </button>
+          ))}
+          <div style={{ width:1, height:18, background:'#151d30', margin:'0 8px' }}/>
+          <GhostBtn label="LOGIN" col="#00ff41" onClick={() => setModal('login')} />
+        </div>
+      </nav>
+
+      {/* ── HERO ─────────────────────────────────────────────────── */}
+      <div style={{ display:'grid', gridTemplateColumns:'1fr 420px', minHeight:620,
+        borderBottom:'1px solid #151d30' }}>
+
+        {/* LEFT */}
+        <div style={{ padding:'64px 56px', display:'flex', flexDirection:'column',
+          justifyContent:'center', gap:28, animation:'fadeUp .5s ease' }}>
+
+          <div style={{ display:'inline-flex', alignItems:'center', gap:8,
+            background:'rgba(255,215,0,.08)', border:'1px solid rgba(255,215,0,.3)',
+            padding:'6px 14px', width:'fit-content' }}>
+            <span style={{ width:6, height:6, background:'#ffd700', borderRadius:'50%',
+              animation:'ping 1.5s infinite', display:'inline-block' }} />
+            <span style={{ fontFamily:'var(--fp)', fontSize:5, color:'#ffd700', letterSpacing:3 }}>
+              FULLSTACK DEVELOPER БОЛОХ ЗАМНАЛ
+            </span>
+          </div>
+
+          <div>
+            <div style={{ fontFamily:'var(--fp)', fontSize:'clamp(28px,4vw,48px)',
+              lineHeight:1.35, color:'var(--text)', letterSpacing:2 }}>УР ЧАДВАРАА</div>
+            <div style={{ fontFamily:'var(--fp)', fontSize:'clamp(28px,4vw,48px)',
+              lineHeight:1.35, color:'#00ff41',
+              textShadow:'0 0 24px rgba(0,255,65,.4)', letterSpacing:2 }}>LEVEL UP ХИЙ</div>
+          </div>
+
+          <div style={{ fontFamily:'var(--fm)', fontSize:13, color:'#5a6a8a',
+            lineHeight:2.2, maxWidth:480 }}>
+            8 course, 56 lesson дэх практик даалгавраар game механизмоор суралцаж,
+            XP цуглуулж, fullstack developer болох замаа эхлүүл.
+          </div>
+
+          <div style={{ display:'flex', gap:10, flexWrap:'wrap' }}>
+            <GhostBtn label="▶ START GAME" col="#00ff41" onClick={() => setModal('login')} />
+            <GhostBtn label="COURSES ↓" col="#00e5ff" onClick={() => document.getElementById('courses')?.scrollIntoView({ behavior: 'smooth' })} />
+          </div>
+
+          <div style={{ display:'flex', borderTop:'1px solid #151d30', paddingTop:24, gap:0 }}>
+            {([['8','COURSES','#00e5ff'],['56','LESSONS','#00ff41'],['280+','TASKS','#ffd700'],['∞','XP','#bf5af2']] as [string,string,string][]).map(([v,l,c])=>(
+              <div key={l} style={{ padding:'0 24px 0 0', marginRight:24,
+                borderRight:'1px solid #151d30', textAlign:'left' }}>
+                <div style={{ fontFamily:'var(--fp)', fontSize:20, color:c,
+                  textShadow:`0 0 12px ${c}66`, marginBottom:5 }}>{v}</div>
+                <div style={{ fontFamily:'var(--fp)', fontSize:5, color:'#3a4560', letterSpacing:2 }}>{l}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* RIGHT — LIVE RANKING */}
+        <div style={{ borderLeft:'1px solid #151d30',
+          display:'flex', flexDirection:'column', padding:'28px 24px', position:'relative',
+          overflow:'hidden' }}>
+
+          <div style={{ position:'absolute', top:-1, right:-1, width:10, height:10,
+            borderTop:'2px solid rgba(0,229,255,.4)', borderRight:'2px solid rgba(0,229,255,.4)' }} />
+          <div style={{ position:'absolute', bottom:-1, left:-1, width:10, height:10,
+            borderBottom:'2px solid rgba(0,229,255,.4)', borderLeft:'2px solid rgba(0,229,255,.4)' }} />
+
+          <div style={{ display:'flex', alignItems:'center', gap:10, marginBottom:20,
+            paddingBottom:14, borderBottom:'1px solid #151d30' }}>
+            <div style={{ width:8, height:8, background:'#00ff41', borderRadius:'50%',
+              animation:'ping 1.5s infinite' }} />
+            <div style={{ fontFamily:'var(--fp)', fontSize:7, color:'#00e5ff', letterSpacing:2, flex:1 }}>
+              LIVE RANKING
+            </div>
+            <div style={{ fontFamily:'var(--fp)', fontSize:5, color:'#00ff41',
+              border:'1px solid rgba(0,255,65,.3)', padding:'3px 8px', letterSpacing:2 }}>LIVE</div>
+          </div>
+
+          {/* Podium */}
+          <div style={{ display:'flex', alignItems:'flex-end', justifyContent:'center',
+            gap:12, marginBottom:20 }}>
+            {[
+              { p: top3[1], col:'#a0a8b8', h:80,  label:'2nd' },
+              { p: top3[0], col:'#ffd700', h:110, label:'1st' },
+              { p: top3[2], col:'#bf5af2', h:60,  label:'3rd' },
+            ].map(({ p, col, h, label }) => (
+              <div key={label} style={{ display:'flex', flexDirection:'column', alignItems:'center', gap:4 }}>
+                {label === '1st' && <div style={{ fontSize:14, marginBottom:2 }}>👑</div>}
+                <div style={{ width: label==='1st'?44:40, height:label==='1st'?44:40,
+                  border:`2px solid ${col}`, display:'flex', alignItems:'center',
+                  justifyContent:'center', fontFamily:'var(--fp)',
+                  fontSize:label==='1st'?9:8, color:col,
+                  boxShadow:label==='1st'?`0 0 16px ${col}55`:undefined }}>
+                  {p?.username?.slice(0,2).toUpperCase()}
+                </div>
+                <div style={{ fontFamily:'var(--fp)', fontSize:4, color:col }}>{p?.username?.slice(0,8)}</div>
+                <div style={{ width:64, height:h, background:`${col}08`,
+                  border:`1px solid ${col}`, display:'flex', alignItems:'center',
+                  justifyContent:'center', fontFamily:'var(--fp)', fontSize:6, color:col }}>
+                  {label}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div style={{ flex:1, display:'flex', flexDirection:'column', gap:0 }}>
+            {rest.map(p=>(
+              <div key={p.rank} style={{ display:'flex', alignItems:'center', gap:10,
+                padding:'8px 0', borderTop:'1px solid #151d30',
+                fontFamily:'var(--fp)', fontSize:5 }}>
+                <span style={{ color:'#3a4560', minWidth:20 }}>#{p.rank}</span>
+                <span style={{ color:'var(--text)', flex:1 }}>{p.username}</span>
+                <span style={{ color:'#ffd700' }}>{p.xp?.toLocaleString()}</span>
+              </div>
+            ))}
+          </div>
+
+          <button onClick={()=>setModal('login')}
+            style={{ marginTop:14, width:'100%', padding:'10px 0',
+              fontFamily:'var(--fp)', fontSize:6, letterSpacing:2,
+              background:'transparent', color:'#00ff41',
+              border:'1px solid rgba(0,255,65,.3)', cursor:'pointer', transition:'all .2s' }}
+            onMouseEnter={e=>{ e.currentTarget.style.background='rgba(0,255,65,.08)'; e.currentTarget.style.borderColor='#00ff41' }}
+            onMouseLeave={e=>{ e.currentTarget.style.background='transparent'; e.currentTarget.style.borderColor='rgba(0,255,65,.3)' }}>
+            JOIN NOW ▶
+          </button>
+        </div>
+      </div>
+
+      {/* ── STAT STRIP ── */}
+      <div style={{ display:'grid', gridTemplateColumns:'repeat(4,1fr)',
+        borderBottom:'1px solid #151d30',
+        background:'rgba(8,12,22,.96)', backdropFilter:'blur(20px)' }}>
+        {([['8','COURSES','#00e5ff'],['56','LESSONS','#00ff41'],['280+','TASKS','#ffd700'],['∞','XP REWARD','#bf5af2']] as [string,string,string][]).map(([v,l,c],i)=>(
+          <div key={l} style={{ padding:'20px 0', display:'flex', flexDirection:'column',
+            alignItems:'center', gap:6,
+            borderRight: i < 3 ? '1px solid #151d30' : 'none' }}>
+            <div style={{ fontFamily:'var(--fp)', fontSize:22, color:c,
+              textShadow:`0 0 16px ${c}55` }}>{v}</div>
+            <div style={{ fontFamily:'var(--fp)', fontSize:5, color:'#3a4560', letterSpacing:3 }}>{l}</div>
+          </div>
+        ))}
+      </div>
+
+      {/* ── FEATURES ── */}
+      <div id="features" style={{ padding:'72px 56px', scrollMarginTop:56,
+        background:'rgba(8,12,22,.96)', backdropFilter:'blur(20px)' }}>
+        <div style={{ fontFamily:'var(--fp)', fontSize:14, letterSpacing:2, marginBottom:10 }}>ТОГЛООМЫН ОНЦЛОГ</div>
+        <div style={{ fontFamily:'var(--fp)', fontSize:5, color:'#3a4560', letterSpacing:3, marginBottom:40 }}>
+          МОНГОЛЫН АНХНЫ ТОГЛООМЖУУЛСАН IT СУРГАЛТЫН ПЛАТФОРМ
+        </div>
+        <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:16 }}>
+          {FEATURES.map((f,i)=>(
+            <div key={i} className="lp-card-hover"
+              style={{ background:'rgba(8,12,22,.96)', backdropFilter:'blur(20px)',
+                border:'1px solid #1a2540', padding:'28px', position:'relative', overflow:'hidden',
+                transition:'border-color .2s, box-shadow .2s, transform .2s', cursor:'default' }}
+              onMouseEnter={e=>{ const d=e.currentTarget as HTMLDivElement; d.style.borderColor=f.col; d.style.boxShadow=`0 0 20px ${f.col}18` }}
+              onMouseLeave={e=>{ const d=e.currentTarget as HTMLDivElement; d.style.borderColor='#151d30'; d.style.boxShadow='none' }}>
+
+              <div style={{ position:'absolute', top:-1, left:-1, width:8, height:8,
+                borderTop:`2px solid ${f.col}55`, borderLeft:`2px solid ${f.col}55` }} />
+              <div style={{ position:'absolute', bottom:-1, right:-1, width:8, height:8,
+                borderBottom:`2px solid ${f.col}55`, borderRight:`2px solid ${f.col}55` }} />
+
+              {f.badge2 && (
+                <div style={{ position:'absolute', top:0, right:0,
+                  background:'#ff2d55', fontFamily:'var(--fp)', fontSize:4,
+                  color:'#fff', padding:'4px 12px', letterSpacing:2 }}>{f.badge2}</div>
+              )}
+
+              <div style={{ display:'flex', alignItems:'center', gap:14, marginBottom:16 }}>
+                <div style={{ width:44, height:44, background:`${f.col}12`,
+                  border:`1px solid ${f.col}44`, display:'flex', alignItems:'center',
+                  justifyContent:'center', fontSize:20, flexShrink:0 }}>{f.icon}</div>
+                <div style={{ display:'flex', flex:1, alignItems:'center', gap:10 }}>
+                  <div style={{ fontFamily:'var(--fp)', fontSize:7, color:f.col, letterSpacing:1 }}>{f.title}</div>
+                  {f.badge && (
+                    <div style={{ fontFamily:'var(--fp)', fontSize:4, color:f.col,
+                      border:`1px solid ${f.col}55`, padding:'2px 8px', letterSpacing:2 }}>{f.badge}</div>
+                  )}
+                </div>
+              </div>
+
+              <div style={{ fontFamily:'var(--fm)', fontSize:12, color:'#5a6a8a',
+                lineHeight:2, marginBottom:16 }}>{f.desc}</div>
+
+              {f.extra && (
+                <div style={{ display:'flex', alignItems:'center', gap:8 }}>
+                  <div style={{ fontFamily:'var(--fp)', fontSize:5, color:'#3a4560', width:50 }}>{f.extra.label}</div>
+                  <div style={{ height:4, flex:1, background:'#151d30', position:'relative' }}>
+                    <div style={{ position:'absolute', inset:0, width:`${f.extra.pct}%`, background:f.extra.col }} />
+                  </div>
+                  <span style={{ fontFamily:'var(--fp)', fontSize:5, color:f.extra.col }}>{f.extra.pct}%</span>
+                </div>
+              )}
+              {f.ranks && (
+                <div style={{ display:'flex', gap:6 }}>
+                  {(f.ranks as [string,string,string][]).map(([rank,name,col])=>(
+                    <div key={rank} style={{ flex:1, background:'var(--bg3)',
+                      border:`1px solid ${col}44`, padding:'8px 6px', textAlign:'center' }}>
+                      <div style={{ fontFamily:'var(--fp)', fontSize:6, color:col, marginBottom:4 }}>{rank}</div>
+                      <div style={{ fontFamily:'var(--fp)', fontSize:4, color:'#5a6a8a' }}>{name}</div>
+                    </div>
+                  ))}
+                </div>
+              )}
+              {f.bars && (
+                <div style={{ display:'flex', flexDirection:'column', gap:8 }}>
+                  {(f.bars as [string,string,string][]).map(([l,p,col])=>(
+                    <div key={l} style={{ display:'flex', alignItems:'center', gap:10 }}>
+                      <span style={{ fontFamily:'var(--fp)', fontSize:4, color:'#3a4560', width:72, flexShrink:0 }}>{l}</span>
+                      <div style={{ height:4, flex:1, background:'#151d30' }}>
+                        <div style={{ height:'100%', width:`${p}%`, background:col }} />
+                      </div>
+                      <span style={{ fontFamily:'var(--fp)', fontSize:4, color:col, width:24, textAlign:'right' }}>{p}%</span>
+                    </div>
+                  ))}
+                </div>
+              )}
+              {f.cta && (
+                <button onClick={()=>setModal('login')}
+                  style={{ fontFamily:'var(--fp)', fontSize:6, letterSpacing:2,
+                    padding:'9px 20px', cursor:'pointer', background:'transparent',
+                    color:'#ff2d55', border:'1px solid rgba(255,45,85,.35)', transition:'all .2s' }}
+                  onMouseEnter={e=>{ e.currentTarget.style.background='rgba(255,45,85,.1)'; e.currentTarget.style.borderColor='#ff2d55' }}
+                  onMouseLeave={e=>{ e.currentTarget.style.background='transparent'; e.currentTarget.style.borderColor='rgba(255,45,85,.35)' }}>
+                  {f.cta}
+                </button>
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* ── COURSES ── */}
+      <div id="courses" style={{ padding:'72px 56px',
+        background:'rgba(8,12,22,.96)', backdropFilter:'blur(20px)',
+        borderTop:'1px solid #151d30', scrollMarginTop:56 }}>
+        <div style={{ fontFamily:'var(--fp)', fontSize:14, letterSpacing:2, marginBottom:10 }}>FULLSTACK ROADMAP</div>
+        <div style={{ fontFamily:'var(--fp)', fontSize:5, color:'#3a4560', letterSpacing:3, marginBottom:40 }}>
+          8 COURSE · HTML-ЭЭС DEPLOY ХҮРТЭЛ БҮРЭН ЗАМНАЛ
+        </div>
+        <div style={{ display:'grid', gridTemplateColumns:'repeat(4,1fr)', gap:2 }}>
+          {COURSES.map(co=>(
+            <div key={co.n} onClick={()=>setModal('login')}
+              style={{ padding:'22px 18px', background:'rgba(8,12,22,.96)', backdropFilter:'blur(20px)',
+                border:'1px solid #1a2540', cursor:'pointer', position:'relative', overflow:'hidden',
+                transition:'border-color .2s, box-shadow .2s' }}
+              onMouseEnter={e=>{ const d=e.currentTarget as HTMLDivElement; d.style.borderColor=co.c; d.style.boxShadow=`0 0 14px ${co.c}33` }}
+              onMouseLeave={e=>{ const d=e.currentTarget as HTMLDivElement; d.style.borderColor='#151d30'; d.style.boxShadow='none' }}>
+              <div style={{ fontFamily:'var(--fp)', fontSize:40, color:`${co.c}10`,
+                position:'absolute', top:4, right:10, lineHeight:1, userSelect:'none' }}>{co.n}</div>
+              <div style={{ position:'absolute', top:-1, left:-1, width:8, height:8,
+                borderTop:`2px solid ${co.c}33`, borderLeft:`2px solid ${co.c}33` }} />
+              <div style={{ fontFamily:'var(--fp)', fontSize:4, color:co.c, letterSpacing:3, marginBottom:10 }}>COURSE {co.n}</div>
+              <div style={{ fontFamily:'var(--fp)', fontSize:9, color:'var(--text)', marginBottom:6, letterSpacing:1 }}>{co.t}</div>
+              <div style={{ fontFamily:'var(--fp)', fontSize:5, color:'#3a4560' }}>{co.sub}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* ── PRICING ── */}
+      <div id="pricing" style={{ padding:'72px 56px',
+        background:'rgba(8,12,22,.96)', backdropFilter:'blur(20px)',
+        borderTop:'1px solid #151d30', scrollMarginTop:56 }}>
+        <div style={{ fontFamily:'var(--fp)', fontSize:14, letterSpacing:2, marginBottom:10 }}>ЭРЭМБЭ СОНГОХ</div>
+        <div style={{ fontFamily:'var(--fp)', fontSize:5, color:'#3a4560', letterSpacing:3, marginBottom:40 }}>
+          ХЭДИЙ ЧИНЭЭ ДЭЭШЭЭ — ТӨДИЙ ЧИНЭЭ ХУРДАН · SUBSCRIPTION ҮНЭ (MNT)
+        </div>
+        <div style={{ display:'grid', gridTemplateColumns:'repeat(3,1fr)', gap:16, marginBottom:28 }}>
+          {PLANS.map(plan=>(
+            <div key={plan.id} className="lp-card-hover"
+              style={{ background:'rgba(8,12,22,.96)', backdropFilter:'blur(20px)',
+                border:`1px solid ${plan.highlight ? `${plan.col}66` : '#1a2540'}`,
+                padding:'28px 22px', position:'relative', overflow:'hidden',
+                boxShadow:plan.highlight?`0 0 28px ${plan.col}14`:'none',
+                transition:'transform .2s, box-shadow .2s', cursor:'default' }}
+              onMouseEnter={e=>{ const d=e.currentTarget as HTMLDivElement; d.style.boxShadow=`0 8px 28px ${plan.col}20` }}
+              onMouseLeave={e=>{ const d=e.currentTarget as HTMLDivElement; d.style.boxShadow=plan.highlight?`0 0 28px ${plan.col}14`:'none' }}>
+
+              <div style={{ position:'absolute', top:0, left:0, right:0, height:2, background:plan.col }} />
+              <div style={{ position:'absolute', bottom:-1, right:-1, width:8, height:8,
+                borderBottom:`2px solid ${plan.col}44`, borderRight:`2px solid ${plan.col}44` }} />
+
+              {plan.badge && (
+                <div style={{ position:'absolute', top:10, right:0,
+                  fontFamily:'var(--fp)', fontSize:4, color:'var(--bg)',
+                  letterSpacing:1, background:plan.col, padding:'4px 12px' }}>{plan.badge}</div>
+              )}
+              <div style={{ display:'flex', alignItems:'center', gap:8,
+                marginBottom:14, marginTop:plan.badge ? 22 : 4 }}>
+                <span style={{ fontSize:18 }}>{plan.icon}</span>
+                <span style={{ fontFamily:'var(--fp)', fontSize:10, color:plan.col, letterSpacing:2 }}>{plan.label}</span>
+              </div>
+              <div style={{ display:'flex', alignItems:'baseline', gap:6, marginBottom:8 }}>
+                <span style={{ fontFamily:'var(--fp)', fontSize:28, color:'var(--text)' }}>{plan.price}</span>
+                <span style={{ fontFamily:'var(--fp)', fontSize:7, color:'#3a4560' }}>{plan.period}</span>
+              </div>
+              <div style={{ fontFamily:'var(--fm)', fontSize:12, color:'#5a6a8a',
+                marginBottom:20, lineHeight:1.7 }}>{plan.desc}</div>
+              <div style={{ borderTop:'1px solid #151d30', paddingTop:16, marginBottom:20 }}>
+                {plan.features.map((f,i)=>(
+                  <div key={i} style={{ display:'flex', gap:10, alignItems:'flex-start', marginBottom:9 }}>
+                    <span style={{ fontFamily:'var(--fp)', fontSize:8, color:f.ok?'#00ff41':'#3a4560', flexShrink:0 }}>{f.ok?'✓':'✗'}</span>
+                    <span style={{ fontFamily:'var(--fm)', fontSize:12, color:f.ok?'#d0d8e8':'#5a6a8a' }}>{f.t}</span>
+                  </div>
+                ))}
+              </div>
+              <button onClick={()=>setModal('login')} style={{
+                display:'block', width:'100%', padding:'12px 0',
+                fontFamily:'var(--fp)', fontSize:8, letterSpacing:2,
+                textAlign:'center', cursor:'pointer', boxSizing:'border-box',
+                color: plan.highlight ? 'var(--bg)' : plan.col,
+                background: plan.highlight ? plan.col : 'transparent',
+                border:`1px solid ${plan.col}${plan.highlight?'':'55'}`,
+                transition:'all .2s',
+              }}
+                onMouseEnter={e=>{ if(!plan.highlight){e.currentTarget.style.background=`${plan.col}18`;e.currentTarget.style.borderColor=plan.col}else{e.currentTarget.style.opacity='.85'} }}
+                onMouseLeave={e=>{ if(!plan.highlight){e.currentTarget.style.background='transparent';e.currentTarget.style.borderColor=`${plan.col}55`}else{e.currentTarget.style.opacity='1'} }}>
+                {plan.btn}
+              </button>
+            </div>
+          ))}
+        </div>
+        <div style={{ textAlign:'center' }}>
+          <a href="/pricing" style={{ fontFamily:'var(--fp)', fontSize:6, color:'#3a4560',
+            letterSpacing:2, textDecoration:'none', border:'1px solid #151d30',
+            padding:'10px 24px', display:'inline-block', transition:'all .2s' }}
+            onMouseEnter={e=>{ const a=e.currentTarget as HTMLAnchorElement; a.style.color='var(--text)'; a.style.borderColor='#3a4560' }}
+            onMouseLeave={e=>{ const a=e.currentTarget as HTMLAnchorElement; a.style.color='#3a4560'; a.style.borderColor='#151d30' }}>
+            ДЭЛГЭРЭНГҮЙ ХАРАХ →
+          </a>
+        </div>
+      </div>
+
+      {/* ── CTA ── */}
+      <div style={{ padding:'80px 56px', textAlign:'center',
+        background:'rgba(8,12,22,.96)', backdropFilter:'blur(20px)',
+        borderTop:'1px solid #151d30', position:'relative', overflow:'hidden' }}>
+        <div style={{ position:'absolute', top:'50%', left:'30%', width:400, height:400, borderRadius:'50%',
+          background:'radial-gradient(circle,rgba(0,255,65,.04),transparent)',
+          transform:'translate(-50%,-50%)', pointerEvents:'none' }} />
+        <div style={{ position:'absolute', top:'50%', left:'70%', width:300, height:300, borderRadius:'50%',
+          background:'radial-gradient(circle,rgba(0,229,255,.04),transparent)',
+          transform:'translate(-50%,-50%)', pointerEvents:'none' }} />
+        <div style={{ fontFamily:'var(--fp)', fontSize:7, color:'#ffd700', letterSpacing:4, marginBottom:20 }}>
+          ▶ АДАЛ ЯВДАЛ ЭХЭЛНЭ
+        </div>
+        <div style={{ fontFamily:'var(--fp)', fontSize:'clamp(18px,3vw,32px)',
+          lineHeight:1.5, marginBottom:16, letterSpacing:2 }}>
+          КОДЫН УР ЧАДВАРАА<br/>LEVEL UP ХИИХ БОД НЭГД
+        </div>
+        <div style={{ fontFamily:'var(--fm)', fontSize:13, color:'#5a6a8a', marginBottom:40 }}>
+          Бүртгэлгүй нэвтэрч 2 курс үнэгүй эхлүүлнэ.
+        </div>
+        <div style={{ display:'flex', gap:14, justifyContent:'center' }}>
+          <GhostBtn label="▶ НЭГДЭХ" col="#00ff41" onClick={() => setModal('login')} />
+          <GhostBtn label="LOGIN" col="#00e5ff" onClick={() => setModal('login')} />
+        </div>
+      </div>
+
+      {/* ── FOOTER ── */}
+      <footer style={{ padding:'18px 48px', display:'flex', alignItems:'center',
+        justifyContent:'space-between',
+        background:'rgba(8,12,22,.96)', backdropFilter:'blur(20px)',
+        borderTop:'1px solid #151d30' }}>
+        <div style={{ fontFamily:'var(--fp)', fontSize:5, color:'#1a2a40', letterSpacing:2 }}>
+          © 2026 ARENAHUB · ALL RIGHTS RESERVED
+        </div>
+        <div style={{ fontFamily:'var(--fp)', fontSize:5, color:'#1a2a40', letterSpacing:2 }}>
+          IT СУРГАЛТ · GAME · FULLSTACK
+        </div>
+      </footer>
+
+      {modal && <AuthModal onClose={()=>setModal(null)} />}
+    </div>
+  )
+}
