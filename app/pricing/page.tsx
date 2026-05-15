@@ -213,7 +213,7 @@ export default function PricingPage() {
         </div>
       </nav>
 
-      <div style={{ maxWidth:1080, margin:'0 auto', padding:'48px 28px 80px', position:'relative', zIndex:1 }}>
+      <div style={{ maxWidth:1080, margin:'0 auto', padding:'clamp(24px,4vw,48px) clamp(14px,3vw,28px) 80px', position:'relative', zIndex:1 }}>
 
         {/* ══ SUBSCRIPTION ══ */}
         {tab === 'plans' && (
@@ -232,7 +232,7 @@ export default function PricingPage() {
             </div>
 
             {/* Plan cards */}
-            <div style={{ display:'grid', gridTemplateColumns:'repeat(3,1fr)', gap:16, marginBottom:32 }}>
+            <div className="pr-plans-grid" style={{ display:'grid', gridTemplateColumns:'repeat(3,1fr)', gap:16, marginBottom:32 }}>
               {PLANS.map((plan, pi) => {
                 const showYear = billing === 'year' && plan.yearPrice
                 return (

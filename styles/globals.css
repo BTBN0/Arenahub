@@ -326,8 +326,9 @@ nav.landing { display:flex; align-items:center; padding:0 40px; height:56px; bac
 @media (max-width: 768px) {
   .sidebar             { display: none !important; }
   .sidebar-spacer      { display: none !important; }
-  .main-content        { padding: 14px 14px 80px; }
-  .bottom-nav          { display: flex; }
+  .main-content        { padding: 60px 14px 24px; }
+  .bottom-nav          { display: none; }
+  .mob-hamburger       { display: flex !important; }
 
   .dash-zones          { grid-template-columns: 1fr 1fr; gap: 8px; }
   .dash-right          { display: none; }
@@ -354,6 +355,11 @@ nav.landing { display:flex; align-items:center; padding:0 40px; height:56px; bac
   .cta                 { padding: 48px 20px; }
   .cta-btns            { flex-direction: column; align-items: center; }
 }
+
+/* Pricing page */
+.pr-plans-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; }
+@media (max-width: 900px)  { .pr-plans-grid { grid-template-columns: 1fr; max-width: 420px; margin: 0 auto; } }
+@media (max-width: 600px)  { .pr-plans-grid { max-width: 100%; } }
 
 /* Small mobile (≤ 480px) */
 @media (max-width: 480px) {
