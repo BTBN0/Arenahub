@@ -16,49 +16,28 @@ const COURSES = [
   { n:'08', t:'Deploy',      sub:'Final Game Launch',     c:'#ffd700' },
 ]
 
-const FEATURES = [
-  {
-    icon: '⚔', col: '#00e5ff', title: 'ТОГЛООМЖУУЛСАН СУРГАЛТ',
-    desc: 'Task бүрийг шийдэх тусам тоглоомд ахиц гарна. Зөв хариулт → enemy устгана. Буруу хариулт → HP хасагдана.',
-    extra: { label: 'XP PROGRESS', pct: 70, col: '#00e5ff' },
-  },
-  {
-    icon: '🏆', col: '#ffd700', title: 'ДЭЛХИЙН LEADERBOARD',
-    desc: 'Монгол болон дэлхийн тоглогчидтой XP-р өрсөлдөж, шилдэг 10-т орж нэрээ мөнхлүүлээрэй.',
-    badge: 'LIVE',
-    ranks: [['#1','DARKCODE','#ffd700'],['#2','PIXEL_MAN','#a0a8b8'],['#3','BYTE_Q','#bf5af2']],
-  },
-  {
-    icon: '📈', col: '#00ff41', title: 'ЯВЦЫН ДЭВШИЛ',
-    desc: '8 course, 56 lesson бүрийн дэвшлийг real-time харж мотивациа хадгал.',
-    bars: [['HTML→CSS','85','#00e5ff'],['JavaScript','60','#ffd700'],['React+Node','30','#00ff41']],
-  },
-  {
-    icon: '🤖', col: '#ff2d55', title: 'AI AGENT ДЭМЖЛЭГ', badge2: 'ШИНЭ',
-    desc: 'Task шийдэхэд гацвал ArenaHub-ын AI agent танд hint өгнө, тайлбарлана, жишээ бичиж өгнө.',
-    cta: 'AI АШИГЛАХ →',
-  },
+const FEATURES_MN = [
+  { icon:'⚔', col:'#00e5ff', title:'ТОГЛООМЖУУЛСАН СУРГАЛТ', desc:'Task бүрийг шийдэх тусам тоглоомд ахиц гарна. Зөв хариулт → enemy устгана. Буруу хариулт → HP хасагдана.', extra:{ label:'XP PROGRESS', pct:70, col:'#00e5ff' } },
+  { icon:'🏆', col:'#ffd700', title:'ДЭЛХИЙН LEADERBOARD', desc:'Монгол болон дэлхийн тоглогчидтой XP-р өрсөлдөж, шилдэг 10-т орж нэрээ мөнхлүүлээрэй.', badge:'LIVE', ranks:[['#1','DARKCODE','#ffd700'],['#2','PIXEL_MAN','#a0a8b8'],['#3','BYTE_Q','#bf5af2']] },
+  { icon:'📈', col:'#00ff41', title:'ЯВЦЫН ДЭВШИЛ', desc:'8 course, 56 lesson бүрийн дэвшлийг real-time харж мотивациа хадгал.', bars:[['HTML→CSS','85','#00e5ff'],['JavaScript','60','#ffd700'],['React+Node','30','#00ff41']] },
+  { icon:'🤖', col:'#ff2d55', title:'AI AGENT ДЭМЖЛЭГ', badge2:'ШИНЭ', desc:'Task шийдэхэд гацвал ArenaHub-ын AI agent танд hint өгнө, тайлбарлана, жишээ бичиж өгнө.', cta:'AI АШИГЛАХ →' },
+]
+const FEATURES_EN = [
+  { icon:'⚔', col:'#00e5ff', title:'GAMIFIED LEARNING', desc:'Every task you solve advances the game. Correct answer → defeat the enemy. Wrong answer → lose HP.', extra:{ label:'XP PROGRESS', pct:70, col:'#00e5ff' } },
+  { icon:'🏆', col:'#ffd700', title:'GLOBAL LEADERBOARD', desc:'Compete with Mongolian and global players by XP. Reach the Top 10 and immortalize your name.', badge:'LIVE', ranks:[['#1','DARKCODE','#ffd700'],['#2','PIXEL_MAN','#a0a8b8'],['#3','BYTE_Q','#bf5af2']] },
+  { icon:'📈', col:'#00ff41', title:'PROGRESS TRACKING', desc:'Track your real-time progress across 8 courses and 56 lessons and stay motivated.', bars:[['HTML→CSS','85','#00e5ff'],['JavaScript','60','#ffd700'],['React+Node','30','#00ff41']] },
+  { icon:'🤖', col:'#ff2d55', title:'AI AGENT SUPPORT', badge2:'NEW', desc:'Stuck on a task? ArenaHub\'s AI agent gives you hints, explanations, and code examples.', cta:'USE AI →' },
 ]
 
-const PLANS = [
-  {
-    id:'free', icon:'🆓', label:'АНХДАГЧ', price:'₮0', period:'', col:'#5a6a8a',
-    highlight:false, badge:'', desc:'Эхлэгчдэд зориулсан үндсэн эрх',
-    features:[{t:'2 курс (HTML + CSS)',ok:true},{t:'Өдөрт 10 task',ok:true},{t:'Leaderboard харах',ok:true},{t:'5 AI token / өдөр',ok:true},{t:'Бүх 8 курс',ok:false},{t:'Progress analytics',ok:false},{t:'Contest оролцоо',ok:false}],
-    btn:'ЭХЛЭХ',
-  },
-  {
-    id:'pro', icon:'⭐', label:'PRO', price:'₮17,000', period:'/сар', col:'#00e5ff',
-    highlight:true, badge:'ХАМГИЙН АЛДАРТАЙ', desc:'Бүх курс + AI token + Analytics',
-    features:[{t:'Бүх 8 курс unlock',ok:true},{t:'Хязгааргүй task',ok:true},{t:'Leaderboard оролцох',ok:true},{t:'100 AI token / сар',ok:true},{t:'Progress analytics',ok:true},{t:'Contest (₮3,000 хямд)',ok:true},{t:'Exclusive badge',ok:false}],
-    btn:'▶ PRO БОЛОХ',
-  },
-  {
-    id:'vip', icon:'💎', label:'VIP', price:'₮34,000', period:'/сар', col:'#ffd700',
-    highlight:false, badge:'💎 PREMIUM', desc:'Pro бүх боломж + дэвшилтэт AI',
-    features:[{t:'Pro бүх боломж',ok:true},{t:'400 AI token / сар',ok:true},{t:'Deep AI explanation',ok:true},{t:'Contest ҮНЭГҮЙ',ok:true},{t:'Leaderboard highlight',ok:true},{t:'Exclusive badge + frame',ok:true},{t:'Early access feature',ok:true}],
-    btn:'💎 VIP БОЛОХ',
-  },
+const PLANS_MN = [
+  { id:'free', icon:'🆓', label:'АНХДАГЧ', price:'₮0', period:'', col:'#5a6a8a', highlight:false, badge:'', desc:'Эхлэгчдэд зориулсан үндсэн эрх', features:[{t:'2 курс (HTML + CSS)',ok:true},{t:'Өдөрт 10 task',ok:true},{t:'Leaderboard харах',ok:true},{t:'5 AI token / өдөр',ok:true},{t:'Бүх 8 курс',ok:false},{t:'Progress analytics',ok:false},{t:'Contest оролцоо',ok:false}], btn:'ЭХЛЭХ' },
+  { id:'pro',  icon:'⭐', label:'PRO',      price:'₮17,000', period:'/сар', col:'#00e5ff', highlight:true, badge:'ХАМГИЙН АЛДАРТАЙ', desc:'Бүх курс + AI token + Analytics', features:[{t:'Бүх 8 курс unlock',ok:true},{t:'Хязгааргүй task',ok:true},{t:'Leaderboard оролцох',ok:true},{t:'100 AI token / сар',ok:true},{t:'Progress analytics',ok:true},{t:'Contest (₮3,000 хямд)',ok:true},{t:'Exclusive badge',ok:false}], btn:'▶ PRO БОЛОХ' },
+  { id:'vip',  icon:'💎', label:'VIP',      price:'₮34,000', period:'/сар', col:'#ffd700', highlight:false, badge:'💎 PREMIUM', desc:'Pro бүх боломж + дэвшилтэт AI', features:[{t:'Pro бүх боломж',ok:true},{t:'400 AI token / сар',ok:true},{t:'Deep AI explanation',ok:true},{t:'Contest ҮНЭГҮЙ',ok:true},{t:'Leaderboard highlight',ok:true},{t:'Exclusive badge + frame',ok:true},{t:'Early access feature',ok:true}], btn:'💎 VIP БОЛОХ' },
+]
+const PLANS_EN = [
+  { id:'free', icon:'🆓', label:'STARTER',  price:'₮0', period:'', col:'#5a6a8a', highlight:false, badge:'', desc:'Basic access for beginners', features:[{t:'2 courses (HTML + CSS)',ok:true},{t:'10 tasks per day',ok:true},{t:'View leaderboard',ok:true},{t:'5 AI tokens / day',ok:true},{t:'All 8 courses',ok:false},{t:'Progress analytics',ok:false},{t:'Contest access',ok:false}], btn:'GET STARTED' },
+  { id:'pro',  icon:'⭐', label:'PRO',      price:'₮17,000', period:'/mo', col:'#00e5ff', highlight:true, badge:'MOST POPULAR', desc:'All courses + AI tokens + Analytics', features:[{t:'All 8 courses unlocked',ok:true},{t:'Unlimited tasks',ok:true},{t:'Join leaderboard',ok:true},{t:'100 AI tokens / mo',ok:true},{t:'Progress analytics',ok:true},{t:'Contest (₮3,000 off)',ok:true},{t:'Exclusive badge',ok:false}], btn:'▶ GO PRO' },
+  { id:'vip',  icon:'💎', label:'VIP',      price:'₮34,000', period:'/mo', col:'#ffd700', highlight:false, badge:'💎 PREMIUM', desc:'All Pro features + advanced AI', features:[{t:'All Pro features',ok:true},{t:'400 AI tokens / mo',ok:true},{t:'Deep AI explanation',ok:true},{t:'Contest FREE',ok:true},{t:'Leaderboard highlight',ok:true},{t:'Exclusive badge + frame',ok:true},{t:'Early access features',ok:true}], btn:'💎 GO VIP' },
 ]
 
 const KF = `
@@ -88,6 +67,9 @@ export default function LandingClient({ initialLb }: { initialLb: LbEntry[] }) {
   const [modal,    setModal]    = useState<'login' | null>(null)
   const [scrolled, setScrolled] = useState(false)
   const { lang, setLang } = useLang()
+  const isMn     = lang === 'mn'
+  const FEATURES = isMn ? FEATURES_MN : FEATURES_EN
+  const PLANS    = isMn ? PLANS_MN    : PLANS_EN
   const [lb, setLb] = useState<(LbEntry & { rank: number })[]>(
     initialLb.map((u, i) => ({ ...u, rank: i + 1 }))
   )
@@ -180,27 +162,28 @@ export default function LandingClient({ initialLb }: { initialLb: LbEntry[] }) {
             <span style={{ width:6, height:6, background:'#ffd700', borderRadius:'50%',
               animation:'ping 1.5s infinite', display:'inline-block' }} />
             <span style={{ fontFamily:'var(--fp)', fontSize:5, color:'#ffd700', letterSpacing:3 }}>
-              FULLSTACK DEVELOPER БОЛОХ ЗАМНАЛ
+              {isMn ? 'FULLSTACK DEVELOPER БОЛОХ ЗАМНАЛ' : 'YOUR PATH TO FULLSTACK DEVELOPER'}
             </span>
           </div>
 
           <div>
             <div style={{ fontFamily:'var(--fp)', fontSize:'clamp(28px,4vw,48px)',
-              lineHeight:1.35, color:'var(--text)', letterSpacing:2 }}>УР ЧАДВАРАА</div>
+              lineHeight:1.35, color:'var(--text)', letterSpacing:2 }}>{isMn ? 'УР ЧАДВАРАА' : 'LEVEL UP YOUR'}</div>
             <div style={{ fontFamily:'var(--fp)', fontSize:'clamp(28px,4vw,48px)',
               lineHeight:1.35, color:'#00ff41',
-              textShadow:'0 0 24px rgba(0,255,65,.4)', letterSpacing:2 }}>LEVEL UP ХИЙ</div>
+              textShadow:'0 0 24px rgba(0,255,65,.4)', letterSpacing:2 }}>{isMn ? 'LEVEL UP ХИЙ' : 'CODING SKILLS'}</div>
           </div>
 
           <div style={{ fontFamily:'var(--fm)', fontSize:13, color:'#5a6a8a',
             lineHeight:2.2, maxWidth:480 }}>
-            8 course, 56 lesson дэх практик даалгавраар game механизмоор суралцаж,
-            XP цуглуулж, fullstack developer болох замаа эхлүүл.
+            {isMn
+              ? '8 course, 56 lesson дэх практик даалгавраар game механизмоор суралцаж, XP цуглуулж, fullstack developer болох замаа эхлүүл.'
+              : 'Learn through hands-on tasks across 8 courses and 56 lessons with game mechanics. Collect XP and start your journey to become a fullstack developer.'}
           </div>
 
           <div style={{ display:'flex', gap:10, flexWrap:'wrap' }}>
-            <GhostBtn label="▶ START GAME" col="#00ff41" onClick={() => setModal('login')} />
-            <GhostBtn label="COURSES ↓" col="#00e5ff" onClick={() => document.getElementById('courses')?.scrollIntoView({ behavior: 'smooth' })} />
+            <GhostBtn label={isMn ? '▶ ТОГЛООМ ЭХЛЭХ' : '▶ START GAME'} col="#00ff41" onClick={() => setModal('login')} />
+            <GhostBtn label={isMn ? 'КУРСҮҮД ↓' : 'COURSES ↓'} col="#00e5ff" onClick={() => document.getElementById('courses')?.scrollIntoView({ behavior: 'smooth' })} />
           </div>
 
           <div style={{ display:'flex', borderTop:'1px solid #151d30', paddingTop:24, gap:0 }}>
@@ -305,9 +288,9 @@ export default function LandingClient({ initialLb }: { initialLb: LbEntry[] }) {
       {/* ── FEATURES ── */}
       <div id="features" style={{ padding:'72px 56px', scrollMarginTop:56,
         background:'rgba(8,12,22,.96)', backdropFilter:'blur(20px)' }}>
-        <div style={{ fontFamily:'var(--fp)', fontSize:14, letterSpacing:2, marginBottom:10 }}>ТОГЛООМЫН ОНЦЛОГ</div>
+        <div style={{ fontFamily:'var(--fp)', fontSize:14, letterSpacing:2, marginBottom:10 }}>{isMn ? 'ТОГЛООМЫН ОНЦЛОГ' : 'GAME FEATURES'}</div>
         <div style={{ fontFamily:'var(--fp)', fontSize:5, color:'#3a4560', letterSpacing:3, marginBottom:40 }}>
-          МОНГОЛЫН АНХНЫ ТОГЛООМЖУУЛСАН IT СУРГАЛТЫН ПЛАТФОРМ
+          {isMn ? 'МОНГОЛЫН АНХНЫ ТОГЛООМЖУУЛСАН IT СУРГАЛТЫН ПЛАТФОРМ' : "MONGOLIA'S FIRST GAMIFIED IT LEARNING PLATFORM"}
         </div>
         <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:16 }}>
           {FEATURES.map((f,i)=>(
@@ -399,7 +382,7 @@ export default function LandingClient({ initialLb }: { initialLb: LbEntry[] }) {
         borderTop:'1px solid #151d30', scrollMarginTop:56 }}>
         <div style={{ fontFamily:'var(--fp)', fontSize:14, letterSpacing:2, marginBottom:10 }}>FULLSTACK ROADMAP</div>
         <div style={{ fontFamily:'var(--fp)', fontSize:5, color:'#3a4560', letterSpacing:3, marginBottom:40 }}>
-          8 COURSE · HTML-ЭЭС DEPLOY ХҮРТЭЛ БҮРЭН ЗАМНАЛ
+          {isMn ? '8 COURSE · HTML-ЭЭС DEPLOY ХҮРТЭЛ БҮРЭН ЗАМНАЛ' : '8 COURSES · COMPLETE PATH FROM HTML TO DEPLOY'}
         </div>
         <div style={{ display:'grid', gridTemplateColumns:'repeat(4,1fr)', gap:2 }}>
           {COURSES.map(co=>(
@@ -425,9 +408,9 @@ export default function LandingClient({ initialLb }: { initialLb: LbEntry[] }) {
       <div id="pricing" style={{ padding:'72px 56px',
         background:'rgba(8,12,22,.96)', backdropFilter:'blur(20px)',
         borderTop:'1px solid #151d30', scrollMarginTop:56 }}>
-        <div style={{ fontFamily:'var(--fp)', fontSize:14, letterSpacing:2, marginBottom:10 }}>ЭРЭМБЭ СОНГОХ</div>
+        <div style={{ fontFamily:'var(--fp)', fontSize:14, letterSpacing:2, marginBottom:10 }}>{isMn ? 'ЭРЭМБЭ СОНГОХ' : 'CHOOSE YOUR PLAN'}</div>
         <div style={{ fontFamily:'var(--fp)', fontSize:5, color:'#3a4560', letterSpacing:3, marginBottom:40 }}>
-          ХЭДИЙ ЧИНЭЭ ДЭЭШЭЭ — ТӨДИЙ ЧИНЭЭ ХУРДАН · SUBSCRIPTION ҮНЭ (MNT)
+          {isMn ? 'ХЭДИЙ ЧИНЭЭ ДЭЭШЭЭ — ТӨДИЙ ЧИНЭЭ ХУРДАН · SUBSCRIPTION ҮНЭ (MNT)' : 'THE HIGHER YOU GO — THE FASTER YOU GROW · SUBSCRIPTION PRICE (MNT)'}
         </div>
         <div style={{ display:'grid', gridTemplateColumns:'repeat(3,1fr)', gap:16, marginBottom:28 }}>
           {PLANS.map(plan=>(
@@ -490,7 +473,7 @@ export default function LandingClient({ initialLb }: { initialLb: LbEntry[] }) {
             padding:'10px 24px', display:'inline-block', transition:'all .2s' }}
             onMouseEnter={e=>{ const a=e.currentTarget as HTMLAnchorElement; a.style.color='var(--text)'; a.style.borderColor='#3a4560' }}
             onMouseLeave={e=>{ const a=e.currentTarget as HTMLAnchorElement; a.style.color='#3a4560'; a.style.borderColor='#151d30' }}>
-            ДЭЛГЭРЭНГҮЙ ХАРАХ →
+            {isMn ? 'ДЭЛГЭРЭНГҮЙ ХАРАХ →' : 'VIEW FULL DETAILS →'}
           </a>
         </div>
       </div>
@@ -506,17 +489,17 @@ export default function LandingClient({ initialLb }: { initialLb: LbEntry[] }) {
           background:'radial-gradient(circle,rgba(0,229,255,.04),transparent)',
           transform:'translate(-50%,-50%)', pointerEvents:'none' }} />
         <div style={{ fontFamily:'var(--fp)', fontSize:7, color:'#ffd700', letterSpacing:4, marginBottom:20 }}>
-          ▶ АДАЛ ЯВДАЛ ЭХЭЛНЭ
+          {isMn ? '▶ АДАЛ ЯВДАЛ ЭХЭЛНЭ' : '▶ YOUR ADVENTURE BEGINS'}
         </div>
         <div style={{ fontFamily:'var(--fp)', fontSize:'clamp(18px,3vw,32px)',
           lineHeight:1.5, marginBottom:16, letterSpacing:2 }}>
-          КОДЫН УР ЧАДВАРАА<br/>LEVEL UP ХИИХ БОД НЭГД
+          {isMn ? <>'КОДЫН УР ЧАДВАРАА'<br/>'LEVEL UP ХИИХ БОД НЭГД'</> : <>'LEVEL UP YOUR CODING'<br/>'SKILLS — JOIN NOW'</>}
         </div>
         <div style={{ fontFamily:'var(--fm)', fontSize:13, color:'#5a6a8a', marginBottom:40 }}>
-          Бүртгэлгүй нэвтэрч 2 курс үнэгүй эхлүүлнэ.
+          {isMn ? 'Бүртгэлгүй нэвтэрч 2 курс үнэгүй эхлүүлнэ.' : 'Sign in and start 2 courses for free — no credit card required.'}
         </div>
         <div style={{ display:'flex', gap:14, justifyContent:'center' }}>
-          <GhostBtn label="▶ НЭГДЭХ" col="#00ff41" onClick={() => setModal('login')} />
+          <GhostBtn label={isMn ? '▶ НЭГДЭХ' : '▶ JOIN NOW'} col="#00ff41" onClick={() => setModal('login')} />
           <GhostBtn label="LOGIN" col="#00e5ff" onClick={() => setModal('login')} />
         </div>
       </div>
