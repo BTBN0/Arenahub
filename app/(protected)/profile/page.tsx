@@ -9,6 +9,9 @@ import CountryFlag from '@/components/ui/CountryFlag'
 import CountrySelect from '@/components/ui/CountrySelect'
 import { useLang } from '@/context/LanguageContext'
 
+const MnFlag = () => <svg width="18" height="11" viewBox="0 0 30 18" style={{imageRendering:'pixelated',display:'block'}}><rect x="0" y="0" width="10" height="18" fill="#C4272F"/><rect x="10" y="0" width="10" height="18" fill="#015197"/><rect x="20" y="0" width="10" height="18" fill="#C4272F"/><rect x="3" y="1" width="4" height="1" fill="#F9CF02"/><rect x="2" y="2" width="6" height="3" fill="#F9CF02"/><rect x="1" y="6" width="8" height="1" fill="#F9CF02"/><rect x="1" y="8" width="8" height="1" fill="#F9CF02"/><rect x="3" y="9" width="4" height="3" fill="#F9CF02"/><rect x="1" y="13" width="8" height="1" fill="#F9CF02"/><rect x="1" y="15" width="8" height="2" fill="#F9CF02"/></svg>
+const EnFlag = () => <svg width="18" height="11" viewBox="0 0 30 18" style={{imageRendering:'pixelated',display:'block'}}><rect x="0" y="0" width="30" height="18" fill="#B22234"/><rect x="0" y="2" width="30" height="2" fill="#fff"/><rect x="0" y="6" width="30" height="2" fill="#fff"/><rect x="0" y="10" width="30" height="2" fill="#fff"/><rect x="0" y="14" width="30" height="2" fill="#fff"/><rect x="0" y="0" width="12" height="10" fill="#3C3B6E"/><rect x="1" y="1" width="2" height="1" fill="#fff"/><rect x="5" y="1" width="2" height="1" fill="#fff"/><rect x="9" y="1" width="2" height="1" fill="#fff"/><rect x="3" y="4" width="2" height="1" fill="#fff"/><rect x="7" y="4" width="2" height="1" fill="#fff"/></svg>
+
 const kf = `
 @keyframes pf-in   { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
 @keyframes pf-scan { 0%{top:-80px} 100%{top:100%} }
@@ -22,7 +25,7 @@ const PLAN_CFG = {
 
 export default function ProfilePage() {
   const { user, isAuthenticated, loading, refreshUser } = useAuth()
-  const { t } = useLang()
+  const { t, lang, setLang } = useLang()
   const router  = useRouter()
   const fileRef = useRef<HTMLInputElement>(null)
   const [editing,       setEditing]       = useState(false)
@@ -122,6 +125,17 @@ export default function ProfilePage() {
             )}
           </div>
 
+          {/* MN/EN switcher */}
+          <div style={{ padding:'0 12px', borderLeft:'1px solid #0d1a28', display:'flex', alignItems:'center', gap:4, flexShrink:0 }}>
+            {(['mn','en'] as const).map(l => (
+              <button key={l} onClick={() => setLang(l)}
+                style={{ display:'flex', alignItems:'center', gap:5, padding:'5px 8px', border:`1px solid ${lang===l?'rgba(191,90,242,.5)':'rgba(255,255,255,.07)'}`, background: lang===l?'rgba(191,90,242,.12)':'transparent', cursor:'pointer', transition:'all .18s', borderRadius:1 }}>
+                {l==='mn' ? <MnFlag/> : <EnFlag/>}
+                <span style={{ fontFamily:'var(--fp)', fontSize:5, color: lang===l?'#bf5af2':'#2a4060', letterSpacing:1 }}>{l==='mn'?'МОН':'ENG'}</span>
+              </button>
+            ))}
+          </div>
+
           <div style={{ padding:'16px 28px', borderLeft:'1px solid #0d1a28', display:'flex', alignItems:'center', gap:10, flexShrink:0 }}>
             {editing ? (
               <>
@@ -155,7 +169,7 @@ export default function ProfilePage() {
 
             {/* Avatar + username */}
             <div style={{ display:'flex', alignItems:'center', gap:20 }}>
-              <div style={{ position:'relative', flexShrink:0 }}>
+              <div style={{ position:'relative', flexShrink:0, paddingBottom: editing ? 20 : 0 }}>
                 <div style={{ width:80, height:80, border:`2px solid ${avatar ? '#bf5af2' : '#0d1a28'}`, overflow:'hidden', display:'flex', alignItems:'center', justifyContent:'center', background:'rgba(8,12,22,.96)', backdropFilter:'blur(20px)', boxShadow: avatar ? '0 0 20px rgba(191,90,242,.2)' : 'none' }}>
                   {avatar
                     ? <img src={avatar} alt="avatar" style={{ width:'100%', height:'100%', objectFit:'cover' }}/>
@@ -163,7 +177,12 @@ export default function ProfilePage() {
                   }
                 </div>
                 {editing && (
-                  <button onClick={() => fileRef.current?.click()} style={{ position:'absolute', bottom:-6, right:-6, width:24, height:24, background:'#bf5af2', border:'none', cursor:'pointer', fontFamily:'var(--fp)', fontSize:7, color:'#020609', display:'flex', alignItems:'center', justifyContent:'center' }}>✎</button>
+                  <button onClick={() => fileRef.current?.click()}
+                    style={{ position:'absolute', bottom:-14, left:'50%', transform:'translateX(-50%)', whiteSpace:'nowrap', padding:'5px 12px', background:'#bf5af2', border:'none', cursor:'pointer', fontFamily:'var(--fp)', fontSize:5, color:'#020609', letterSpacing:1, boxShadow:'0 0 12px rgba(191,90,242,.5)', transition:'all .15s' }}
+                    onMouseEnter={e=>(e.currentTarget.style.background='#d070ff')}
+                    onMouseLeave={e=>(e.currentTarget.style.background='#bf5af2')}>
+                    ✎ ЗУРАГ СОЛИХ
+                  </button>
                 )}
                 <input ref={fileRef} type="file" accept="image/*" style={{ display:'none' }} onChange={handleFile}/>
                 {/* online indicator */}
