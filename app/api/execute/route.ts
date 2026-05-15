@@ -1,16 +1,34 @@
 import { NextRequest } from 'next/server'
 import { requireAuth } from '@/lib/auth'
 import { ok, err, handleError } from '@/lib/api-helpers'
+import { rateLimiter, getClientIP } from '@/lib/services/security.service'
 import vm from 'vm'
 
 interface TestCase { input: unknown; expected: unknown; label?: string; type?: string }
-interface RunResult { label:string; input:unknown; expected:unknown; actual:unknown; passed:boolean; error?:string; runtime?:number }
+interface RunResult { label:string; input:unknown; expected:unknown; actual:unknown; passed:boolean; error?:string; runtime?:number; logs?: string[] }
 
-const BLOCKED = ['require(','import(','process.','fs.','child_process','__proto__','prototype.constructor','globalThis','global.','Buffer(','XMLHttpRequest','fetch(']
+// Expanded block list — prevents sandbox escape attempts
+const BLOCKED = [
+  'require(', 'import(', 'process.', 'process[',
+  'fs.', 'child_process', 'child_process',
+  '__proto__', '__defineGetter__', '__defineSetter__', '__lookupGetter__',
+  'prototype.constructor', 'constructor.constructor',
+  'globalThis', 'global.', 'global[',
+  'Buffer(', 'Buffer.', 'XMLHttpRequest', 'fetch(',
+  'eval(', 'Function(', 'setTimeout(', 'setInterval(',
+  'Reflect.', 'Proxy(', 'Atomics.',
+  'WebAssembly', 'SharedArrayBuffer',
+  'document.', 'window.', 'location.',
+  'this.constructor', '[].constructor',
+]
 
 function scanCode(code: string): string | null {
-  for (const b of BLOCKED) if (code.includes(b)) return `Хориглогдсон: "${b}"`
-  if (code.length > 12000) return 'Код хэт урт (12000 тэмдэгт хүртэл)'
+  const lower = code.toLowerCase()
+  for (const b of BLOCKED) if (lower.includes(b.toLowerCase())) return `Хориглогдсон: "${b}"`
+  if (code.length > 8000) return 'Код хэт урт (8000 тэмдэгт хүртэл)'
+  // Block potential prototype pollution patterns
+  if (/\[['"]constructor['"]\]/.test(code)) return 'Хориглогдсон: constructor access'
+  if (/Object\.assign\s*\(/.test(code) && /proto/.test(code)) return 'Хориглогдсон: prototype pollution'
   return null
 }
 
@@ -223,8 +241,14 @@ if (typeof _fn === 'function') {
 
   try {
     const ctx = vm.createContext(sandbox)
-    const p = new vm.Script(wrapped).runInContext(ctx, { timeout: 3000 })
-    if (p && typeof (p as any).then === 'function') await p
+    const p = new vm.Script(wrapped).runInContext(ctx, { timeout: 2500 })
+    // Fix: async Promise has no timeout — wrap with race to enforce limit
+    if (p && typeof (p as any).then === 'function') {
+      await Promise.race([
+        p,
+        new Promise((_, rej) => setTimeout(() => rej(new Error('Хугацаа дууслаа (3s)')), 3000)),
+      ])
+    }
     return { result: sandbox.result, runtime: Date.now() - start, logs }
   } catch (e: unknown) {
     return { result: undefined, error: (e as Error).message, runtime: Date.now() - start, logs }
@@ -287,10 +311,20 @@ async function runTest(code: string, tc: TestCase, idx: number): Promise<RunResu
 
 export async function POST(req: NextRequest) {
   try {
-    requireAuth(req)
+    const u  = requireAuth(req)
+    const ip = getClientIP(req)
+
+    // Rate limit: 20 executions per user per minute
+    if (!rateLimiter(`exec:${u.id}`, 20, 60_000))
+      return err('Хэт олон код ажиллуулав. 1 минут хүлээнэ үү.', 429)
+    // Also rate limit by IP
+    if (!rateLimiter(`exec_ip:${ip}`, 40, 60_000))
+      return err('Хэт олон хүсэлт.', 429)
+
     const { code, testCases } = await req.json() as { code: string; testCases: TestCase[] }
     if (!code?.trim()) return err('Код оруулна уу')
     if (!Array.isArray(testCases) || testCases.length === 0) return err('Test case байхгүй')
+    if (testCases.length > 20) return err('Test case хэт олон (20 хүртэл)')
     const blocked = scanCode(code)
     if (blocked) return err(blocked)
     const results: RunResult[] = []

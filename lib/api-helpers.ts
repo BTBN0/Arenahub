@@ -14,5 +14,10 @@ export function err(msg: string, status = 400) {
 export function handleError(e: unknown) {
   if (e instanceof ZodError) return err('Буруу өгөгдөл: ' + e.errors.map(x => x.message).join(', '), 400)
   const error = e as { message?: string; status?: number }
-  return err(error.message || 'Серверийн алдаа', error.status || 500)
+  const status = error.status || 500
+  if (status >= 500) {
+    if (process.env.NODE_ENV !== 'test') console.error('[API Error]', error.message, e)
+    return err('Серверийн алдаа гарлаа. Дахин оролдоно уу.', 500)
+  }
+  return err(error.message || 'Алдаа гарлаа', status)
 }

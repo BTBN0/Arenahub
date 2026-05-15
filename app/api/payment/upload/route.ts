@@ -8,8 +8,11 @@ export async function POST(req: NextRequest) {
     const payload = requireAuth(req)
     const { paymentId, screenshot } = await req.json()
     if (!paymentId || !screenshot) return err('paymentId болон screenshot шаардлагатай')
-    if (!screenshot.startsWith('data:image/')) return err('Зөвхөн зургийн файл')
-    if (screenshot.length > 7 * 1024 * 1024) return err('Зураг хэт том (5MB хүртэл)')
+    // Strict content-type whitelist
+    const allowed = ['data:image/jpeg;','data:image/jpg;','data:image/png;','data:image/webp;']
+    if (!allowed.some(t => screenshot.startsWith(t))) return err('Зөвхөн JPEG, PNG, WebP зураг зөвшөөрнө')
+    // 5MB (consistent limit and message)
+    if (screenshot.length > 5 * 1024 * 1024) return err('Зураг хэт том (5MB хүртэл)')
 
     const payment = await prisma.payment.findFirst({ where: { id: paymentId, userId: payload.id } })
     if (!payment) return err('Төлбөр олдсонгүй', 404)

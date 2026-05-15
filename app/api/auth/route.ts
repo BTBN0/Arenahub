@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { z } from 'zod'
 import { requireAuth } from '@/lib/auth'
 import { registerUser, loginUser, logoutUser } from '@/lib/services/auth.service'
 import { ok, err, handleError } from '@/lib/api-helpers'
@@ -6,6 +7,18 @@ import { rateLimiter, getClientIP } from '@/lib/services/security.service'
 import { sendVerificationEmail, sendWelcomeEmail } from '@/lib/email'
 import prisma from '@/lib/db'
 import { cacheGet, cacheSet, cacheDel } from '@/lib/cache'
+
+const registerSchema = z.object({
+  username: z.string().min(3, 'Нэр 3+ тэмдэгт').max(20, 'Нэр 20- тэмдэгт')
+    .regex(/^[a-zA-Z0-9_]+$/, 'Зөвхөн үсэг, тоо, _ зөвшөөрнө'),
+  email:    z.string().email('И-мэйл буруу').max(100),
+  password: z.string().min(8, 'Нууц үг 8+ тэмдэгт').max(72, 'Нууц үг 72- тэмдэгт'),
+})
+
+const loginSchema = z.object({
+  email:    z.string().email().max(100),
+  password: z.string().min(1).max(72),
+})
 
 /* GET /api/auth → me  (server-side cache 10s per user) */
 export async function GET(req: NextRequest) {
@@ -43,8 +56,7 @@ export async function POST(req: NextRequest) {
       return err('Хэт олон оролдлого. 15 минут хүлээнэ үү.', 429)
 
     if (action === 'register') {
-      const { username, email, password } = await req.json()
-      if (!username || !email || !password) return err('Бүх талбарыг бөглөнө үү')
+      const { username, email, password } = registerSchema.parse(await req.json())
 
       const result = await registerUser({ username, email, password })
 
@@ -62,8 +74,7 @@ export async function POST(req: NextRequest) {
     }
 
     if (action === 'login') {
-      const { email, password } = await req.json()
-      if (!email || !password) return err('И-мэйл болон нууц үгийг оруулна уу')
+      const { email, password } = loginSchema.parse(await req.json())
       const result = await loginUser(email, password, ip)
       return ok({
         user:         result.user,

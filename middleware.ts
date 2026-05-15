@@ -18,10 +18,26 @@ export async function middleware(req: NextRequest) {
   // ── Security headers ────────────────────────────────
   const res = NextResponse.next()
   res.headers.set('X-Content-Type-Options', 'nosniff')
-  res.headers.set('X-Frame-Options', 'SAMEORIGIN')
-  res.headers.set('X-DNS-Prefetch-Control', 'on')
+  res.headers.set('X-Frame-Options', 'DENY')
+  res.headers.set('X-DNS-Prefetch-Control', 'off')
   res.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin')
-  res.headers.set('Permissions-Policy', 'camera=(), microphone=(), geolocation=()')
+  res.headers.set('Permissions-Policy', 'camera=(), microphone=(), geolocation=(), payment=()')
+  // HSTS — enforce HTTPS for 1 year
+  res.headers.set('Strict-Transport-Security', 'max-age=31536000; includeSubDomains; preload')
+  // Prevent MIME sniffing XSS
+  res.headers.set('X-XSS-Protection', '1; mode=block')
+  // CSP — Content Security Policy
+  res.headers.set('Content-Security-Policy', [
+    "default-src 'self'",
+    "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
+    "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+    "font-src 'self' https://fonts.gstatic.com",
+    "img-src 'self' data: blob: https://lh3.googleusercontent.com https://avatars.githubusercontent.com https://res.cloudinary.com",
+    "connect-src 'self' https://api.groq.com",
+    "frame-ancestors 'none'",
+    "base-uri 'self'",
+    "form-action 'self'",
+  ].join('; '))
 
   // ── API cache hints ─────────────────────────────────
   if (pathname.startsWith('/api/')) {

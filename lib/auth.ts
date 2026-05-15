@@ -8,8 +8,12 @@ export interface JWTPayload {
 }
 
 const ACCESS_SECRET  = process.env.JWT_SECRET!
-const REFRESH_SECRET = process.env.JWT_REFRESH_SECRET || process.env.JWT_SECRET! + '_refresh'
-const ACCESS_EXPIRES  = process.env.JWT_EXPIRES_IN    || '15m'
+// Separate refresh secret — predictable fallback is a security risk
+const REFRESH_SECRET = process.env.JWT_REFRESH_SECRET
+  ?? (process.env.NODE_ENV === 'production'
+      ? (() => { throw new Error('JWT_REFRESH_SECRET is required in production') })()
+      : process.env.JWT_SECRET! + '_refresh_dev_only')
+const ACCESS_EXPIRES  = process.env.JWT_EXPIRES_IN || '15m'
 const REFRESH_EXPIRES = '7d'
 
 /* ══ PASSWORD ══════════════════════════ */
