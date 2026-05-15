@@ -44,8 +44,47 @@ const KF = `
 @keyframes scan  { 0%{top:-80px} 100%{top:100%} }
 @keyframes ping  { 0%{transform:scale(1);opacity:.8} 100%{transform:scale(2.4);opacity:0} }
 @keyframes fadeUp{ from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:none} }
+@keyframes menuIn{ from{opacity:0;transform:translateY(-8px)} to{opacity:1;transform:none} }
 .lp-nav-lnk:hover { color:var(--text) !important; }
 .lp-card-hover:hover { transform:translateY(-2px); }
+
+/* ── RESPONSIVE ── */
+.lp-hero       { display:grid; grid-template-columns:1fr 420px; min-height:620px; }
+.lp-stat-strip { display:grid; grid-template-columns:repeat(4,1fr); }
+.lp-grid-4     { display:grid; grid-template-columns:repeat(4,1fr); gap:2px; }
+.lp-grid-2     { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+.lp-grid-3     { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
+.lp-section    { padding:72px 56px; }
+.lp-nav-links  { display:flex; gap:2px; align-items:center; }
+.lp-nav        { padding:0 48px; }
+.lp-hero-right { display:flex; }
+.lp-hide-mobile{ display:block; }
+.lp-hamburger  { display:none; }
+.lp-mobile-menu{ display:none; }
+
+@media(max-width:1024px){
+  .lp-hero   { grid-template-columns:1fr; }
+  .lp-hero-right { display:none; }
+  .lp-grid-4 { grid-template-columns:repeat(2,1fr); }
+  .lp-grid-3 { grid-template-columns:1fr 1fr; }
+  .lp-section{ padding:48px 32px; }
+  .lp-nav    { padding:0 24px; }
+}
+@media(max-width:768px){
+  .lp-grid-2  { grid-template-columns:1fr; }
+  .lp-grid-3  { grid-template-columns:1fr; }
+  .lp-stat-strip{ grid-template-columns:repeat(2,1fr); }
+  .lp-section { padding:40px 20px; }
+  .lp-nav     { padding:0 16px; }
+  .lp-nav-links{ display:none; }
+  .lp-hamburger{ display:flex; }
+  .lp-mobile-menu-open { display:flex; flex-direction:column; position:absolute; top:56px; left:0; right:0; background:rgba(8,12,20,.98); border-bottom:1px solid #151d30; padding:16px; gap:8px; z-index:300; animation:menuIn .2s ease; }
+  .lp-hide-mobile{ display:none; }
+}
+@media(max-width:480px){
+  .lp-grid-4  { grid-template-columns:1fr; }
+  .lp-section { padding:32px 16px; }
+}
 `
 
 interface LbEntry { username: string; xp: number }
@@ -66,6 +105,7 @@ function GhostBtn({ label, col, onClick }: { label: string; col: string; onClick
 export default function LandingClient({ initialLb }: { initialLb: LbEntry[] }) {
   const [modal,    setModal]    = useState<'login' | null>(null)
   const [scrolled, setScrolled] = useState(false)
+  const [mobileMenu, setMobileMenu] = useState(false)
   const { lang, setLang } = useLang()
   const isMn     = lang === 'mn'
   const FEATURES = isMn ? FEATURES_MN : FEATURES_EN
@@ -112,10 +152,10 @@ export default function LandingClient({ initialLb }: { initialLb: LbEntry[] }) {
           </div>
         </div>
 
-        <div style={{ display:'flex', gap:2, alignItems:'center' }}>
+        <div className="lp-nav-links" style={{ gap:2, alignItems:'center' }}>
           {([['FEATURES','features','#00e5ff'],['COURSES','courses','#00ff41'],['PRICING','pricing','#ffd700']] as [string,string,string][]).map(([t,id,col])=>(
             <button key={t} className="lp-nav-lnk"
-              onClick={()=>document.getElementById(id)?.scrollIntoView({behavior:'smooth'})}
+              onClick={()=>{ document.getElementById(id)?.scrollIntoView({behavior:'smooth'}); setMobileMenu(false) }}
               style={{ fontFamily:'var(--fp)', fontSize:5, letterSpacing:2, padding:'8px 14px',
                 background:'none', border:'none', color:'#3a4560', cursor:'pointer', transition:'color .15s' }}
               onMouseEnter={e=>{ e.currentTarget.style.color=col }}
@@ -123,7 +163,7 @@ export default function LandingClient({ initialLb }: { initialLb: LbEntry[] }) {
               {t}
             </button>
           ))}
-          <div style={{ width:1, height:18, background:'#151d30', margin:'0 8px' }}/>
+          <div className="lp-hide-mobile" style={{ width:1, height:18, background:'#151d30', margin:'0 8px' }}/>
           {(['mn','en'] as const).map(l => (
             <button key={l} onClick={() => setLang(l)}
               style={{ display:'flex', alignItems:'center', gap:4, padding:'5px 8px',
@@ -144,16 +184,47 @@ export default function LandingClient({ initialLb }: { initialLb: LbEntry[] }) {
               </span>
             </button>
           ))}
-          <GhostBtn label="LOGIN" col="#00ff41" onClick={() => setModal('login')} />
+          <div className="lp-hide-mobile"><GhostBtn label="LOGIN" col="#00ff41" onClick={() => setModal('login')} /></div>
+          {/* Hamburger */}
+          <button className="lp-hamburger" onClick={() => setMobileMenu(m => !m)}
+            style={{ background:'transparent', border:'1px solid #1a2a40', padding:'7px 10px', cursor:'pointer', flexDirection:'column', gap:4, marginLeft:6 }}>
+            {[0,1,2].map(i => <div key={i} style={{ width:18, height:2, background: mobileMenu ? (i===1?'transparent':'#00ff41') : '#5a6a8a', transition:'all .2s', transform: mobileMenu ? (i===0?'rotate(45deg) translate(4px,4px)':i===2?'rotate(-45deg) translate(4px,-4px)':'none') : 'none' }}/>)}
+          </button>
         </div>
       </nav>
 
+      {/* Mobile menu */}
+      {mobileMenu && (
+        <div className="lp-mobile-menu-open" onClick={() => setMobileMenu(false)}>
+          {([['FEATURES','features','#00e5ff'],['COURSES','courses','#00ff41'],['PRICING','pricing','#ffd700']] as [string,string,string][]).map(([t,id,col])=>(
+            <button key={t} onClick={()=>{ document.getElementById(id)?.scrollIntoView({behavior:'smooth'}); setMobileMenu(false) }}
+              style={{ fontFamily:'var(--fp)', fontSize:6, letterSpacing:2, padding:'12px 16px', background:'none', border:`1px solid ${col}22`, color:'#5a6a8a', cursor:'pointer', textAlign:'left', transition:'color .15s' }}
+              onMouseEnter={e=>{e.currentTarget.style.color=col}} onMouseLeave={e=>{e.currentTarget.style.color='#5a6a8a'}}>
+              {t}
+            </button>
+          ))}
+          <div style={{ display:'flex', gap:8, paddingTop:8, borderTop:'1px solid #151d30' }}>
+            {(['mn','en'] as const).map(l=>(
+              <button key={l} onClick={()=>{setLang(l);setMobileMenu(false)}}
+                style={{ display:'flex', alignItems:'center', gap:5, padding:'8px 12px', border:`1px solid ${lang===l?'rgba(0,229,255,.4)':'#1a2840'}`, background:lang===l?'rgba(0,229,255,.08)':'transparent', cursor:'pointer', flex:1, justifyContent:'center' }}>
+                <svg width="16" height="10" viewBox="0 0 30 18" style={{imageRendering:'pixelated'}}>
+                  {l==='mn'?<><rect x="0" y="0" width="10" height="18" fill="#C4272F"/><rect x="10" y="0" width="10" height="18" fill="#015197"/><rect x="20" y="0" width="10" height="18" fill="#C4272F"/><rect x="1" y="6" width="8" height="1" fill="#F9CF02"/><rect x="1" y="8" width="8" height="1" fill="#F9CF02"/></>:<><rect x="0" y="0" width="30" height="18" fill="#B22234"/><rect x="0" y="2" width="30" height="2" fill="#fff"/><rect x="0" y="6" width="30" height="2" fill="#fff"/><rect x="0" y="0" width="12" height="10" fill="#3C3B6E"/></>}
+                </svg>
+                <span style={{ fontFamily:'var(--fp)', fontSize:5, color:lang===l?'#00e5ff':'#3a5070', letterSpacing:1 }}>{l==='mn'?'МОН':'ENG'}</span>
+              </button>
+            ))}
+          </div>
+          <button onClick={()=>{setModal('login');setMobileMenu(false)}} style={{ fontFamily:'var(--fp)', fontSize:7, letterSpacing:2, padding:'12px', background:'rgba(0,255,65,.08)', border:'1px solid rgba(0,255,65,.3)', color:'#00ff41', cursor:'pointer' }}>
+            ▶ LOGIN
+          </button>
+        </div>
+      )}
+
       {/* ── HERO ─────────────────────────────────────────────────── */}
-      <div style={{ display:'grid', gridTemplateColumns:'1fr 420px', minHeight:620,
-        borderBottom:'1px solid #151d30' }}>
+      <div className="lp-hero" style={{ borderBottom:'1px solid #151d30' }}>
 
         {/* LEFT */}
-        <div style={{ padding:'64px 56px', display:'flex', flexDirection:'column',
+        <div className="lp-hero-left" style={{ padding:'clamp(32px,5vw,64px) clamp(20px,5vw,56px)', display:'flex', flexDirection:'column',
           justifyContent:'center', gap:28, animation:'fadeUp .5s ease' }}>
 
           <div style={{ display:'inline-flex', alignItems:'center', gap:8,
@@ -199,8 +270,8 @@ export default function LandingClient({ initialLb }: { initialLb: LbEntry[] }) {
         </div>
 
         {/* RIGHT — LIVE RANKING */}
-        <div style={{ borderLeft:'1px solid #151d30',
-          display:'flex', flexDirection:'column', padding:'28px 24px', position:'relative',
+        <div className="lp-hero-right" style={{ borderLeft:'1px solid #151d30',
+          flexDirection:'column', padding:'28px 24px', position:'relative',
           overflow:'hidden' }}>
 
           <div style={{ position:'absolute', top:-1, right:-1, width:10, height:10,
@@ -271,8 +342,7 @@ export default function LandingClient({ initialLb }: { initialLb: LbEntry[] }) {
       </div>
 
       {/* ── STAT STRIP ── */}
-      <div style={{ display:'grid', gridTemplateColumns:'repeat(4,1fr)',
-        borderBottom:'1px solid #151d30',
+      <div className="lp-stat-strip" style={{ borderBottom:'1px solid #151d30',
         background:'rgba(8,12,22,.96)', backdropFilter:'blur(20px)' }}>
         {([['8','COURSES','#00e5ff'],['56','LESSONS','#00ff41'],['280+','TASKS','#ffd700'],['∞','XP REWARD','#bf5af2']] as [string,string,string][]).map(([v,l,c],i)=>(
           <div key={l} style={{ padding:'20px 0', display:'flex', flexDirection:'column',
@@ -286,13 +356,13 @@ export default function LandingClient({ initialLb }: { initialLb: LbEntry[] }) {
       </div>
 
       {/* ── FEATURES ── */}
-      <div id="features" style={{ padding:'72px 56px', scrollMarginTop:56,
+      <div id="features" className="lp-section" style={{ scrollMarginTop:56,
         background:'rgba(8,12,22,.96)', backdropFilter:'blur(20px)' }}>
         <div style={{ fontFamily:'var(--fp)', fontSize:14, letterSpacing:2, marginBottom:10 }}>{isMn ? 'ТОГЛООМЫН ОНЦЛОГ' : 'GAME FEATURES'}</div>
         <div style={{ fontFamily:'var(--fp)', fontSize:5, color:'#3a4560', letterSpacing:3, marginBottom:40 }}>
           {isMn ? 'МОНГОЛЫН АНХНЫ ТОГЛООМЖУУЛСАН IT СУРГАЛТЫН ПЛАТФОРМ' : "MONGOLIA'S FIRST GAMIFIED IT LEARNING PLATFORM"}
         </div>
-        <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:16 }}>
+        <div className="lp-grid-2">
           {FEATURES.map((f,i)=>(
             <div key={i} className="lp-card-hover"
               style={{ background:'rgba(8,12,22,.96)', backdropFilter:'blur(20px)',
@@ -377,14 +447,14 @@ export default function LandingClient({ initialLb }: { initialLb: LbEntry[] }) {
       </div>
 
       {/* ── COURSES ── */}
-      <div id="courses" style={{ padding:'72px 56px',
+      <div id="courses" className="lp-section" style={{
         background:'rgba(8,12,22,.96)', backdropFilter:'blur(20px)',
         borderTop:'1px solid #151d30', scrollMarginTop:56 }}>
         <div style={{ fontFamily:'var(--fp)', fontSize:14, letterSpacing:2, marginBottom:10 }}>FULLSTACK ROADMAP</div>
         <div style={{ fontFamily:'var(--fp)', fontSize:5, color:'#3a4560', letterSpacing:3, marginBottom:40 }}>
           {isMn ? '8 COURSE · HTML-ЭЭС DEPLOY ХҮРТЭЛ БҮРЭН ЗАМНАЛ' : '8 COURSES · COMPLETE PATH FROM HTML TO DEPLOY'}
         </div>
-        <div style={{ display:'grid', gridTemplateColumns:'repeat(4,1fr)', gap:2 }}>
+        <div className="lp-grid-4">
           {COURSES.map(co=>(
             <div key={co.n} onClick={()=>setModal('login')}
               style={{ padding:'22px 18px', background:'rgba(8,12,22,.96)', backdropFilter:'blur(20px)',
@@ -405,14 +475,14 @@ export default function LandingClient({ initialLb }: { initialLb: LbEntry[] }) {
       </div>
 
       {/* ── PRICING ── */}
-      <div id="pricing" style={{ padding:'72px 56px',
+      <div id="pricing" className="lp-section" style={{
         background:'rgba(8,12,22,.96)', backdropFilter:'blur(20px)',
         borderTop:'1px solid #151d30', scrollMarginTop:56 }}>
         <div style={{ fontFamily:'var(--fp)', fontSize:14, letterSpacing:2, marginBottom:10 }}>{isMn ? 'ЭРЭМБЭ СОНГОХ' : 'CHOOSE YOUR PLAN'}</div>
         <div style={{ fontFamily:'var(--fp)', fontSize:5, color:'#3a4560', letterSpacing:3, marginBottom:40 }}>
           {isMn ? 'ХЭДИЙ ЧИНЭЭ ДЭЭШЭЭ — ТӨДИЙ ЧИНЭЭ ХУРДАН · SUBSCRIPTION ҮНЭ (MNT)' : 'THE HIGHER YOU GO — THE FASTER YOU GROW · SUBSCRIPTION PRICE (MNT)'}
         </div>
-        <div style={{ display:'grid', gridTemplateColumns:'repeat(3,1fr)', gap:16, marginBottom:28 }}>
+        <div className="lp-grid-3" style={{ marginBottom:28 }}>
           {PLANS.map(plan=>(
             <div key={plan.id} className="lp-card-hover"
               style={{ background:'rgba(8,12,22,.96)', backdropFilter:'blur(20px)',
