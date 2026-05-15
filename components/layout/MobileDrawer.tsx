@@ -29,7 +29,7 @@ export default function MobileDrawer() {
   const [closing,  setClosing]  = useState(false)
   const pathname = usePathname()
   const { user, logout } = useAuth()
-  const { lang, setLang, t } = useLang()
+  const { lang, setLang } = useLang()
   const isMn = lang === 'mn'
 
   // Close on route change
@@ -56,7 +56,6 @@ export default function MobileDrawer() {
           width: 40, height: 40,
           background: 'rgba(8,12,22,.9)', backdropFilter: 'blur(12px)',
           border: '1px solid #1a2840',
-          display: 'none', /* shown via CSS */
           flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
           gap: 5, cursor: 'pointer', padding: 0,
         }}>

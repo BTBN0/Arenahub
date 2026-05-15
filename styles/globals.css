@@ -277,6 +277,9 @@ nav.landing { display:flex; align-items:center; padding:0 40px; height:56px; bac
 .cta-sub { font-size:8px; color:var(--dim2); margin-bottom:40px; letter-spacing:1px; }
 .cta-btns { display:flex; gap:16px; justify-content:center; }
 
+/* Hamburger — hidden on desktop, shown on mobile */
+.mob-hamburger { display: none; }
+
 /* ════════════════════════════════════════
    BOTTOM NAV — mobile only
    ════════════════════════════════════════ */
