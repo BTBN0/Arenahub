@@ -260,7 +260,7 @@ export default function ProfilePage() {
           </div>
 
           {/* RIGHT — 3D model */}
-          <div style={{ width:320, flexShrink:0, display:'flex', alignItems:'flex-end', justifyContent:'center', position:'relative', zIndex:2 }}>
+          <div className="pf-model-panel" style={{ width:320, flexShrink:0, display:'flex', alignItems:'flex-end', justifyContent:'center', position:'relative', zIndex:2 }}>
             <PixelModel3D model="hero" theme="golden" size={320} />
           </div>
         </div>

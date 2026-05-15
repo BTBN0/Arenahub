@@ -166,6 +166,7 @@ export default function Sidebar() {
     <>
       <div className="sidebar-spacer" style={{width:W_COLLAPSED,flexShrink:0}}/>
       <aside
+        className="sidebar"
         onMouseEnter={onEnter}
         onMouseLeave={onLeave}
         style={{

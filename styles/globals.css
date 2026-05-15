@@ -327,8 +327,8 @@ nav.landing { display:flex; align-items:center; padding:0 40px; height:56px; bac
 
 /* Mobile (≤ 768px) */
 @media (max-width: 768px) {
-  .sidebar             { display: none !important; }
-  .sidebar-spacer      { display: none !important; }
+  .sidebar             { width: 0 !important; min-width: 0 !important; overflow: hidden !important; border: none !important; visibility: hidden !important; }
+  .sidebar-spacer      { display: none !important; width: 0 !important; }
   .main-content        { padding: 60px 12px 24px; overflow-x: hidden; }
   .bottom-nav          { display: none; }
   .mob-hamburger       { display: flex !important; }
@@ -369,6 +369,12 @@ nav.landing { display:flex; align-items:center; padding:0 40px; height:56px; bac
   .dash-zones          { grid-template-columns: 1fr 1fr; gap: 8px; }
   .dash-right          { display: none; }
   .dash-left           { padding: 14px 14px 20px; }
+}
+
+/* Profile page */
+.pf-model-panel { display: flex; }
+@media (max-width: 900px) {
+  .pf-model-panel { display: none; }
 }
 
 /* Pricing page */
