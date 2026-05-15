@@ -110,17 +110,31 @@ export default function LandingClient({ initialLb }: { initialLb: LbEntry[] }) {
   const isMn     = lang === 'mn'
   const FEATURES = isMn ? FEATURES_MN : FEATURES_EN
   const PLANS    = isMn ? PLANS_MN    : PLANS_EN
-  const [lb, setLb] = useState<(LbEntry & { rank: number })[]>(
+  const [lb,          setLb]          = useState<(LbEntry & { rank: number })[]>(
     initialLb.map((u, i) => ({ ...u, rank: i + 1 }))
   )
+  const [lbUpdatedAt, setLbUpdatedAt] = useState<number>(Date.now())
+  const [lbPulse,     setLbPulse]     = useState(false)
+  const [tick,        setTick]        = useState(0)
+
+  const fetchLb = () => {
+    fetch('/api/public/leaderboard').then(r => r.json()).then(d => {
+      if (d.ok && d.users?.length) {
+        setLb(d.users.slice(0, 6).map((u: LbEntry, i: number) => ({ ...u, rank: i + 1 })))
+        setLbUpdatedAt(d.updatedAt || Date.now())
+        setLbPulse(true)
+        setTimeout(() => setLbPulse(false), 600)
+      }
+    }).catch(() => {})
+  }
 
   useEffect(() => {
     const fn = () => setScrolled(window.scrollY > 40)
     window.addEventListener('scroll', fn)
-    fetch('/api/leaderboard').then(r => r.json()).then(d => {
-      if (d.ok && d.users?.length) setLb(d.users.slice(0,6).map((u: LbEntry, i: number) => ({ ...u, rank: i + 1 })))
-    }).catch(() => {})
-    return () => window.removeEventListener('scroll', fn)
+    fetchLb()
+    const lbInterval   = setInterval(fetchLb, 30_000)
+    const tickInterval = setInterval(() => setTick(t => t + 1), 1_000)
+    return () => { window.removeEventListener('scroll', fn); clearInterval(lbInterval); clearInterval(tickInterval) }
   }, [])
 
   const top3 = lb.slice(0, 3)
@@ -281,13 +295,22 @@ export default function LandingClient({ initialLb }: { initialLb: LbEntry[] }) {
 
           <div style={{ display:'flex', alignItems:'center', gap:10, marginBottom:20,
             paddingBottom:14, borderBottom:'1px solid #151d30' }}>
-            <div style={{ width:8, height:8, background:'#00ff41', borderRadius:'50%',
-              animation:'ping 1.5s infinite' }} />
+            {/* pulsing dot — flashes on refresh */}
+            <div style={{ position:'relative', flexShrink:0 }}>
+              <div style={{ width:8, height:8, background:'#00ff41', borderRadius:'50%', animation:'ping 1.5s infinite' }}/>
+              {lbPulse && <div style={{ position:'absolute', inset:-3, borderRadius:'50%', border:'2px solid #00ff41', animation:'ping .6s ease-out forwards' }}/>}
+            </div>
             <div style={{ fontFamily:'var(--fp)', fontSize:7, color:'#00e5ff', letterSpacing:2, flex:1 }}>
               LIVE RANKING
             </div>
-            <div style={{ fontFamily:'var(--fp)', fontSize:5, color:'#00ff41',
-              border:'1px solid rgba(0,255,65,.3)', padding:'3px 8px', letterSpacing:2 }}>LIVE</div>
+            <div style={{ display:'flex', flexDirection:'column', alignItems:'flex-end', gap:3 }}>
+              <div style={{ fontFamily:'var(--fp)', fontSize:5, color:'#00ff41',
+                border:'1px solid rgba(0,255,65,.3)', padding:'3px 8px', letterSpacing:2,
+                boxShadow: lbPulse ? '0 0 10px rgba(0,255,65,.4)' : 'none', transition:'box-shadow .3s' }}>LIVE</div>
+              <div style={{ fontFamily:'var(--fp)', fontSize:3, color:'#1a3050', letterSpacing:1 }}>
+                {isMn ? 'ШИНЭЧЛЭГДЛЭЭ' : 'UPDATED'} {Math.floor((tick * 0 + Date.now() - lbUpdatedAt) / 1000)}s {isMn ? 'өмнө' : 'ago'}
+              </div>
+            </div>
           </div>
 
           {/* Podium */}
