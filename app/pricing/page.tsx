@@ -151,11 +151,11 @@ export default function PricingPage() {
         animation:'pr-scan 9s linear infinite' }}/>
 
       {/* NAV */}
-      <nav style={{ display:'flex', alignItems:'stretch', background:BG2, backdropFilter:'blur(20px)', borderBottom:`2px solid ${DIM}`, position:'sticky', top:0, zIndex:200, boxShadow:'0 2px 24px rgba(0,0,0,.6)', minHeight:76 }}>
+      <nav className="pr-nav" style={{ display:'flex', alignItems:'stretch', background:BG2, backdropFilter:'blur(20px)', borderBottom:`2px solid ${DIM}`, position:'sticky', top:0, zIndex:200, boxShadow:'0 2px 24px rgba(0,0,0,.6)', minHeight:76 }}>
         <div style={{ position:'absolute', top:0, left:0, right:0, height:2, background:`linear-gradient(90deg,transparent,${activeCfg.col}55,transparent)` }}/>
 
         {/* logo */}
-        <div style={{ padding:'0 32px', display:'flex', alignItems:'center', gap:14, borderRight:`1px solid ${DIM}`, flexShrink:0 }}>
+        <div className="pr-nav-logo" style={{ padding:'0 32px', display:'flex', alignItems:'center', gap:14, borderRight:`1px solid ${DIM}`, flexShrink:0 }}>
           <img src="/logo.svg" alt="ArenaHub" width="32" height="32" style={{ display:'block' }}/>
           <div>
             <div style={FP(12,'#c0d0e0',3)}>ARENAHUB</div>
@@ -164,7 +164,7 @@ export default function PricingPage() {
         </div>
 
         {/* tab nav */}
-        <div style={{ flex:1, display:'flex', alignItems:'stretch' }}>
+        <div className="pr-nav-tabs" style={{ flex:1, display:'flex', alignItems:'stretch', overflowX:'auto' }}>
           {([
             ['plans',   'crown',  t('prc_plans'),   '#00e5ff'],
             ['tokens',  'coin',   t('prc_tokens'),  '#ffd700'],
@@ -173,18 +173,18 @@ export default function PricingPage() {
           ] as [Tab, string, string, string][]).map(([id, iconName, lbl, col]) => {
             const active = tab === id
             return (
-              <button key={id} onClick={() => setTab(id)} style={{ padding:'0 28px', cursor:'pointer', background: active ? `${col}0e` : 'transparent', border:'none', borderBottom:`3px solid ${active ? col : 'transparent'}`, borderTop:'3px solid transparent', transition:'all .15s', display:'flex', alignItems:'center', gap:10 }}>
+              <button key={id} onClick={() => setTab(id)} style={{ padding:'0 clamp(12px,2.5vw,28px)', cursor:'pointer', background: active ? `${col}0e` : 'transparent', border:'none', borderBottom:`3px solid ${active ? col : 'transparent'}`, borderTop:'3px solid transparent', transition:'all .15s', display:'flex', alignItems:'center', gap:8, flexShrink:0 }}>
                 <span style={{ filter: active ? `drop-shadow(0 0 6px ${col}88)` : 'grayscale(1) brightness(0.5)', transition:'filter .15s' }}>
-                  <PixelIcon name={iconName as any} size={22} col={col}/>
+                  <PixelIcon name={iconName as any} size={20} col={col}/>
                 </span>
-                <span style={{ ...FP(9, active ? col : DIM2, 1) }}>{lbl}</span>
+                <span className="pr-tab-lbl" style={{ ...FP(9, active ? col : DIM2, 1) }}>{lbl}</span>
               </button>
             )
           })}
         </div>
 
         {/* Language switcher + back */}
-        <div style={{ padding:'0 16px', display:'flex', alignItems:'center', gap:6, borderLeft:`1px solid ${DIM}`, flexShrink:0 }}>
+        <div className="pr-nav-right" style={{ padding:'0 12px', display:'flex', alignItems:'center', gap:6, borderLeft:`1px solid ${DIM}`, flexShrink:0 }}>
           {(['mn','en'] as const).map(l => (
             <button key={l} onClick={() => setLang(l)} title={l==='mn'?'Монгол':'English'} style={{
               display:'flex', alignItems:'center', gap:5,

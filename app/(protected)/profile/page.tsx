@@ -160,15 +160,15 @@ export default function ProfilePage() {
         </div>
 
         {/* HERO PANEL */}
-        <div style={{ display:'flex', minHeight:320, position:'relative', overflow:'hidden', flexShrink:0, zIndex:2 }}>
+        <div className="pf-hero" style={{ display:'flex', minHeight:320, position:'relative', overflow:'hidden', flexShrink:0, zIndex:2 }}>
           <div style={{ position:'absolute', inset:0, background:'linear-gradient(135deg,#020609 55%,#070514 100%)' }}/>
           <div style={{ position:'absolute', right:0, top:0, width:'45%', height:'100%', background:'radial-gradient(ellipse at 75% 50%,rgba(191,90,242,.06) 0%,transparent 65%)' }}/>
 
           {/* LEFT — avatar + info */}
-          <div style={{ flex:1, padding:'36px 40px', display:'flex', flexDirection:'column', justifyContent:'center', gap:16, position:'relative', zIndex:2, animation:'pf-in .35s ease' }}>
+          <div className="pf-hero-left" style={{ flex:1, padding:'36px 40px', display:'flex', flexDirection:'column', justifyContent:'center', gap:16, position:'relative', zIndex:2, animation:'pf-in .35s ease' }}>
 
             {/* Avatar + username */}
-            <div style={{ display:'flex', alignItems:'center', gap:20 }}>
+            <div className="pf-avatar-row" style={{ display:'flex', alignItems:'center', gap:20 }}>
               <div style={{ position:'relative', flexShrink:0, paddingBottom: editing ? 20 : 0 }}>
                 <div style={{ width:80, height:80, border:`2px solid ${avatar ? '#bf5af2' : '#0d1a28'}`, overflow:'hidden', display:'flex', alignItems:'center', justifyContent:'center', background:'rgba(8,12,22,.96)', backdropFilter:'blur(20px)', boxShadow: avatar ? '0 0 20px rgba(191,90,242,.2)' : 'none' }}>
                   {avatar
@@ -266,7 +266,7 @@ export default function ProfilePage() {
         </div>
 
         {/* STAT STRIP */}
-        <div style={{ display:'grid', gridTemplateColumns:'repeat(6,1fr)', borderTop:'1px solid #0d1a28', borderBottom:'1px solid #0d1a28', flexShrink:0, background:'rgba(8,12,22,.96)', backdropFilter:'blur(20px)', position:'relative', zIndex:2 }}>
+        <div className="pf-stat-strip" style={{ borderTop:'1px solid #0d1a28', borderBottom:'1px solid #0d1a28', flexShrink:0, background:'rgba(8,12,22,.96)', backdropFilter:'blur(20px)', position:'relative', zIndex:2 }}>
           {([
             [t('prof_level'), String(level),           '#00e5ff', t('prof_current_lvl')],
             [t('prof_xp'),    xp.toLocaleString(),     '#00ff41', t('prof_total_xp')],
