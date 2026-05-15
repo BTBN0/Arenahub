@@ -116,6 +116,7 @@ export default function LandingClient({ initialLb }: { initialLb: LbEntry[] }) {
   const [lbUpdatedAt, setLbUpdatedAt] = useState<number>(Date.now())
   const [lbPulse,     setLbPulse]     = useState(false)
   const [tick,        setTick]        = useState(0)
+  const [stats, setStats] = useState({ courses:8, lessons:56, tasks:280, users:0 })
 
   const fetchLb = () => {
     fetch('/api/public/leaderboard').then(r => r.json()).then(d => {
@@ -132,6 +133,9 @@ export default function LandingClient({ initialLb }: { initialLb: LbEntry[] }) {
     const fn = () => setScrolled(window.scrollY > 40)
     window.addEventListener('scroll', fn)
     fetchLb()
+    fetch('/api/public/stats').then(r => r.json()).then(d => {
+      if (d.ok) setStats({ courses: d.courses, lessons: d.lessons, tasks: d.tasks, users: d.users })
+    }).catch(() => {})
     const lbInterval   = setInterval(fetchLb, 30_000)
     const tickInterval = setInterval(() => setTick(t => t + 1), 1_000)
     return () => { window.removeEventListener('scroll', fn); clearInterval(lbInterval); clearInterval(tickInterval) }
@@ -262,8 +266,8 @@ export default function LandingClient({ initialLb }: { initialLb: LbEntry[] }) {
           <div style={{ fontFamily:'var(--fm)', fontSize:13, color:'#5a6a8a',
             lineHeight:2.2, maxWidth:480 }}>
             {isMn
-              ? '8 course, 56 lesson дэх практик даалгавраар game механизмоор суралцаж, XP цуглуулж, fullstack developer болох замаа эхлүүл.'
-              : 'Learn through hands-on tasks across 8 courses and 56 lessons with game mechanics. Collect XP and start your journey to become a fullstack developer.'}
+              ? `${stats.courses} course, ${stats.lessons} lesson дэх практик даалгавраар game механизмоор суралцаж, XP цуглуулж, fullstack developer болох замаа эхлүүл.`
+              : `Learn through hands-on tasks across ${stats.courses} courses and ${stats.lessons} lessons with game mechanics. Collect XP and start your journey to become a fullstack developer.`}
           </div>
 
           <div style={{ display:'flex', gap:10, flexWrap:'wrap' }}>
@@ -272,7 +276,7 @@ export default function LandingClient({ initialLb }: { initialLb: LbEntry[] }) {
           </div>
 
           <div style={{ display:'flex', borderTop:'1px solid #151d30', paddingTop:24, gap:0 }}>
-            {([['8','COURSES','#00e5ff'],['56','LESSONS','#00ff41'],['280+','TASKS','#ffd700'],['∞','XP','#bf5af2']] as [string,string,string][]).map(([v,l,c])=>(
+            {([[String(stats.courses),'COURSES','#00e5ff'],[String(stats.lessons),'LESSONS','#00ff41'],[stats.tasks+'+ ','TASKS','#ffd700'],['∞','XP','#bf5af2']] as [string,string,string][]).map(([v,l,c])=>(
               <div key={l} style={{ padding:'0 24px 0 0', marginRight:24,
                 borderRight:'1px solid #151d30', textAlign:'left' }}>
                 <div style={{ fontFamily:'var(--fp)', fontSize:20, color:c,
@@ -367,7 +371,7 @@ export default function LandingClient({ initialLb }: { initialLb: LbEntry[] }) {
       {/* ── STAT STRIP ── */}
       <div className="lp-stat-strip" style={{ borderBottom:'1px solid #151d30',
         background:'rgba(8,12,22,.96)', backdropFilter:'blur(20px)' }}>
-        {([['8','COURSES','#00e5ff'],['56','LESSONS','#00ff41'],['280+','TASKS','#ffd700'],['∞','XP REWARD','#bf5af2']] as [string,string,string][]).map(([v,l,c],i)=>(
+        {([[String(stats.courses),'COURSES','#00e5ff'],[String(stats.lessons),'LESSONS','#00ff41'],[stats.tasks+'+ ','TASKS','#ffd700'],['∞','XP REWARD','#bf5af2']] as [string,string,string][]).map(([v,l,c],i)=>(
           <div key={l} style={{ padding:'20px 0', display:'flex', flexDirection:'column',
             alignItems:'center', gap:6,
             borderRight: i < 3 ? '1px solid #151d30' : 'none' }}>
@@ -475,7 +479,7 @@ export default function LandingClient({ initialLb }: { initialLb: LbEntry[] }) {
         borderTop:'1px solid #151d30', scrollMarginTop:56 }}>
         <div style={{ fontFamily:'var(--fp)', fontSize:14, letterSpacing:2, marginBottom:10 }}>FULLSTACK ROADMAP</div>
         <div style={{ fontFamily:'var(--fp)', fontSize:5, color:'#3a4560', letterSpacing:3, marginBottom:40 }}>
-          {isMn ? '8 COURSE · HTML-ЭЭС DEPLOY ХҮРТЭЛ БҮРЭН ЗАМНАЛ' : '8 COURSES · COMPLETE PATH FROM HTML TO DEPLOY'}
+          {isMn ? `${stats.courses} COURSE · HTML-ЭЭС DEPLOY ХҮРТЭЛ БҮРЭН ЗАМНАЛ` : `${stats.courses} COURSES · COMPLETE PATH FROM HTML TO DEPLOY`}
         </div>
         <div className="lp-grid-4">
           {COURSES.map(co=>(
