@@ -602,6 +602,35 @@ export default function PricingPage() {
           </div>
         )}
       </div>
+
+      {/* ── MOBILE BOTTOM TAB BAR ── */}
+      <nav className="pr-bottom-tabs">
+        {([
+          ['plans',   'crown',  t('prc_plans'),   '#00e5ff'],
+          ['tokens',  'coin',   t('prc_tokens'),  '#ffd700'],
+          ['contest', 'sword',  t('prc_contest'), '#ff6b35'],
+          ['history', 'list',   t('prc_history'), '#00ff41'],
+        ] as [Tab, string, string, string][]).map(([id, iconName, lbl, col]) => {
+          const active = tab === id
+          return (
+            <button key={id} onClick={() => setTab(id)}
+              style={{
+                flex: 1, display:'flex', flexDirection:'column', alignItems:'center',
+                justifyContent:'center', gap:5, background:'transparent',
+                border:'none', cursor:'pointer', padding:'8px 0', position:'relative',
+                color: active ? col : '#3a5070', transition:'color .15s',
+              }}>
+              {active && (
+                <div style={{ position:'absolute', top:0, left:'15%', right:'15%', height:2, background:col, boxShadow:`0 0 8px ${col}` }}/>
+              )}
+              <span style={{ filter: active ? `drop-shadow(0 0 5px ${col})` : 'grayscale(1) brightness(0.4)', transition:'filter .15s' }}>
+                <PixelIcon name={iconName as any} size={22} col={col}/>
+              </span>
+              <span style={{ fontFamily:'var(--fp)', fontSize:4, letterSpacing:1, color: active ? col : '#2a4060' }}>{lbl}</span>
+            </button>
+          )
+        })}
+      </nav>
     </div>
   )
 }

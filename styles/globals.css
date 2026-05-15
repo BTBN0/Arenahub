@@ -396,13 +396,25 @@ nav.landing { display:flex; align-items:center; padding:0 40px; height:56px; bac
 .pr-nav-tabs   { scrollbar-width: none; }
 .pr-nav-tabs::-webkit-scrollbar { display: none; }
 
+/* Bottom tab bar — hidden on desktop */
+.pr-bottom-tabs {
+  display: none;
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 200;
+  background: rgba(6,10,20,.97); backdrop-filter: blur(20px);
+  border-top: 1px solid #151d30;
+  height: 64px;
+}
+
 @media (max-width: 900px)  { .pr-plans-grid { grid-template-columns: 1fr; max-width: 420px; margin: 0 auto; } }
 @media (max-width: 600px)  { .pr-plans-grid { max-width: 100%; } }
 @media (max-width: 768px) {
-  .pr-nav-logo   { display: none; }
-  .pr-nav-right  { padding: 0 8px; gap: 4px; }
-  .pr-nav        { min-height: 56px; }
-  .pr-tab-lbl    { display: none; }
+  .pr-nav-logo    { display: none; }
+  .pr-nav-right   { padding: 0 8px; gap: 4px; }
+  .pr-nav         { min-height: 52px; }
+  .pr-nav-tabs    { display: none; }        /* tabs нь доод menu-д шилжсэн */
+  .pr-bottom-tabs { display: flex; }        /* bottom bar харагдана */
+  /* content-г доор нь боох padding */
+  .pr-plans-grid  { margin-bottom: 24px; }
 }
 
 /* Small mobile (≤ 480px) */
