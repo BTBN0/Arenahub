@@ -31,10 +31,16 @@ export default function PricingPage() {
   const { lang, setLang, t } = useLang()
   const isMn = lang === 'mn'
 
+  // Currency: ₮ for MN, $ for EN (1$ ≈ 3400₮)
+  const C = isMn ? '₮' : '$'
+  const mn = (tugrug: number) => isMn
+    ? `₮${tugrug.toLocaleString()}`
+    : `$${(tugrug / 3400).toFixed(tugrug < 1000 ? 2 : 0)}`
+
   const PLANS = [
     {
       id:'free', label: isMn ? 'АНХДАГЧ' : 'FREE', icon:'🆓',
-      price:'₮0', period:'', yearPrice:null as string|null,
+      price: mn(0), period:'', yearPrice:null as string|null,
       col:DIM2, highlight:false, badge:'',
       desc: isMn ? 'Эхлэгчдэд зориулсан үндсэн эрх' : 'Basic access for beginners',
       features:[
@@ -50,7 +56,7 @@ export default function PricingPage() {
     },
     {
       id:'pro', label:'PRO', icon:'⭐',
-      price:'₮17,000', period: isMn ? '/сар' : '/mo', yearPrice:'₮170,000',
+      price: mn(17000), period: isMn ? '/сар' : '/mo', yearPrice: mn(170000),
       yearNote: isMn ? '2 сар үнэгүй' : '2 months free',
       col:'#00e5ff', highlight:true, badge: isMn ? 'ХАМГИЙН АЛДАРТАЙ' : 'MOST POPULAR',
       desc: isMn ? 'Бүх курс + AI token + Analytics' : 'All courses + AI tokens + Analytics',
@@ -60,14 +66,14 @@ export default function PricingPage() {
         { text: isMn ? 'Leaderboard оролцох'     : 'Join leaderboard',       ok:true  },
         { text: isMn ? '100 AI token / сар'      : '100 AI tokens / month',  ok:true  },
         { text: isMn ? 'Progress analytics'      : 'Progress analytics',     ok:true  },
-        { text: isMn ? 'Contest (₮3,000 хямд)'  : 'Contest (₮3,000 off)',   ok:true  },
+        { text: isMn ? `Contest (${mn(3000)} хямд)` : `Contest ($0.88 off)`, ok:true  },
         { text: isMn ? 'Exclusive badge'         : 'Exclusive badge',        ok:false },
       ],
       btn: isMn ? '▶ PRO БОЛОХ' : '▶ GET PRO',
     },
     {
       id:'vip', label:'VIP', icon:'💎',
-      price:'₮34,000', period: isMn ? '/сар' : '/mo', yearPrice:'₮320,000',
+      price: mn(34000), period: isMn ? '/сар' : '/mo', yearPrice: mn(320000),
       yearNote: isMn ? '2–3 сар үнэгүй' : '2–3 months free',
       col:'#ffd700', highlight:false, badge:'💎 PREMIUM',
       desc: isMn ? 'Pro бүх боломж + дэвшилтэт AI' : 'All Pro features + advanced AI',
@@ -85,16 +91,16 @@ export default function PricingPage() {
   ]
 
   const TOKEN_USES = [
-    { icon:'💡', label: isMn ? 'Hint авах'     : 'Get hint',         cost:1, price:'₮350',   col:'#00ff41' },
-    { icon:'📖', label: isMn ? 'Тайлбар авах'  : 'Get explanation',  cost:2, price:'₮700',   col:'#00e5ff' },
-    { icon:'🔓', label: isMn ? 'Бүтэн шийдэл' : 'Full solution',    cost:5, price:'₮1,750', col:'#ffd700' },
-    { icon:'🔍', label: isMn ? 'Code review'   : 'Code review',      cost:3, price:'₮1,050', col:'#bf5af2' },
+    { icon:'💡', label: isMn ? 'Hint авах'     : 'Get hint',         cost:1, price: mn(350),   col:'#00ff41' },
+    { icon:'📖', label: isMn ? 'Тайлбар авах'  : 'Get explanation',  cost:2, price: mn(700),   col:'#00e5ff' },
+    { icon:'🔓', label: isMn ? 'Бүтэн шийдэл' : 'Full solution',    cost:5, price: mn(1750),  col:'#ffd700' },
+    { icon:'🔍', label: isMn ? 'Code review'   : 'Code review',      cost:3, price: mn(1050),  col:'#bf5af2' },
   ]
 
   const TOKEN_PACKS = [
-    { amount:10,  price:'₮3,500',  per:'₮350/token', col:DIM2,     popular:false, save:'' },
-    { amount:50,  price:'₮15,000', per:'₮300/token', col:'#00e5ff', popular:true,  save: isMn ? '₮2,500 хэмнэлт' : '₮2,500 saved' },
-    { amount:200, price:'₮45,000', per:'₮225/token', col:'#ffd700', popular:false, save: isMn ? '₮25,000 хэмнэлт' : '₮25,000 saved', bonus:'+20' },
+    { amount:10,  price: mn(3500),  per:`${mn(350)}/token`,  col:DIM2,      popular:false, save:'' },
+    { amount:50,  price: mn(15000), per:`${mn(300)}/token`,  col:'#00e5ff', popular:true,  save: isMn ? `${mn(2500)} хэмнэлт` : `${mn(2500)} saved` },
+    { amount:200, price: mn(45000), per:`${mn(225)}/token`,  col:'#ffd700', popular:false, save: isMn ? `${mn(25000)} хэмнэлт` : `${mn(25000)} saved`, bonus:'+20' },
   ]
 
   const STATUS_LBL_I18N: Record<string,string> = isMn
@@ -304,7 +310,7 @@ export default function PricingPage() {
                 ['Task','10/өдөр','Хязгааргүй','Хязгааргүй'],
                 ['AI Token','5/өдөр','100/сар','400/сар'],
                 ['Leaderboard','Харах','Оролцох','Highlight'],
-                ['Contest','₮10,000','₮3,000','ҮНЭГҮЙ'],
+                ['Contest',mn(10000),mn(3000),'ҮНЭГҮЙ'],
                 ['Analytics','—','✓','✓ Advanced'],
                 ['XP','1x','2x','5x'],
               ] : [
@@ -312,7 +318,7 @@ export default function PricingPage() {
                 ['Tasks','10/day','Unlimited','Unlimited'],
                 ['AI Tokens','5/day','100/mo','400/mo'],
                 ['Leaderboard','View','Join','Highlight'],
-                ['Contest','₮10,000','₮3,000','FREE'],
+                ['Contest',mn(10000),mn(3000),'FREE'],
                 ['Analytics','—','✓','✓ Advanced'],
                 ['XP','1x','2x','5x'],
               ]).map(([feat,...vals], i) => (
@@ -392,9 +398,9 @@ export default function PricingPage() {
             <div style={{ background:BG2, border:`1px solid ${DIM}`, padding:'22px' }}>
               <div style={{ display:'grid', gridTemplateColumns:'repeat(3,1fr)', gap:12, marginBottom:14 }}>
                 {[
-                  { plan:'FREE', tok: isMn?'5/өдөр':'5/day',  cost:'₮0',         note:'₮350/token',    col:DIM2 },
-                  { plan:'PRO',  tok: isMn?'100/сар':'100/mo', cost:isMn?'₮17,000/сар':'₮17,000/mo', note:'₮170/token ✓', col:'#00e5ff' },
-                  { plan:'VIP',  tok: isMn?'400/сар':'400/mo', cost:isMn?'₮34,000/сар':'₮34,000/mo', note:'₮85/token ✓',  col:'#ffd700' },
+                  { plan:'FREE', tok: isMn?'5/өдөр':'5/day',  cost: mn(0),        note:`${mn(350)}/tok`,   col:DIM2 },
+                  { plan:'PRO',  tok: isMn?'100/сар':'100/mo', cost:`${mn(17000)}/${isMn?'сар':'mo'}`, note:`${mn(170)}/tok ✓`, col:'#00e5ff' },
+                  { plan:'VIP',  tok: isMn?'400/сар':'400/mo', cost:`${mn(34000)}/${isMn?'сар':'mo'}`, note:`${mn(85)}/tok ✓`,  col:'#ffd700' },
                 ].map(r => (
                   <div key={r.plan} style={{ padding:'16px', background:BG, border:`1px solid ${r.col}22`, position:'relative' }}>
                     <div style={{ position:'absolute', top:0, left:0, right:0, height:2, background:`linear-gradient(90deg,transparent,${r.col}44,transparent)` }}/>
@@ -512,9 +518,9 @@ export default function PricingPage() {
             <SectionLabel label="ENTRY ҮНЭ" col="#ff6b35"/>
             <div style={{ display:'grid', gridTemplateColumns:'repeat(3,1fr)', gap:16, marginBottom:28 }}>
               {[
-                { tier:'🆓 FREE', fee:'₮10,000', note:'Стандарт тариф',          col:DIM2,     href:'/payment?item=contest' },
-                { tier:'⭐ PRO',  fee:'₮3,000',  note:'₮7,000 хямд — 70% off',  col:'#00e5ff', href:'/payment?item=contest' },
-                { tier:'💎 VIP',  fee:'ҮНЭГҮЙ',  note:'Бүх contest — free entry', col:'#ffd700', href:'/dashboard' },
+                { tier:'🆓 FREE', fee: mn(10000), note: isMn?'Стандарт тариф':'Standard fee',         col:DIM2,      href:'/payment?item=contest' },
+                { tier:'⭐ PRO',  fee: mn(3000),  note: isMn?`${mn(7000)} хямд — 70% off`:`${mn(7000)} off — 70%`, col:'#00e5ff', href:'/payment?item=contest' },
+                { tier:'💎 VIP',  fee: isMn?'ҮНЭГҮЙ':'FREE', note: isMn?'Бүх contest — free entry':'All contests — free', col:'#ffd700', href:'/dashboard' },
               ].map((p, i) => (
                 <div key={p.tier} style={{ background:BG2, border:`1px solid ${p.col}33`, padding:'0', position:'relative', overflow:'hidden', animation:`pr-in .3s ease ${i*0.1}s both` }}>
                   <div style={{ height:3, background:p.col }}/>

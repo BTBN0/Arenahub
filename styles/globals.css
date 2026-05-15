@@ -434,3 +434,14 @@ nav.landing { display:flex; align-items:center; padding:0 40px; height:56px; bac
   * { word-break: break-word; }
   img, svg, canvas { max-width: 100% !important; }
 }
+
+/* Responsive font sizes — Press Start 2P is large on mobile */
+@media (max-width: 768px) {
+  /* Scale down pixel font on mobile */
+  [style*="fontSize:20"], [style*="font-size: 20px"] { font-size: 13px !important; }
+  [style*="fontSize:14"], [style*="font-size: 14px"] { font-size: 10px !important; }
+  [style*="fontSize:13"], [style*="font-size: 13px"] { font-size: 9px !important;  }
+  [style*="fontSize:12"], [style*="font-size: 12px"] { font-size: 8px !important;  }
+  [style*="fontSize:10"], [style*="font-size: 10px"] { font-size: 7px !important;  }
+  [style*="fontSize:11"], [style*="font-size: 11px"] { font-size: 7px !important;  }
+}
