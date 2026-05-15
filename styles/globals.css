@@ -17,7 +17,7 @@
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html, body { min-height: 100%; }
+html, body { min-height: 100%; overflow-x: hidden; }
 body {
   background: var(--bg);
   color: var(--text);
@@ -55,8 +55,8 @@ body::after {
 }
 
 /* Layout */
-.layout { display: flex; height: 100vh; position: relative; z-index: 1; overflow: hidden; }
-.main-content { flex: 1; height: 100vh; overflow-y: auto; padding: 24px 28px 40px; position: relative; z-index: 1; }
+.layout { display: flex; height: 100vh; position: relative; z-index: 1; overflow: hidden; max-width: 100vw; }
+.main-content { flex: 1; height: 100vh; overflow-y: auto; overflow-x: hidden; padding: 24px 28px 40px; position: relative; z-index: 1; min-width: 0; max-width: 100%; }
 
 /* Dashboard zones responsive */
 .dash-zones { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; flex: 1; }
@@ -329,23 +329,31 @@ nav.landing { display:flex; align-items:center; padding:0 40px; height:56px; bac
 @media (max-width: 768px) {
   .sidebar             { display: none !important; }
   .sidebar-spacer      { display: none !important; }
-  .main-content        { padding: 60px 14px 24px; }
+  .main-content        { padding: 60px 12px 24px; overflow-x: hidden; }
   .bottom-nav          { display: none; }
   .mob-hamburger       { display: flex !important; }
 
-  .dash-zones          { grid-template-columns: 1fr 1fr; gap: 8px; }
-  .dash-right          { display: none; }
-  .dash-stats          { grid-template-columns: repeat(2,1fr); }
-  .dash-left           { padding: 14px 14px 20px; }
+  /* Prevent any child from causing horizontal scroll */
+  .main-content *      { max-width: 100%; }
+  main                 { overflow-x: hidden; max-width: 100vw; }
 
+  /* Wide tables → horizontal scroll within container */
+  table                { display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+
+  /* HUD bars — allow wrap on mobile */
+  .main-content > main > div[style*="display:flex"],
+  .main-content > main > div[style*="display: flex"] { flex-wrap: wrap; min-width: 0; }
+
+  /* Grid items min-width fix */
+  .dash-stats          { grid-template-columns: repeat(2,1fr); }
   .two-col             { grid-template-columns: 1fr; }
-  .ach-grid            { grid-template-columns: repeat(2,1fr); }
+  .ach-grid            { grid-template-columns: 1fr 1fr; }
   .rewards-grid        { grid-template-columns: 1fr 1fr; }
   .pricing-grid        { grid-template-columns: 1fr; }
   .stats-row           { gap: 8px; }
-  .stat-box            { min-width: 0; padding: 10px 12px; }
+  .stat-box            { min-width: 0; padding: 10px 12px; flex: 1 1 calc(50% - 4px); }
   .stat-value          { font-size: 14px; }
-  .page-title          { font-size: 9px; }
+  .page-title          { font-size: 9px; flex-wrap: wrap; }
   .section             { padding: 32px 16px; }
   .section-title       { font-size: 14px; }
   .profile-hero        { flex-direction: column; align-items: center; text-align: center; }
@@ -357,6 +365,10 @@ nav.landing { display:flex; align-items:center; padding:0 40px; height:56px; bac
   .hero-left           { padding: 40px 20px; }
   .cta                 { padding: 48px 20px; }
   .cta-btns            { flex-direction: column; align-items: center; }
+
+  .dash-zones          { grid-template-columns: 1fr 1fr; gap: 8px; }
+  .dash-right          { display: none; }
+  .dash-left           { padding: 14px 14px 20px; }
 }
 
 /* Pricing page */
@@ -366,10 +378,18 @@ nav.landing { display:flex; align-items:center; padding:0 40px; height:56px; bac
 
 /* Small mobile (≤ 480px) */
 @media (max-width: 480px) {
-  .main-content        { padding: 10px 10px 76px; }
+  .main-content        { padding: 56px 10px 20px; }
   .dash-zones          { grid-template-columns: 1fr; }
+  .dash-stats          { grid-template-columns: repeat(2,1fr); }
   .ach-grid            { grid-template-columns: 1fr 1fr; }
   .rewards-grid        { grid-template-columns: 1fr; }
   .stat-box            { padding: 8px 10px; }
   .page-title          { font-size: 7px; }
+  .pr-plans-grid       { grid-template-columns: 1fr !important; }
+}
+
+/* Global overflow guard */
+@media (max-width: 768px) {
+  * { word-break: break-word; }
+  img, svg, canvas { max-width: 100% !important; }
 }
