@@ -129,11 +129,7 @@ export default function DashboardPage() {
         </div>
 
         {/* ── PLAYER HUD STRIP ── */}
-        <div style={{
-          display:'grid', gridTemplateColumns:'repeat(5,1fr)',
-          borderBottom:'1px solid #0d1a28', flexShrink:0,
-          background:'rgba(8,12,22,.96)', backdropFilter:'blur(20px)', position:'relative', zIndex:2,
-        }}>
+        <div className="dash-stats" style={{ flexShrink:0 }}>
           {[
             { k: t('dash_level'), v:level,              col:'#00e5ff' },
             { k: t('dash_xp'),    v:xp.toLocaleString(),col:'#00ff41' },
@@ -193,15 +189,15 @@ export default function DashboardPage() {
         )}
 
         {/* ── ZONES + 3D MODEL ── */}
-        <div style={{ flex:1, display:'flex', gap:0, position:'relative', zIndex:2, minHeight:0 }}>
+        <div className="dash-layout">
 
           {/* LEFT — nav zones */}
-          <div style={{ flex:1, padding:'20px 20px 24px', display:'flex', flexDirection:'column', gap:14, minWidth:0 }}>
+          <div className="dash-left">
             <div style={{ display:'flex', alignItems:'center', gap:10 }}>
               <div style={{ width:3, height:18, background:'#00e5ff', boxShadow:'0 0 8px #00e5ff' }}/>
               <div style={{ fontFamily:'var(--fp)', fontSize:7, color:'#2a4a6a', letterSpacing:4 }}>{t('dash_navigate')}</div>
             </div>
-            <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:10, flex:1 }}>
+            <div className="dash-zones">
               {(ZONES as Zone[]).map((z, i) => (
                 <ZoneCard key={z.href} zone={z} delay={i * 0.07} />
               ))}
@@ -209,7 +205,7 @@ export default function DashboardPage() {
           </div>
 
           {/* RIGHT — 3D model panel */}
-          <div style={{ width:220, flexShrink:0, display:'flex', alignItems:'center', justifyContent:'center', background:'rgba(8,12,22,.96)', backdropFilter:'blur(20px)', position:'relative', overflow:'hidden' }}>
+          <div className="dash-right">
             <div style={{ position:'absolute', inset:0, background:'radial-gradient(ellipse at center,rgba(0,229,255,.06) 0%,transparent 65%)', pointerEvents:'none' }}/>
             <PixelModel3D model="castle" theme="crystal" size={200} />
           </div>
