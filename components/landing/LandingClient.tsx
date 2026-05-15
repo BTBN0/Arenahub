@@ -1,6 +1,7 @@
 'use client'
 import { useState, useEffect } from 'react'
 import dynamic from 'next/dynamic'
+import { useLang } from '@/context/LanguageContext'
 
 const AuthModal = dynamic(() => import('@/components/ui/AuthModal'), { ssr: false })
 
@@ -86,6 +87,7 @@ function GhostBtn({ label, col, onClick }: { label: string; col: string; onClick
 export default function LandingClient({ initialLb }: { initialLb: LbEntry[] }) {
   const [modal,    setModal]    = useState<'login' | null>(null)
   const [scrolled, setScrolled] = useState(false)
+  const { lang, setLang } = useLang()
   const [lb, setLb] = useState<(LbEntry & { rank: number })[]>(
     initialLb.map((u, i) => ({ ...u, rank: i + 1 }))
   )
@@ -140,6 +142,26 @@ export default function LandingClient({ initialLb }: { initialLb: LbEntry[] }) {
             </button>
           ))}
           <div style={{ width:1, height:18, background:'#151d30', margin:'0 8px' }}/>
+          {(['mn','en'] as const).map(l => (
+            <button key={l} onClick={() => setLang(l)}
+              style={{ display:'flex', alignItems:'center', gap:4, padding:'5px 8px',
+                border:`1px solid ${lang===l?'rgba(0,229,255,.4)':'rgba(255,255,255,.06)'}`,
+                background: lang===l ? 'rgba(0,229,255,.08)' : 'transparent',
+                cursor:'pointer', transition:'all .15s', marginRight: l==='en' ? 6 : 2 }}>
+              <svg width="16" height="10" viewBox="0 0 30 18" style={{imageRendering:'pixelated',display:'block'}}>
+                {l==='mn' ? <>
+                  <rect x="0" y="0" width="10" height="18" fill="#C4272F"/><rect x="10" y="0" width="10" height="18" fill="#015197"/><rect x="20" y="0" width="10" height="18" fill="#C4272F"/>
+                  <rect x="3" y="1" width="4" height="1" fill="#F9CF02"/><rect x="2" y="2" width="6" height="3" fill="#F9CF02"/><rect x="1" y="6" width="8" height="1" fill="#F9CF02"/><rect x="1" y="8" width="8" height="1" fill="#F9CF02"/><rect x="3" y="9" width="4" height="3" fill="#F9CF02"/><rect x="1" y="13" width="8" height="1" fill="#F9CF02"/><rect x="1" y="15" width="8" height="2" fill="#F9CF02"/>
+                </> : <>
+                  <rect x="0" y="0" width="30" height="18" fill="#B22234"/><rect x="0" y="2" width="30" height="2" fill="#fff"/><rect x="0" y="6" width="30" height="2" fill="#fff"/><rect x="0" y="10" width="30" height="2" fill="#fff"/><rect x="0" y="14" width="30" height="2" fill="#fff"/>
+                  <rect x="0" y="0" width="12" height="10" fill="#3C3B6E"/><rect x="1" y="1" width="2" height="1" fill="#fff"/><rect x="5" y="1" width="2" height="1" fill="#fff"/><rect x="9" y="1" width="2" height="1" fill="#fff"/><rect x="3" y="4" width="2" height="1" fill="#fff"/><rect x="7" y="4" width="2" height="1" fill="#fff"/>
+                </>}
+              </svg>
+              <span style={{ fontFamily:'var(--fp)', fontSize:5, color: lang===l ? '#00e5ff' : '#3a5070', letterSpacing:1 }}>
+                {l==='mn' ? 'МОН' : 'ENG'}
+              </span>
+            </button>
+          ))}
           <GhostBtn label="LOGIN" col="#00ff41" onClick={() => setModal('login')} />
         </div>
       </nav>
