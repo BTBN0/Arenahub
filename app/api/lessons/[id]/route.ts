@@ -4,7 +4,8 @@ import { requireAuth, getUser } from '@/lib/auth'
 import { ok, err, handleError } from '@/lib/api-helpers'
 import { updateProgress, addXP } from '@/lib/services/game.service'
 import { logActivity } from '@/lib/services/analytics.service'
-import { cacheDel } from '@/lib/cache'
+import { cacheDel, cacheClear } from '@/lib/cache'
+const clearLessonCache = (courseId: string) => cacheClear(`lessons:${courseId}`)
 import prisma from '@/lib/db'
 
 const CONTENT_ROLES = ['ADMIN','INSTRUCTOR','CONTENT_MANAGER']
@@ -86,7 +87,9 @@ export async function PUT(req: NextRequest, { params }: Params) {
     if (!cu) return err('Эрх хүрэлцэхгүй', 403)
     const { id } = await params
     const data   = await req.json()
-    return ok({ lesson: await prisma.lesson.update({ where: { id }, data }) })
+    const lesson = await prisma.lesson.update({ where: { id }, data })
+    clearLessonCache(lesson.courseId)
+    return ok({ lesson })
   } catch (e) { return handleError(e) }
 }
 
@@ -96,7 +99,9 @@ export async function DELETE(req: NextRequest, { params }: Params) {
     const cu = await resolveContentUser(req)
     if (!cu || cu.role !== 'ADMIN') return err('Эрх хүрэлцэхгүй', 403)
     const { id } = await params
+    const lesson = await prisma.lesson.findUnique({ where: { id }, select: { courseId: true } })
     await prisma.lesson.delete({ where: { id } })
+    if (lesson) clearLessonCache(lesson.courseId)
     return ok({ message: 'Устгагдлаа' })
   } catch (e) { return handleError(e) }
 }

@@ -101,15 +101,21 @@ export default function AdminLessonsPage() {
       } else {
         r = await adminFetch('/api/lessons', {method: 'POST',  body: JSON.stringify(body)})
       }
-      if (r.ok) { notify(editing ? 'Шинэчлэгдлээ' : 'Үүсгэгдлээ'); setShowForm(false); loadLessons() }
-      else { const d = await r.json(); notify(d.error ?? 'Алдаа', 'var(--red)') }
+      if (r.ok) {
+        notify(editing ? 'Шинэчлэгдлээ' : 'Үүсгэгдлээ')
+        setShowForm(false)
+        loadLessons() // cache cleared on server, fresh data
+      } else { const d = await r.json(); notify(d.error ?? 'Алдаа', 'var(--red)') }
     } finally { setSaving(false) }
   }
 
   const deleteLesson = async (l: Lesson) => {
     if (!confirm(`"${l.title}" устгах уу?`)) return
+    // Optimistic: instantly remove
+    setLessons(prev => prev.filter(x => x.id !== l.id))
     const r = await adminFetch(`/api/lessons/${l.id}`, {method: 'DELETE'})
-    if (r.ok) { notify('Устгагдлаа', 'var(--red)'); loadLessons() } else notify('Алдаа', 'var(--red)')
+    if (r.ok) { notify('Устгагдлаа', 'var(--red)') }
+    else { notify('Алдаа', 'var(--red)'); loadLessons() }
   }
 
   return (

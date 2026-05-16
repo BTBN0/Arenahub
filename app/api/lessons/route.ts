@@ -4,7 +4,10 @@ import { getToken } from 'next-auth/jwt'
 import prisma from '@/lib/db'
 import { requireAuth, getUser } from '@/lib/auth'
 import { ok, err, handleError } from '@/lib/api-helpers'
-import { cacheGet, cacheSet } from '@/lib/cache'
+import { cacheGet, cacheSet, cacheClear } from '@/lib/cache'
+
+// Clear all lesson caches for a course (all users)
+const clearLessonCache = (courseId: string) => cacheClear(`lessons:${courseId}`)
 
 const CONTENT_ROLES = ['ADMIN','INSTRUCTOR','CONTENT_MANAGER']
 
@@ -76,6 +79,7 @@ export async function POST(req: NextRequest) {
     })
     const { videoUrl: _v, ...d } = schema.parse(await req.json())
     const lesson = await prisma.lesson.create({ data: { ...d, xpReward:d.xpReward??50, orderIndex:d.orderIndex??0 } })
+    clearLessonCache(d.courseId)
     return ok({ lesson }, 201)
   } catch (e) { return handleError(e) }
 }

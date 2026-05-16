@@ -96,10 +96,13 @@ export default function AdminAchievementsPage() {
     } else notify(d.error ?? 'Алдаа', 'var(--red)')
   }
 
-  const delAch = async (id: string) => {
-    if (!confirm('Устгах уу?')) return
+  const delAch = async (id: string, title: string) => {
+    if (!confirm(`"${title}" устгах уу?`)) return
+    // Optimistic remove
+    setAchs(prev => prev.filter(a => a.id !== id))
     const r = await adminFetch(`/api/achievements/${id}`, {method: 'DELETE'})
-    if (r.ok) { notify('Устгагдлаа', 'var(--red)'); load() }
+    if (r.ok) { notify('Устгагдлаа', 'var(--red)') }
+    else { notify('Алдаа', 'var(--red)'); load() }
   }
 
   const RARITY_ORDER = ['EPIC','RARE','COMMON']
@@ -231,11 +234,14 @@ export default function AdminAchievementsPage() {
                         <div style={{ ...fp, fontSize: 5, color: 'var(--dim2)', marginBottom: 4 }}>
                           <span style={{ color: 'var(--green)' }}>{a.condition}</span>
                         </div>
-                        <div style={{ display: 'flex', gap: 8 }}>
+                        <div style={{ display: 'flex', gap: 8, alignItems: 'center', marginTop: 6 }}>
                           {a.xpReward > 0 && <span style={{ ...fp, fontSize: 4, color: 'var(--yellow)' }}>+{a.xpReward} XP</span>}
                           {a.rewardAmount > 0 && <span style={{ ...fp, fontSize: 4, color: 'var(--cyan)' }}>+{a.rewardAmount} {a.rewardType}</span>}
-                          <button onClick={() => delAch(a.id)} style={{ ...fp, fontSize: 4, color: 'var(--red)', background: 'none', border: 'none', cursor: 'pointer', marginLeft: 'auto', padding: '0 4px' }}>
-                            ✕
+                          <button onClick={() => delAch(a.id, a.title)}
+                            style={{ ...fp, fontSize: 5, color: 'var(--red)', background: 'rgba(255,45,85,.08)', border: '1px solid rgba(255,45,85,.3)', cursor: 'pointer', marginLeft: 'auto', padding: '3px 10px', letterSpacing: 1 }}
+                            onMouseEnter={e => (e.currentTarget.style.background = 'rgba(255,45,85,.18)')}
+                            onMouseLeave={e => (e.currentTarget.style.background = 'rgba(255,45,85,.08)')}>
+                            DELETE
                           </button>
                         </div>
                       </div>
