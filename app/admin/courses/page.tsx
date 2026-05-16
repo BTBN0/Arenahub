@@ -117,7 +117,11 @@ export default function AdminCoursesPage() {
   const deleteCourse = async (c: Course) => {
     if (!confirm(`"${c.title}" устгах уу?`)) return
     const r = await fetch(`/api/courses/${c.id}`, { method: 'DELETE', headers: authH() })
-    if (r.ok) { notify('Устгагдлаа', 'var(--red)'); load() } else notify('Алдаа', 'var(--red)')
+    if (r.ok) { notify('Устгагдлаа', 'var(--red)'); load() }
+    else {
+      const d = await r.json().catch(() => ({}))
+      notify(d.error || `Алдаа (${r.status})`, 'var(--red)')
+    }
   }
 
   const diffCol = (d: string) => d === 'BEGINNER' ? 'var(--green)' : d === 'INTERMEDIATE' ? 'var(--yellow)' : 'var(--red)'

@@ -1,25 +1,34 @@
 import { NextRequest } from 'next/server'
 import { getToken } from 'next-auth/jwt'
 import prisma from '@/lib/db'
-import { requireAuth, requireAdmin, getUser } from '@/lib/auth'
+import { requireAuth, getUser } from '@/lib/auth'
 import { ok, err, handleError } from '@/lib/api-helpers'
 
-const SECRET = process.env.NEXTAUTH_SECRET!
-
 async function resolveAdmin(req: NextRequest): Promise<boolean> {
-  // 1. NextAuth cookie
-  const naToken = await getToken({ req, secret: SECRET })
-  if (naToken?.id) {
-    const u = await prisma.user.findUnique({ where: { id: naToken.id as string }, select: { role: true } })
-    return u?.role === 'ADMIN'
-  }
-  if (naToken?.email) {
-    const u = await prisma.user.findUnique({ where: { email: naToken.email as string }, select: { role: true } })
-    return u?.role === 'ADMIN'
-  }
+  try {
+    // 1. NextAuth session cookie
+    const secret = process.env.NEXTAUTH_SECRET || process.env.JWT_SECRET
+    if (secret) {
+      const naToken = await getToken({ req, secret })
+      if (naToken?.id) {
+        const u = await prisma.user.findUnique({ where: { id: naToken.id as string }, select: { role: true } })
+        if (u?.role === 'ADMIN') return true
+      }
+      if (naToken?.email) {
+        const u = await prisma.user.findUnique({ where: { email: naToken.email as string }, select: { role: true } })
+        if (u?.role === 'ADMIN') return true
+      }
+    }
+  } catch {}
   // 2. Bearer token fallback
   const u = getUser(req)
-  return u?.role === 'ADMIN'
+  if (u?.role === 'ADMIN') return true
+  // 3. DB re-check from Bearer token user ID
+  if (u?.id) {
+    const dbUser = await prisma.user.findUnique({ where: { id: u.id }, select: { role: true } })
+    return dbUser?.role === 'ADMIN'
+  }
+  return false
 }
 
 // GET /api/courses/:id
