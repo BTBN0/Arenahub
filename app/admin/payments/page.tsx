@@ -4,8 +4,7 @@ import { useEffect, useState, useCallback } from 'react'
 const fp = { fontFamily: 'var(--fp)' } as const
 const fm = { fontFamily: 'var(--fm)' } as const
 
-const tok = () => typeof window !== 'undefined' ? localStorage.getItem('arenahub_token') || '' : ''
-const authH = () => ({ 'Content-Type': 'application/json', Authorization: `Bearer ${tok()}` })
+import { adminFetch } from '@/lib/admin-fetch'
 
 type Payment = {
   id: string; amount: number; type: string; status: string; adminNote?: string
@@ -49,7 +48,7 @@ export default function AdminPaymentsPage() {
   const load = useCallback(async () => {
     setLoading(true)
     try {
-      const r = await fetch(`/api/admin/payment?status=${status}`, { headers: authH() })
+      const r = await adminFetch(`/api/admin/payment?status=${status}`)
       const d = await r.json()
       setPayments(d.payments ?? [])
     } finally { setLoading(false) }
@@ -64,9 +63,8 @@ export default function AdminPaymentsPage() {
 
   const act = async (paymentId: string, action: 'approve' | 'reject') => {
     setActingId(paymentId)
-    const r = await fetch('/api/admin/payment', {
-      method: 'POST', headers: authH(),
-      body: JSON.stringify({ paymentId, action, adminNote: actionNote }),
+    const r = await adminFetch('/api/admin/payment', {method: 'POST', 
+      body: JSON.stringify({ paymentId, action, adminNote: actionNote}),
     })
     setActingId('')
     if (r.ok) {

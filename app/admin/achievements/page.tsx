@@ -4,8 +4,7 @@ import { useEffect, useState } from 'react'
 const fp = { fontFamily: 'var(--fp)' } as const
 const fm = { fontFamily: 'var(--fm)' } as const
 
-const tok = () => typeof window !== 'undefined' ? localStorage.getItem('arenahub_token') || '' : ''
-const authH = () => ({ 'Content-Type': 'application/json', Authorization: `Bearer ${tok()}` })
+import { adminFetch } from '@/lib/admin-fetch'
 
 type Achievement = {
   id: string; title: string; description: string; icon: string
@@ -65,7 +64,7 @@ export default function AdminAchievementsPage() {
 
   const load = () => {
     setLoading(true)
-    fetch('/api/achievements?list=all', { headers: authH() })
+    adminFetch('/api/achievements?list=all')
       .then(r => r.json())
       .then(d => setAchs(d.achievements ?? []))
       .finally(() => setLoading(false))
@@ -75,7 +74,7 @@ export default function AdminAchievementsPage() {
 
   const seedDefaults = async () => {
     setSeeding(true)
-    const r = await fetch('/api/admin/seed-achievements', { method: 'POST', headers: authH() })
+    const r = await adminFetch('/api/admin/seed-achievements', {method: 'POST'})
     const d = await r.json()
     setSeeding(false)
     if (r.ok) { notify(d.message, 'var(--green)'); load() }
@@ -85,9 +84,8 @@ export default function AdminAchievementsPage() {
   const createAch = async () => {
     if (!title || !cond) return notify('Title болон condition шаардлагатай', 'var(--red)')
     setSaving(true)
-    const r = await fetch('/api/achievements', {
-      method: 'POST', headers: authH(),
-      body: JSON.stringify({ title, description: desc, icon, xpReward: +xp, condition: cond, type, rarity, rewardType: rewType, rewardAmount: +rewAmt }),
+    const r = await adminFetch('/api/achievements', {method: 'POST', 
+      body: JSON.stringify({ title, description: desc, icon, xpReward: +xp, condition: cond, type, rarity, rewardType: rewType, rewardAmount: +rewAmt}),
     })
     const d = await r.json()
     setSaving(false)
@@ -100,7 +98,7 @@ export default function AdminAchievementsPage() {
 
   const delAch = async (id: string) => {
     if (!confirm('Устгах уу?')) return
-    const r = await fetch(`/api/achievements/${id}`, { method: 'DELETE', headers: authH() })
+    const r = await adminFetch(`/api/achievements/${id}`, {method: 'DELETE'})
     if (r.ok) { notify('Устгагдлаа', 'var(--red)'); load() }
   }
 

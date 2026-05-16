@@ -4,8 +4,7 @@ import { useEffect, useState, useCallback } from 'react'
 const fp = { fontFamily: 'var(--fp)' } as const
 const fm = { fontFamily: 'var(--fm)' } as const
 
-const tok = () => typeof window !== 'undefined' ? localStorage.getItem('arenahub_token') || '' : ''
-const authH = () => ({ 'Content-Type': 'application/json', Authorization: `Bearer ${tok()}` })
+import { adminFetch } from '@/lib/admin-fetch'
 
 type Contest = {
   id: string; title: string; description: string; status: string
@@ -77,7 +76,7 @@ export default function AdminContestPage() {
   const load = useCallback(async () => {
     setLoading(true)
     try {
-      const r = await fetch(`/api/contest?status=${filter}`, { headers: authH() })
+      const r = await adminFetch(`/api/contest?status=${filter}`)
       const d = await r.json()
       setContests(d.contests ?? [])
     } finally { setLoading(false) }
@@ -96,8 +95,7 @@ export default function AdminContestPage() {
     }
     setSaving(true)
     try {
-      const r = await fetch('/api/contest', {
-        method: 'POST', headers: authH(),
+      const r = await adminFetch('/api/contest', {method: 'POST', 
         body: JSON.stringify({
           title: form.title, description: form.description,
           startDate: new Date(form.startDate).toISOString(),
@@ -107,8 +105,7 @@ export default function AdminContestPage() {
           taskCount: parseInt(form.taskCount) || 5,
           prizeFirst: parseInt(form.prizeFirst) || 0,
           prizeSecond: parseInt(form.prizeSecond) || 0,
-          prizeThird: parseInt(form.prizeThird) || 0,
-        }),
+          prizeThird: parseInt(form.prizeThird) || 0}),
       })
       if (r.ok) { notify('Contest үүсгэгдлээ', 'var(--green)'); setShowForm(false); setForm(emptyForm()); load() }
       else { const d = await r.json(); notify(d.error ?? 'Алдаа', 'var(--red)') }

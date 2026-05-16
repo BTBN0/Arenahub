@@ -1,11 +1,9 @@
 'use client'
 import { useEffect, useState, useCallback } from 'react'
+import { adminFetch } from '@/lib/admin-fetch'
 
 const fp = { fontFamily: 'var(--fp)' } as const
 const fm = { fontFamily: 'var(--fm)' } as const
-
-const tok  = () => typeof window !== 'undefined' ? localStorage.getItem('arenahub_token') || '' : ''
-const authH = () => ({ 'Content-Type': 'application/json', Authorization: `Bearer ${tok()}` })
 
 type Course  = { id:string; title:string; description:string; category:string; difficulty:string; isActive:boolean; xpReward:number; orderIndex:number; _count:{ lessons:number; enrollments:number } }
 type Lesson  = { id:string; title:string; content:string; xpReward:number; orderIndex:number; _count:{ tasks:number } }
@@ -100,7 +98,7 @@ export default function AdminCoursesPage() {
   const load = useCallback(async () => {
     setLoading(true)
     try {
-      const d = await fetch('/api/courses?admin=true&limit=100',{headers:authH()}).then(r=>r.json())
+      const d = await adminFetch('/api/courses?admin=true&limit=100').then(r=>r.json())
       setCourses(d.courses??[])
     } finally { setLoading(false) }
   }, [])
@@ -111,7 +109,7 @@ export default function AdminCoursesPage() {
     if (lessons[courseId]) return
     setLoadingLes(true)
     try {
-      const d = await fetch(`/api/lessons?courseId=${courseId}`,{headers:authH()}).then(r=>r.json())
+      const d = await adminFetch(`/api/lessons?courseId=${courseId}`).then(r=>r.json())
       setLessons(prev=>({...prev,[courseId]:d.lessons??[]}))
     } finally { setLoadingLes(false) }
   }
@@ -127,7 +125,7 @@ export default function AdminCoursesPage() {
     if (tasks[lessonId]) return
     setLoadingTasks(true)
     try {
-      const d = await fetch(`/api/tasks?lessonId=${lessonId}`,{headers:authH()}).then(r=>r.json())
+      const d = await adminFetch(`/api/tasks?lessonId=${lessonId}`).then(r=>r.json())
       setTasks(prev=>({...prev,[lessonId]:d.tasks??[]}))
     } finally { setLoadingTasks(false) }
   }
@@ -145,8 +143,8 @@ export default function AdminCoursesPage() {
     const body = { ...courseForm, xpReward:parseInt(courseForm.xpReward)||100 }
     try {
       const r = editCourse
-        ? await fetch(`/api/courses/${editCourse.id}`,{method:'PUT',headers:authH(),body:JSON.stringify(body)})
-        : await fetch('/api/courses',{method:'POST',headers:authH(),body:JSON.stringify(body)})
+        ? await adminFetch(`/api/courses/${editCourse.id}`, {method:'PUT',body:JSON.stringify(body)})
+        : await adminFetch('/api/courses', {method:'POST',body:JSON.stringify(body)})
       if (r.ok) { notify(editCourse?'Шинэчлэгдлээ':'Үүсгэгдлээ'); setCourseModal('none'); load() }
       else { const d=await r.json(); notify(d.error??'Алдаа','var(--red)') }
     } finally { setSavingC(false) }
@@ -154,13 +152,13 @@ export default function AdminCoursesPage() {
 
   const deleteCourse = async (c:Course) => {
     if (!confirm(`"${c.title}" бүрэн устгах уу? Хичээл, даалгаврууд БҮГД устана.`)) return
-    const r = await fetch(`/api/courses/${c.id}?hard=true`,{method:'DELETE',headers:authH()})
+    const r = await adminFetch(`/api/courses/${c.id}?hard=true`, {method:'DELETE'})
     if (r.ok) { notify('Устгагдлаа','var(--red)'); load() }
     else { const d=await r.json().catch(()=>({})); notify(d.error||`Алдаа (${r.status})`,'var(--red)') }
   }
 
   const togglePublish = async (c:Course) => {
-    const r = await fetch(`/api/courses/${c.id}`,{method:'PUT',headers:authH(),body:JSON.stringify({isActive:!c.isActive})})
+    const r = await adminFetch(`/api/courses/${c.id}`, {method:'PUT',body:JSON.stringify({isActive:!c.isActive})})
     if (r.ok) { notify(c.isActive?'Draft болгосон':'Нийтлэгдлээ'); load() } else notify('Алдаа','var(--red)')
   }
 
@@ -171,8 +169,8 @@ export default function AdminCoursesPage() {
     const body = { courseId:lessonCourse, ...lessonForm, xpReward:parseInt(lessonForm.xpReward)||50, orderIndex:parseInt(lessonForm.orderIndex)||0 }
     try {
       const r = editLesson
-        ? await fetch(`/api/lessons/${editLesson.id}`,{method:'PUT',headers:authH(),body:JSON.stringify(body)})
-        : await fetch('/api/lessons',{method:'POST',headers:authH(),body:JSON.stringify(body)})
+        ? await adminFetch(`/api/lessons/${editLesson.id}`, {method:'PUT',body:JSON.stringify(body)})
+        : await adminFetch('/api/lessons', {method:'POST',body:JSON.stringify(body)})
       if (r.ok) {
         notify(editLesson?'Шинэчлэгдлээ':'Хичээл үүсгэгдлээ')
         setLessonModal('none')
@@ -184,7 +182,7 @@ export default function AdminCoursesPage() {
 
   const deleteLesson = async (courseId:string, l:Lesson) => {
     if (!confirm(`"${l.title}" устгах уу?`)) return
-    const r = await fetch(`/api/lessons/${l.id}`,{method:'DELETE',headers:authH()})
+    const r = await adminFetch(`/api/lessons/${l.id}`, {method:'DELETE'})
     if (r.ok) { notify('Устгагдлаа','var(--red)'); setLessons(prev=>({...prev,[courseId]:undefined as any})); await loadLessons(courseId) }
     else notify('Алдаа','var(--red)')
   }
@@ -203,8 +201,8 @@ export default function AdminCoursesPage() {
     }
     try {
       const r = editTask
-        ? await fetch(`/api/tasks/${editTask.id}`,{method:'PUT',headers:authH(),body:JSON.stringify(body)})
-        : await fetch('/api/tasks',{method:'POST',headers:authH(),body:JSON.stringify(body)})
+        ? await adminFetch(`/api/tasks/${editTask.id}`, {method:'PUT',body:JSON.stringify(body)})
+        : await adminFetch('/api/tasks', {method:'POST',body:JSON.stringify(body)})
       if (r.ok) {
         notify(editTask?'Шинэчлэгдлээ':'Даалгавар үүсгэгдлээ')
         setTaskModal('none')
@@ -216,7 +214,7 @@ export default function AdminCoursesPage() {
 
   const deleteTask = async (lessonId:string, t:Task) => {
     if (!confirm(`"${t.title}" устгах уу?`)) return
-    const r = await fetch(`/api/tasks/${t.id}`,{method:'DELETE',headers:authH()})
+    const r = await adminFetch(`/api/tasks/${t.id}`, {method:'DELETE'})
     if (r.ok) { notify('Устгагдлаа','var(--red)'); setTasks(prev=>({...prev,[lessonId]:undefined as any})); await loadTasks(lessonId) }
     else notify('Алдаа','var(--red)')
   }

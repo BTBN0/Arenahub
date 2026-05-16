@@ -4,8 +4,7 @@ import { useEffect, useState, useCallback } from 'react'
 const fp = { fontFamily: 'var(--fp)' } as const
 const fm = { fontFamily: 'var(--fm)' } as const
 
-const tok = () => typeof window !== 'undefined' ? localStorage.getItem('arenahub_token') || '' : ''
-const authH = () => ({ 'Content-Type': 'application/json', Authorization: `Bearer ${tok()}` })
+import { adminFetch } from '@/lib/admin-fetch'
 
 type Course = { id: string; title: string }
 type Lesson = { id: string; title: string }
@@ -82,13 +81,13 @@ export default function AdminTasksPage() {
   const [langTab, setLangTab]     = useState<'mn'|'en'>('mn')
 
   useEffect(() => {
-    fetch('/api/courses?admin=true&limit=100', { headers: authH() })
+    adminFetch('/api/courses?admin=true&limit=100')
       .then(r => r.json()).then(d => setCourses(d.courses ?? []))
   }, [])
 
   useEffect(() => {
     if (!courseId) { setLessons([]); setLessonId(''); return }
-    fetch(`/api/lessons?courseId=${courseId}`, { headers: authH() })
+    adminFetch(`/api/lessons?courseId=${courseId}`)
       .then(r => r.json()).then(d => setLessons(d.lessons ?? []))
   }, [courseId])
 
@@ -96,7 +95,7 @@ export default function AdminTasksPage() {
     if (!lessonId) { setTasks([]); return }
     setLoading(true)
     try {
-      const r = await fetch(`/api/tasks?lessonId=${lessonId}`, { headers: authH() })
+      const r = await adminFetch(`/api/tasks?lessonId=${lessonId}`)
       const d = await r.json()
       setTasks(d.tasks ?? [])
     } finally { setLoading(false) }
@@ -166,9 +165,9 @@ export default function AdminTasksPage() {
     try {
       let r: Response
       if (editId) {
-        r = await fetch(`/api/tasks/${editId}`, { method: 'PUT', headers: authH(), body: JSON.stringify(body) })
+        r = await adminFetch(`/api/tasks/${editId}`, {method: 'PUT',  body: JSON.stringify(body)})
       } else {
-        r = await fetch('/api/tasks', { method: 'POST', headers: authH(), body: JSON.stringify(body) })
+        r = await adminFetch('/api/tasks', {method: 'POST',  body: JSON.stringify(body)})
       }
       if (r.ok) {
         notify(editId ? 'Task шинэчлэгдлээ' : 'Task үүсгэгдлээ')
@@ -181,7 +180,7 @@ export default function AdminTasksPage() {
 
   const deleteTask = async (t: Task) => {
     if (!confirm(`"${t.title}" устгах уу?`)) return
-    const r = await fetch(`/api/tasks/${t.id}`, { method: 'DELETE', headers: authH() })
+    const r = await adminFetch(`/api/tasks/${t.id}`, {method: 'DELETE'})
     if (r.ok) { notify('Устгагдлаа', 'var(--red)'); loadTasks() } else notify('Алдаа', 'var(--red)')
   }
 

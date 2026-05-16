@@ -4,8 +4,7 @@ import { useEffect, useState } from 'react'
 const fp = { fontFamily: 'var(--fp)' } as const
 const fm = { fontFamily: 'var(--fm)' } as const
 
-const tok = () => typeof window !== 'undefined' ? localStorage.getItem('arenahub_token') || '' : ''
-const authH = () => ({ 'Content-Type': 'application/json', Authorization: `Bearer ${tok()}` })
+import { adminFetch } from '@/lib/admin-fetch'
 
 type UsageStat = { label: string; value: string | number; col: string }
 
@@ -24,8 +23,8 @@ export default function AdminAIPage() {
 
   useEffect(() => {
     Promise.all([
-      fetch('/api/admin/stats?type=usage', { headers: authH() }).then(r => r.json()),
-      fetch('/api/admin/config', { headers: authH() }).then(r => r.json()),
+      adminFetch('/api/admin/stats?type=usage').then(r => r.json()),
+      adminFetch('/api/admin/config').then(r => r.json()),
     ]).then(([s, cfg]) => {
       setStats([
         { label: 'НИЙТ ХЭРЭГЛЭГЧ',  value: s.stats?.totalUsers       ?? '—', col: 'var(--cyan)'   },
@@ -39,9 +38,8 @@ export default function AdminAIPage() {
 
   const savePrompt = async () => {
     setSaving(true)
-    const r = await fetch('/api/admin/config', {
-      method: 'PUT', headers: authH(),
-      body: JSON.stringify({ ai_prompt: prompt }),
+    const r = await adminFetch('/api/admin/config', {method: 'PUT', 
+      body: JSON.stringify({ ai_prompt: prompt}),
     })
     setSaving(false)
     const d = await r.json()

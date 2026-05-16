@@ -4,8 +4,7 @@ import { useEffect, useState } from 'react'
 const fp = { fontFamily: 'var(--fp)' } as const
 const fm = { fontFamily: 'var(--fm)' } as const
 
-const tok = () => typeof window !== 'undefined' ? localStorage.getItem('arenahub_token') || '' : ''
-const authH = () => ({ 'Content-Type': 'application/json', Authorization: `Bearer ${tok()}` })
+import { adminFetch } from '@/lib/admin-fetch'
 
 
 function Flash({ msg, col = 'var(--cyan)' }: { msg: string; col?: string }) {
@@ -37,7 +36,7 @@ export default function AdminSettingsPage() {
   const [tokenCoin, setTokenCoin]     = useState('5')
 
   useEffect(() => {
-    fetch('/api/admin/config', { headers: authH() })
+    adminFetch('/api/admin/config')
       .then(r => r.json())
       .then(d => {
         setMaintenance(d.maintenanceMode ?? false)
@@ -55,9 +54,8 @@ export default function AdminSettingsPage() {
 
   const save = async (key: string, value: unknown) => {
     setSaving(true)
-    const r = await fetch('/api/admin/config', {
-      method: 'PUT', headers: authH(),
-      body: JSON.stringify({ [key]: value }),
+    const r = await adminFetch('/api/admin/config', {method: 'PUT', 
+      body: JSON.stringify({ [key]: value}),
     })
     setSaving(false)
     const d = await r.json()

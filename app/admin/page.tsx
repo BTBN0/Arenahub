@@ -5,8 +5,7 @@ import Link from 'next/link'
 const fp = { fontFamily: 'var(--fp)' } as const
 const fm = { fontFamily: 'var(--fm)' } as const
 
-const tok = () => typeof window !== 'undefined' ? localStorage.getItem('arenahub_token') || '' : ''
-const authH = () => ({ 'Content-Type': 'application/json', Authorization: `Bearer ${tok()}` })
+import { adminFetch } from '@/lib/admin-fetch'
 
 type Stats = {
   users: number; tasks: number; courses: number
@@ -78,8 +77,8 @@ export default function AdminDashboard() {
 
   useEffect(() => {
     Promise.all([
-      fetch('/api/admin/stats', { headers: authH() }).then(r => r.json()),
-      fetch('/api/admin/payment?status=PENDING', { headers: authH() }).then(r => r.json()),
+      adminFetch('/api/admin/stats').then(r => r.json()),
+      adminFetch('/api/admin/payment?status=PENDING').then(r => r.json()),
     ]).then(([s, p]) => {
       setStats(s.stats ?? null)
       const payments: { amount: number }[] = p.payments ?? []

@@ -5,8 +5,7 @@ import { useAuth } from '@/context/AuthContext'
 const fp = { fontFamily: 'var(--fp)' } as const
 const fm = { fontFamily: 'var(--fm)' } as const
 
-const tok = () => typeof window !== 'undefined' ? localStorage.getItem('arenahub_token') || '' : ''
-const authH = () => ({ 'Content-Type': 'application/json', Authorization: `Bearer ${tok()}` })
+import { adminFetch, adminHeaders as authH } from '@/lib/admin-fetch'
 
 type User = {
   id: string; username: string; email: string; role: string
@@ -83,7 +82,7 @@ export default function AdminUsersPage() {
     setLoading(true)
     try {
       const q = new URLSearchParams({ page: String(page), limit: String(limit), ...(search ? { search } : {}) })
-      const r = await fetch(`/api/users?${q}`, { headers: authH() })
+      const r = await adminFetch(`/api/users?${q}`)
       const d = await r.json()
       setUsers(d.users ?? [])
       setTotal(d.total ?? 0)
@@ -104,7 +103,7 @@ export default function AdminUsersPage() {
 
   const changeRole = async (u: User, role: string) => {
     if (isProtected(u)) return
-    const r = await fetch(`/api/users/${u.id}?action=role`, { method: 'PATCH', headers: authH(), body: JSON.stringify({ role }) })
+    const r = await adminFetch(`/api/users/${u.id}?action=role`, {method: 'PATCH',  body: JSON.stringify({ role}) })
     if (r.ok) { notify(`${u.username} → ${role}`); load() } else notify('Алдаа гарлаа', 'var(--red)')
   }
 
@@ -124,7 +123,7 @@ export default function AdminUsersPage() {
   const deleteUser = async (u: User) => {
     if (isProtected(u)) return
     if (!confirm(`${u.username}-г БҮРМӨСӨН устгах уу? Энэ үйлдлийг буцааж болохгүй.`)) return
-    const r = await fetch(`/api/users/${u.id}`, { method: 'DELETE', headers: authH() })
+    const r = await adminFetch(`/api/users/${u.id}`, {method: 'DELETE'})
     if (r.ok) { notify('Устгагдлаа', 'var(--red)'); load() } else notify('Алдаа гарлаа', 'var(--red)')
   }
 
@@ -135,7 +134,7 @@ export default function AdminUsersPage() {
   const saveEdit = async () => {
     if (!editUser) return
     setSaving(true)
-    const r = await fetch(`/api/users/${editUser.id}?action=profile`, { method: 'PATCH', headers: authH(), body: JSON.stringify({ username: editName, email: editEmail }) })
+    const r = await adminFetch(`/api/users/${editUser.id}?action=profile`, {method: 'PATCH',  body: JSON.stringify({ username: editName, email: editEmail}) })
     setSaving(false)
     if (r.ok) { notify('Хадгалагдлаа'); setEditUser(null); load() } else notify('Алдаа гарлаа', 'var(--red)')
   }
@@ -147,9 +146,8 @@ export default function AdminUsersPage() {
   const saveAdjust = async () => {
     if (!adjustUser || !adjDelta) return
     setAdjusting(true)
-    const r = await fetch('/api/admin/adjust', {
-      method: 'POST', headers: authH(),
-      body: JSON.stringify({ userId: adjustUser.id, type: adjType, delta: parseInt(adjDelta), note: adjNote }),
+    const r = await adminFetch('/api/admin/adjust', {method: 'POST', 
+      body: JSON.stringify({ userId: adjustUser.id, type: adjType, delta: parseInt(adjDelta), note: adjNote}),
     })
     setAdjusting(false)
     const d = await r.json()

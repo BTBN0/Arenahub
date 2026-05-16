@@ -4,8 +4,7 @@ import { useEffect, useState } from 'react'
 const fp = { fontFamily: 'var(--fp)' } as const
 const fm = { fontFamily: 'var(--fm)' } as const
 
-const tok = () => typeof window !== 'undefined' ? localStorage.getItem('arenahub_token') || '' : ''
-const authH = () => ({ 'Content-Type': 'application/json', Authorization: `Bearer ${tok()}` })
+import { adminFetch } from '@/lib/admin-fetch'
 
 type Reward = { id: string; title: string; description: string; icon: string; type: string; value: number; createdAt: string }
 
@@ -66,7 +65,7 @@ export default function AdminRewardsPage() {
 
   const load = () => {
     setLoading(true)
-    fetch('/api/rewards', { headers: authH() })
+    adminFetch('/api/rewards')
       .then(r => r.json())
       .then(d => setRewards(d.rewards ?? []))
       .finally(() => setLoading(false))
@@ -82,7 +81,7 @@ export default function AdminRewardsPage() {
   const seed = async () => {
     setSeeding(true)
     try {
-      const r = await fetch('/api/admin/seed-rewards', { method: 'POST', headers: authH() })
+      const r = await adminFetch('/api/admin/seed-rewards', {method: 'POST'})
       const d = await r.json()
       if (r.ok) { notify(d.message ?? 'Seed дууслаа', 'var(--green)'); load() }
       else notify(d.error ?? 'Алдаа', 'var(--red)')
@@ -93,9 +92,8 @@ export default function AdminRewardsPage() {
     if (!form.title) { notify('Title шаардлагатай', 'var(--red)'); return }
     setSaving(true)
     try {
-      const r = await fetch('/api/rewards', {
-        method: 'POST', headers: authH(),
-        body: JSON.stringify({ title: form.title, description: form.description, icon: form.icon, type: form.type, value: parseInt(form.value) || 0 }),
+      const r = await adminFetch('/api/rewards', {method: 'POST', 
+        body: JSON.stringify({ title: form.title, description: form.description, icon: form.icon, type: form.type, value: parseInt(form.value) || 0}),
       })
       if (r.ok) { notify('Reward үүсгэгдлээ', 'var(--green)'); setShowForm(false); setForm(emptyForm()); load() }
       else { const d = await r.json(); notify(d.error ?? 'Алдаа', 'var(--red)') }

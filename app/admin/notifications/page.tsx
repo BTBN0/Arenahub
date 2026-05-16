@@ -4,8 +4,7 @@ import { useState } from 'react'
 const fp = { fontFamily: 'var(--fp)' } as const
 const fm = { fontFamily: 'var(--fm)' } as const
 
-const tok = () => typeof window !== 'undefined' ? localStorage.getItem('arenahub_token') || '' : ''
-const authH = () => ({ 'Content-Type': 'application/json', Authorization: `Bearer ${tok()}` })
+import { adminFetch } from '@/lib/admin-fetch'
 
 const TARGETS = [
   { val: 'ALL',    label: 'БҮГД',        desc: 'Бүх хэрэглэгч' },
@@ -75,9 +74,8 @@ export default function AdminNotificationsPage() {
     if (!title.trim() || !message.trim()) { notify('Title болон message шаардлагатай', 'var(--red)'); return }
     setSending(true)
     try {
-      const r = await fetch('/api/admin/announce', {
-        method: 'POST', headers: authH(),
-        body: JSON.stringify({ title, message, target, type }),
+      const r = await adminFetch('/api/admin/announce', {method: 'POST', 
+        body: JSON.stringify({ title, message, target, type}),
       })
       const d = await r.json()
       if (r.ok) {

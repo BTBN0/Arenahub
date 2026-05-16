@@ -4,8 +4,7 @@ import { useEffect, useState, useCallback } from 'react'
 const fp = { fontFamily: 'var(--fp)' } as const
 const fm = { fontFamily: 'var(--fm)' } as const
 
-const tok = () => typeof window !== 'undefined' ? localStorage.getItem('arenahub_token') || '' : ''
-const authH = () => ({ 'Content-Type': 'application/json', Authorization: `Bearer ${tok()}` })
+import { adminFetch } from '@/lib/admin-fetch'
 
 type Course  = { id: string; title: string }
 type Lesson  = { id: string; title: string; orderIndex: number; xpReward: number; _count: { tasks: number }; content?: string; videoUrl?: string }
@@ -62,7 +61,7 @@ export default function AdminLessonsPage() {
   const [saving, setSaving]         = useState(false)
 
   useEffect(() => {
-    fetch('/api/courses?admin=true&limit=100', { headers: authH() })
+    adminFetch('/api/courses?admin=true&limit=100')
       .then(r => r.json()).then(d => setCourses(d.courses ?? []))
   }, [])
 
@@ -70,7 +69,7 @@ export default function AdminLessonsPage() {
     if (!courseId) { setLessons([]); return }
     setLoading(true)
     try {
-      const r = await fetch(`/api/lessons?courseId=${courseId}`, { headers: authH() })
+      const r = await adminFetch(`/api/lessons?courseId=${courseId}`)
       const d = await r.json()
       setLessons(d.lessons ?? [])
     } finally { setLoading(false) }
@@ -98,9 +97,9 @@ export default function AdminLessonsPage() {
     try {
       let r: Response
       if (editing) {
-        r = await fetch(`/api/lessons/${editing.id}`, { method: 'PATCH', headers: authH(), body: JSON.stringify(body) })
+        r = await adminFetch(`/api/lessons/${editing.id}`, {method: 'PATCH',  body: JSON.stringify(body)})
       } else {
-        r = await fetch('/api/lessons', { method: 'POST', headers: authH(), body: JSON.stringify(body) })
+        r = await adminFetch('/api/lessons', {method: 'POST',  body: JSON.stringify(body)})
       }
       if (r.ok) { notify(editing ? 'Шинэчлэгдлээ' : 'Үүсгэгдлээ'); setShowForm(false); loadLessons() }
       else { const d = await r.json(); notify(d.error ?? 'Алдаа', 'var(--red)') }
@@ -109,7 +108,7 @@ export default function AdminLessonsPage() {
 
   const deleteLesson = async (l: Lesson) => {
     if (!confirm(`"${l.title}" устгах уу?`)) return
-    const r = await fetch(`/api/lessons/${l.id}`, { method: 'DELETE', headers: authH() })
+    const r = await adminFetch(`/api/lessons/${l.id}`, {method: 'DELETE'})
     if (r.ok) { notify('Устгагдлаа', 'var(--red)'); loadLessons() } else notify('Алдаа', 'var(--red)')
   }
 

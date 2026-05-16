@@ -4,8 +4,7 @@ import { useEffect, useState } from 'react'
 const fp = { fontFamily: 'var(--fp)' } as const
 const fm = { fontFamily: 'var(--fm)' } as const
 
-const tok = () => typeof window !== 'undefined' ? localStorage.getItem('arenahub_token') || '' : ''
-const authH = () => ({ 'Content-Type': 'application/json', Authorization: `Bearer ${tok()}` })
+import { adminFetch } from '@/lib/admin-fetch'
 
 type DashStats = { users: number; tasks: number; courses: number }
 type UsageStats = { totalUsers: number; totalTasks: number; totalSubmissions: number; passedCount: number; avgPassRate: number }
@@ -27,9 +26,9 @@ export default function AdminReportsPage() {
 
   useEffect(() => {
     Promise.all([
-      fetch('/api/admin/stats', { headers: authH() }).then(r => r.json()),
-      fetch('/api/admin/stats?type=usage', { headers: authH() }).then(r => r.json()),
-      fetch('/api/admin/payment?status=ALL', { headers: authH() }).then(r => r.json()),
+      adminFetch('/api/admin/stats').then(r => r.json()),
+      adminFetch('/api/admin/stats?type=usage').then(r => r.json()),
+      adminFetch('/api/admin/payment?status=ALL').then(r => r.json()),
     ]).then(([d, u, p]) => {
       setDash(d.stats ?? null)
       setUsage(u.stats ?? null)

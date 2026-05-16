@@ -4,8 +4,7 @@ import { useEffect, useState } from 'react'
 const fp = { fontFamily: 'var(--fp)' } as const
 const fm = { fontFamily: 'var(--fm)' } as const
 
-const tok = () => typeof window !== 'undefined' ? localStorage.getItem('arenahub_token') || '' : ''
-const authH = () => ({ 'Content-Type': 'application/json', Authorization: `Bearer ${tok()}` })
+import { adminFetch } from '@/lib/admin-fetch'
 
 type Player = { id: string; username: string; xp: number; level: number; avatarUrl?: string }
 
@@ -25,9 +24,8 @@ export default function AdminLeaderboardPage() {
 
   const resetLeaderboard = async () => {
     setResetting(true); setConfirm(false)
-    const r = await fetch('/api/admin/leaderboard', {
-      method: 'POST', headers: authH(),
-      body: JSON.stringify({ action: 'reset' }),
+    const r = await adminFetch('/api/admin/leaderboard', {method: 'POST', 
+      body: JSON.stringify({ action: 'reset'}),
     })
     const d = await r.json()
     setResetting(false)
@@ -37,7 +35,7 @@ export default function AdminLeaderboardPage() {
 
   useEffect(() => {
     setLoading(true)
-    fetch(`/api/leaderboard?limit=${limit}`, { headers: authH() })
+    adminFetch(`/api/leaderboard?limit=${limit}`)
       .then(r => r.json())
       .then(d => setPlayers(d.users ?? []))
       .finally(() => setLoading(false))
