@@ -1,7 +1,26 @@
 import { NextRequest } from 'next/server'
+import { getToken } from 'next-auth/jwt'
 import prisma from '@/lib/db'
-import { requireAuth, requireAdmin } from '@/lib/auth'
+import { requireAuth, requireAdmin, getUser } from '@/lib/auth'
 import { ok, err, handleError } from '@/lib/api-helpers'
+
+const SECRET = process.env.NEXTAUTH_SECRET!
+
+async function resolveAdmin(req: NextRequest): Promise<boolean> {
+  // 1. NextAuth cookie
+  const naToken = await getToken({ req, secret: SECRET })
+  if (naToken?.id) {
+    const u = await prisma.user.findUnique({ where: { id: naToken.id as string }, select: { role: true } })
+    return u?.role === 'ADMIN'
+  }
+  if (naToken?.email) {
+    const u = await prisma.user.findUnique({ where: { email: naToken.email as string }, select: { role: true } })
+    return u?.role === 'ADMIN'
+  }
+  // 2. Bearer token fallback
+  const u = getUser(req)
+  return u?.role === 'ADMIN'
+}
 
 // GET /api/courses/:id
 export async function GET(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
@@ -35,8 +54,9 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
 export async function DELETE(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const { id } = await params
-    requireAdmin(req)
-    await prisma.course.update({ where:{id}, data:{ isActive:false } })
+    const isAdmin = await resolveAdmin(req)
+    if (!isAdmin) return err('Эрх хүрэлцэхгүй', 403)
+    await prisma.course.update({ where:{ id }, data:{ isActive:false } })
     return ok({ message: 'Устгагдлаа' })
   } catch (e) { return handleError(e) }
 }
