@@ -70,11 +70,11 @@ export async function POST(req: NextRequest) {
       courseId:   z.string(),
       title:      z.string().min(2),
       content:    z.string().optional(),
-      videoUrl:   z.string().optional(),
+      videoUrl:   z.string().optional(), // parsed but not stored (not in Prisma schema)
       xpReward:   z.number().optional(),
       orderIndex: z.number().optional(),
     })
-    const d      = schema.parse(await req.json())
+    const { videoUrl: _v, ...d } = schema.parse(await req.json())
     const lesson = await prisma.lesson.create({ data: { ...d, xpReward:d.xpReward??50, orderIndex:d.orderIndex??0 } })
     return ok({ lesson }, 201)
   } catch (e) { return handleError(e) }
