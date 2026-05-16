@@ -105,13 +105,16 @@ export default function AdminCoursesPage() {
   useEffect(()=>{load()},[load])
 
   /* ── Load lessons for a course ── */
+  // Force fetch — ignores cache
+  const fetchLessons = async (courseId:string) => {
+    const d = await adminFetch(`/api/lessons?courseId=${courseId}`).then(r=>r.json())
+    setLessons(prev=>({...prev,[courseId]:d.lessons??[]}))
+    return d.lessons??[]
+  }
   const loadLessons = async (courseId:string) => {
     if (lessons[courseId]) return
     setLoadingLes(true)
-    try {
-      const d = await adminFetch(`/api/lessons?courseId=${courseId}`).then(r=>r.json())
-      setLessons(prev=>({...prev,[courseId]:d.lessons??[]}))
-    } finally { setLoadingLes(false) }
+    try { await fetchLessons(courseId) } finally { setLoadingLes(false) }
   }
 
   const toggleCourse = async (id:string) => {
@@ -120,14 +123,16 @@ export default function AdminCoursesPage() {
     await loadLessons(id)
   }
 
-  /* ── Load tasks for a lesson ── */
+  // Force fetch — ignores cache
+  const fetchTasks = async (lessonId:string) => {
+    const d = await adminFetch(`/api/tasks?lessonId=${lessonId}`).then(r=>r.json())
+    setTasks(prev=>({...prev,[lessonId]:d.tasks??[]}))
+    return d.tasks??[]
+  }
   const loadTasks = async (lessonId:string) => {
     if (tasks[lessonId]) return
     setLoadingTasks(true)
-    try {
-      const d = await adminFetch(`/api/tasks?lessonId=${lessonId}`).then(r=>r.json())
-      setTasks(prev=>({...prev,[lessonId]:d.tasks??[]}))
-    } finally { setLoadingTasks(false) }
+    try { await fetchTasks(lessonId) } finally { setLoadingTasks(false) }
   }
 
   const toggleLesson = async (id:string) => {
@@ -174,17 +179,21 @@ export default function AdminCoursesPage() {
       if (r.ok) {
         notify(editLesson?'Шинэчлэгдлээ':'Хичээл үүсгэгдлээ')
         setLessonModal('none')
-        setLessons(prev=>({...prev,[lessonCourse]:undefined as any}))
-        await loadLessons(lessonCourse)
+        await fetchLessons(lessonCourse) // force reload → real-time
       } else { const d=await r.json(); notify(d.error??'Алдаа','var(--red)') }
     } finally { setSavingL(false) }
   }
 
   const deleteLesson = async (courseId:string, l:Lesson) => {
     if (!confirm(`"${l.title}" устгах уу?`)) return
+    // Optimistic: instantly remove from UI
+    setLessons(prev=>({...prev,[courseId]:(prev[courseId]??[]).filter(x=>x.id!==l.id)}))
     const r = await adminFetch(`/api/lessons/${l.id}`, {method:'DELETE'})
-    if (r.ok) { notify('Устгагдлаа','var(--red)'); setLessons(prev=>({...prev,[courseId]:undefined as any})); await loadLessons(courseId) }
-    else notify('Алдаа','var(--red)')
+    if (r.ok) { notify('Устгагдлаа','var(--red)') }
+    else {
+      notify('Алдаа','var(--red)')
+      await fetchLessons(courseId) // rollback on error
+    }
   }
 
   /* ── Task CRUD ── */
@@ -206,17 +215,21 @@ export default function AdminCoursesPage() {
       if (r.ok) {
         notify(editTask?'Шинэчлэгдлээ':'Даалгавар үүсгэгдлээ')
         setTaskModal('none')
-        setTasks(prev=>({...prev,[taskLesson]:undefined as any}))
-        await loadTasks(taskLesson)
+        await fetchTasks(taskLesson) // force reload → real-time
       } else { const d=await r.json(); notify(d.error??'Алдаа','var(--red)') }
     } finally { setSavingT(false) }
   }
 
   const deleteTask = async (lessonId:string, t:Task) => {
     if (!confirm(`"${t.title}" устгах уу?`)) return
+    // Optimistic: instantly remove from UI
+    setTasks(prev=>({...prev,[lessonId]:(prev[lessonId]??[]).filter(x=>x.id!==t.id)}))
     const r = await adminFetch(`/api/tasks/${t.id}`, {method:'DELETE'})
-    if (r.ok) { notify('Устгагдлаа','var(--red)'); setTasks(prev=>({...prev,[lessonId]:undefined as any})); await loadTasks(lessonId) }
-    else notify('Алдаа','var(--red)')
+    if (r.ok) { notify('Устгагдлаа','var(--red)') }
+    else {
+      notify('Алдаа','var(--red)')
+      await fetchTasks(lessonId) // rollback on error
+    }
   }
 
   const diffCol = (d:string) => d==='BEGINNER'?'var(--green)':d==='INTERMEDIATE'?'var(--yellow)':'var(--red)'

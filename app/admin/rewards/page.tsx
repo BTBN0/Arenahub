@@ -88,6 +88,15 @@ export default function AdminRewardsPage() {
     } finally { setSeeding(false) }
   }
 
+  const delReward = async (id: string, title: string) => {
+    if (!confirm(`"${title}" устгах уу?`)) return
+    // Optimistic remove
+    setRewards(prev => prev.filter(r => r.id !== id))
+    const r = await adminFetch(`/api/rewards/${id}`, {method: 'DELETE'})
+    if (r.ok) notify('Устгагдлаа', 'var(--red)')
+    else { notify('Алдаа', 'var(--red)'); load() }
+  }
+
   const save = async () => {
     if (!form.title) { notify('Title шаардлагатай', 'var(--red)'); return }
     setSaving(true)
@@ -123,19 +132,20 @@ export default function AdminRewardsPage() {
         <div style={{ ...fm, fontSize: 13, color: 'var(--dim2)', padding: '40px 0' }}>Reward алга</div>
       ) : (
         <div style={{ border: '1px solid var(--dim)' }}>
-          <div style={{ display: 'grid', gridTemplateColumns: '0.5fr 2.5fr 2fr 1fr 1fr 1fr', background: 'var(--bg2)', borderBottom: '1px solid var(--dim)', padding: '8px 14px', gap: 8 }}>
-            {['', 'НЭРШИЛ', 'ТАЙЛБАР', 'TYPE', 'VALUE', 'ОГНОО'].map(h => (
+          <div style={{ display: 'grid', gridTemplateColumns: '0.5fr 2fr 2fr 1fr 0.8fr 0.8fr 0.7fr', background: 'var(--bg2)', borderBottom: '1px solid var(--dim)', padding: '8px 14px', gap: 8 }}>
+            {['', 'НЭРШИЛ', 'ТАЙЛБАР', 'TYPE', 'VALUE', 'ОГНОО', 'ҮЙЛДЭЛ'].map(h => (
               <span key={h} style={{ ...fp, fontSize: 5, color: 'var(--dim2)', letterSpacing: 2 }}>{h}</span>
             ))}
           </div>
           {rewards.map(r => (
-            <div key={r.id} style={{ display: 'grid', gridTemplateColumns: '0.5fr 2.5fr 2fr 1fr 1fr 1fr', padding: '11px 14px', gap: 8, borderBottom: '1px solid var(--dim)', alignItems: 'center' }}>
+            <div key={r.id} style={{ display: 'grid', gridTemplateColumns: '0.5fr 2fr 2fr 1fr 0.8fr 0.8fr 0.7fr', padding: '10px 14px', gap: 8, borderBottom: '1px solid var(--dim)', alignItems: 'center' }}>
               <span style={{ fontSize: 20 }}>{r.icon}</span>
               <span style={{ ...fp, fontSize: 7, color: 'var(--text)' }}>{r.title}</span>
               <span style={{ ...fm, fontSize: 11, color: 'var(--dim2)' }}>{r.description}</span>
               <span style={{ ...fp, fontSize: 5, color: typeCol(r.type), border: `1px solid ${typeCol(r.type)}44`, padding: '2px 7px', width: 'fit-content' }}>{r.type.toUpperCase()}</span>
               <span style={{ ...fp, fontSize: 7, color: 'var(--yellow)' }}>{r.value}</span>
               <span style={{ ...fp, fontSize: 5, color: 'var(--dim2)' }}>{new Date(r.createdAt).toLocaleDateString('mn-MN')}</span>
+              <Btn label='DEL' col='var(--red)' onClick={() => delReward(r.id, r.title)} />
             </div>
           ))}
         </div>
