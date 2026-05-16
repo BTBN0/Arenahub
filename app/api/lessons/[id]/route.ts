@@ -1,11 +1,26 @@
 import { NextRequest } from 'next/server'
-import { requireAuth } from '@/lib/auth'
+import { getToken } from 'next-auth/jwt'
+import { requireAuth, getUser } from '@/lib/auth'
 import { ok, err, handleError } from '@/lib/api-helpers'
-import { updateProgress } from '@/lib/services/game.service'
-import { addXP } from '@/lib/services/game.service'
+import { updateProgress, addXP } from '@/lib/services/game.service'
 import { logActivity } from '@/lib/services/analytics.service'
 import { cacheDel } from '@/lib/cache'
 import prisma from '@/lib/db'
+
+const CONTENT_ROLES = ['ADMIN','INSTRUCTOR','CONTENT_MANAGER']
+async function resolveContentUser(req: NextRequest) {
+  try {
+    const secret = process.env.NEXTAUTH_SECRET || process.env.JWT_SECRET
+    if (secret) {
+      const na = await getToken({ req, secret })
+      if (na?.id) { const u = await prisma.user.findUnique({ where:{ id:na.id as string }, select:{ id:true, role:true } }); if (u && CONTENT_ROLES.includes(u.role)) return u }
+      if (na?.email) { const u = await prisma.user.findUnique({ where:{ email:na.email as string }, select:{ id:true, role:true } }); if (u && CONTENT_ROLES.includes(u.role)) return u }
+    }
+  } catch {}
+  const u = getUser(req)
+  if (u && CONTENT_ROLES.includes(u.role)) return u
+  return null
+}
 
 type Params = { params: Promise<{ id: string }> }
 
@@ -64,11 +79,11 @@ export async function POST(req: NextRequest, { params }: Params) {
   } catch (e) { return handleError(e) }
 }
 
-/* PUT /api/lessons/:id (admin) */
+/* PUT /api/lessons/:id (admin/instructor) */
 export async function PUT(req: NextRequest, { params }: Params) {
   try {
-    const u      = requireAuth(req)
-    if (!['ADMIN', 'INSTRUCTOR'].includes(u.role)) return err('Эрх хүрэлцэхгүй', 403)
+    const cu = await resolveContentUser(req)
+    if (!cu) return err('Эрх хүрэлцэхгүй', 403)
     const { id } = await params
     const data   = await req.json()
     return ok({ lesson: await prisma.lesson.update({ where: { id }, data }) })
@@ -78,8 +93,8 @@ export async function PUT(req: NextRequest, { params }: Params) {
 /* DELETE /api/lessons/:id (admin) */
 export async function DELETE(req: NextRequest, { params }: Params) {
   try {
-    const u      = requireAuth(req)
-    if (u.role !== 'ADMIN') return err('Эрх хүрэлцэхгүй', 403)
+    const cu = await resolveContentUser(req)
+    if (!cu || cu.role !== 'ADMIN') return err('Эрх хүрэлцэхгүй', 403)
     const { id } = await params
     await prisma.lesson.delete({ where: { id } })
     return ok({ message: 'Устгагдлаа' })
