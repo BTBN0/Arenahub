@@ -55,9 +55,12 @@ export default function AdminLeaderboardPage() {
       {confirm && (
         <div style={{ position: 'fixed', inset: 0, background: '#00000088', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 999 }}>
           <div style={{ background: 'var(--bg2)', border: '1px solid var(--red)', padding: '28px 32px', maxWidth: 400, width: '90%' }}>
-            <div style={{ ...fp, fontSize: 9, color: 'var(--red)', marginBottom: 10 }}>⚠ LEADERBOARD RESET</div>
-            <div style={{ ...fm, fontSize: 12, color: 'var(--dim2)', marginBottom: 20 }}>
-              Бүх хэрэглэгчийн XP болон түвшинг тэглэх гэж байна. Энэ үйлдлийг буцаах боломжгүй.
+            <div style={{ ...fp, fontSize: 9, color: 'var(--red)', marginBottom: 10 }}>⚠ XP RESET</div>
+            <div style={{ ...fm, fontSize: 12, color: 'var(--dim2)', marginBottom: 8 }}>
+              Бүх хэрэглэгчийн <span style={{ color: 'var(--yellow)' }}>XP-г тэглэх</span> гэж байна.
+            </div>
+            <div style={{ ...fm, fontSize: 12, color: 'var(--green)', marginBottom: 20 }}>
+              ✓ Level хэвээр үлдэнэ. Энэ үйлдлийг буцаах боломжгүй.
             </div>
             <div style={{ display: 'flex', gap: 10 }}>
               <button onClick={resetLeaderboard}
