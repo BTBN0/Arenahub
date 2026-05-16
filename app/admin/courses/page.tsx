@@ -115,8 +115,8 @@ export default function AdminCoursesPage() {
   }
 
   const deleteCourse = async (c: Course) => {
-    if (!confirm(`"${c.title}" устгах уу?`)) return
-    const r = await fetch(`/api/courses/${c.id}`, { method: 'DELETE', headers: authH() })
+    if (!confirm(`"${c.title}" бүрэн устгах уу? Хичээл, даалгаврууд БҮГД устана.`)) return
+    const r = await fetch(`/api/courses/${c.id}?hard=true`, { method: 'DELETE', headers: authH() })
     if (r.ok) { notify('Устгагдлаа', 'var(--red)'); load() }
     else {
       const d = await r.json().catch(() => ({}))

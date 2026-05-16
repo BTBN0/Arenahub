@@ -60,13 +60,19 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
 }
 
 // DELETE /api/courses/:id (admin only)
+// ?hard=true → бүрэн устгах, default → draft болгох
 export async function DELETE(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const { id } = await params
     const isAdmin = await resolveAdmin(req)
     if (!isAdmin) return err('Эрх хүрэлцэхгүй', 403)
+    const hard = req.nextUrl.searchParams.get('hard') === 'true'
+    if (hard) {
+      await prisma.course.delete({ where:{ id } })
+      return ok({ message: 'Бүрэн устгагдлаа' })
+    }
     await prisma.course.update({ where:{ id }, data:{ isActive:false } })
-    return ok({ message: 'Устгагдлаа' })
+    return ok({ message: 'Draft болгогдлоо' })
   } catch (e) { return handleError(e) }
 }
 
