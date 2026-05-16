@@ -1,13 +1,29 @@
 import { NextRequest } from 'next/server'
-import { requirePermission } from '@/lib/permissions'
+import { getToken } from 'next-auth/jwt'
+import { getUser } from '@/lib/auth'
 import { ok, err, handleError } from '@/lib/api-helpers'
 import prisma from '@/lib/db'
+
+async function resolveAdmin(req: NextRequest) {
+  try {
+    const secret = process.env.NEXTAUTH_SECRET || process.env.JWT_SECRET
+    if (secret) {
+      const na = await getToken({ req, secret })
+      if (na?.id) { const u = await prisma.user.findUnique({ where:{ id:na.id as string }, select:{ id:true, role:true } }); if (u?.role==='ADMIN') return u }
+      if (na?.email) { const u = await prisma.user.findUnique({ where:{ email:na.email as string }, select:{ id:true, role:true } }); if (u?.role==='ADMIN') return u }
+    }
+  } catch {}
+  const u = getUser(req)
+  if (u?.role === 'ADMIN') return { id: u.id, role: u.role }
+  return null
+}
 
 // POST /api/admin/adjust
 // body: { userId, type: 'xp'|'coins'|'tokens', delta: number }
 export async function POST(req: NextRequest) {
   try {
-    const admin = requirePermission(req, 'user.xp')
+    const admin = await resolveAdmin(req)
+    if (!admin) return err('Эрх хүрэлцэхгүй', 403)
     const { userId, type, delta, note } = await req.json()
 
     if (!userId || !type || typeof delta !== 'number') {
