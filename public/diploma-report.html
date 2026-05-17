@@ -4,103 +4,57 @@
 <meta charset="UTF-8"/>
 <title>ArenaHub — Дипломын Тайлан</title>
 <style>
-
 *{margin:0;padding:0;box-sizing:border-box;}
-body{background:#fff;color:#111;font-family:Arial,sans-serif;font-size:10pt;line-height:1.4;}
-
-/* PAGE */
-.page{width:210mm;background:#fff;position:relative;page-break-after:always;display:flex;flex-direction:column;}
+body{background:#fff;color:#000;font-family:'Times New Roman',Times,serif;font-size:12pt;line-height:1.5;}
+.page{width:210mm;min-height:297mm;background:#fff;page-break-after:always;position:relative;}
 .page:last-child{page-break-after:avoid;}
-.page-inner{flex:1;padding:14mm 18mm 12mm;}
-.page-footer{padding:4px 18mm;border-top:1px solid #ccc;display:flex;justify-content:space-between;font-size:9pt;color:#666;}
-
-/* COVER */
-.cover{display:flex;flex-direction:column;align-items:center;justify-content:space-between;padding:30mm 25mm 25mm;min-height:297mm;border:2px solid #111;}
-.cover-top{text-align:center;width:100%;}
-.cover-school{font-size:13pt;font-weight:bold;text-align:center;line-height:1.6;margin-bottom:4mm;text-transform:uppercase;letter-spacing:0;}
-.cover-dept{font-size:11pt;text-align:center;line-height:1.6;margin-bottom:8mm;}
-.cover-line{border:none;border-top:1px solid #111;margin:6mm 0;}
-.cover-title-wrap{text-align:center;margin:10mm 0;}
-.cover-badge{font-size:10pt;border:1px solid #111;padding:3px 14px;display:inline-block;margin-bottom:8mm;letter-spacing:0;}
-.cover-main-title{font-family:Arial,sans-serif;font-size:22pt;letter-spacing:0;margin-bottom:6mm;line-height:1.4;}
-.cover-sub{font-size:13pt;margin-bottom:4mm;}
-.cover-type{font-size:10pt;color:#444;letter-spacing:0;margin-bottom:10mm;}
-.cover-info{width:100%;max-width:130mm;}
-.cover-row{display:flex;gap:4px;margin-bottom:5mm;padding-bottom:3mm;border-bottom:1px solid #ddd;}
-.cover-label{font-size:10pt;min-width:42mm;color:#444;}
-.cover-value{font-size:10pt;font-weight:bold;}
-.cover-year{text-align:center;font-size:11pt;margin-top:6mm;}
-
-/* TYPOGRAPHY */
-h1{font-size:12pt;font-weight:bold;margin:10px 0 6px;padding-bottom:3px;border-bottom:2px solid #111;text-transform:uppercase;letter-spacing:0;}
-h2{font-size:11pt;font-weight:bold;margin:8px 0 5px;padding-left:10px;border-left:4px solid #111;}
-h3{font-size:10pt;font-weight:bold;margin:6px 0 4px;}
-p{margin-bottom:5px;text-align:justify;font-size:10pt;}
-
-/* HEADER */
-.page-header{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #111;padding-bottom:4px;margin-bottom:10px;font-size:8pt;color:#444;}
-.page-header-title{font-weight:bold;letter-spacing:0;}
-
-/* TABLE */
-table{width:100%;border-collapse:collapse;margin:6px 0;}
-th{background:#111;color:#fff;padding:5px 8px;font-size:9pt;text-align:left;font-weight:bold;}
-td{padding:4px 8px;border:1px solid #ccc;font-size:9pt;}
-tr:nth-child(even) td{background:#f5f5f5;}
-
-/* LISTS */
-ul{padding-left:20px;margin:6px 0;page-break-inside:avoid;}
-ul li{margin-bottom:1px;font-size:10pt;line-height:1.4;}
-ol{padding-left:20px;margin:6px 0;page-break-inside:avoid;}
-ol li{margin-bottom:1px;font-size:10pt;line-height:1.4;}
-
-/* BOX */
-.box{border:1px solid #ccc;border-left:4px solid #111;padding:7px 10px;margin:6px 0;background:#f9f9f9;}
-.box-title{font-weight:bold;font-size:10pt;margin-bottom:6px;text-transform:uppercase;letter-spacing:0;}
-
-/* TOC */
-.toc-item{display:flex;gap:4px;padding:2px 0;border-bottom:1px dotted #ccc;}
-.toc-num{min-width:12mm;font-weight:bold;}
-.toc-title{flex:1;}
-.toc-page{font-weight:bold;}
-
-/* STAT GRID */
-.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:6px 0;}
-.stat-box{border:1px solid #111;padding:7px;text-align:center;}
-.stat-num{font-family:Arial,sans-serif;font-size:16pt;font-weight:bold;line-height:1.1;margin-bottom:3px;}
-.stat-lbl{font-size:8pt;text-transform:uppercase;letter-spacing:0;color:#444;}
-
-/* COL2 */
-.col2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:6px 0;}
-
-/* FLOW */
-.flow{display:flex;align-items:center;border:1px solid #ccc;padding:6px;margin:6px 0;background:#f9f9f9;}
-.flow-step{flex:1;text-align:center;font-size:9pt;font-weight:bold;padding:4px;}
-.flow-arrow{color:#666;font-size:12pt;flex-shrink:0;}
-
-/* BADGE */
-.badge{display:inline-block;padding:1px 7px;border:1px solid #111;font-size:9pt;margin:2px;}
-
-/* ABSTRACT */
-.abstract{border:1px solid #ccc;padding:8px 12px;margin:8px 0;}
-.abstract-title{font-weight:bold;font-size:10pt;text-transform:uppercase;letter-spacing:0;margin-bottom:8px;border-bottom:1px solid #ccc;padding-bottom:4px;}
-
-/* PRINT */
+.content{padding:25mm 30mm 20mm 35mm;}
+.cover-content{padding:25mm 30mm;display:flex;flex-direction:column;align-items:center;min-height:297mm;text-align:center;}
+.cover-uni{font-size:13pt;font-weight:bold;text-transform:uppercase;line-height:1.6;margin-bottom:5mm;}
+.cover-dept{font-size:11pt;line-height:1.5;margin-bottom:8mm;}
+.cover-sep{width:120mm;border-top:1pt solid #000;margin:6mm auto;}
+.cover-label{font-size:11pt;letter-spacing:2px;margin-bottom:10mm;color:#333;}
+.cover-title{font-size:22pt;font-weight:bold;margin-bottom:5mm;line-height:1.3;}
+.cover-subtitle{font-size:13pt;margin-bottom:4mm;}
+.cover-type{font-size:10pt;color:#555;margin-bottom:15mm;}
+.cover-table{width:100%;max-width:120mm;border-collapse:collapse;margin:0 auto;}
+.cover-table td{padding:4mm 3mm;border-bottom:1pt solid #ccc;font-size:11pt;text-align:left;}
+.cover-table td:first-child{color:#555;width:45mm;}
+.cover-table td:last-child{font-weight:bold;}
+.cover-city{font-size:12pt;margin-top:auto;padding-top:20mm;}
+.running-header{position:absolute;top:10mm;left:35mm;right:30mm;font-size:9pt;color:#666;border-bottom:1pt solid #ccc;padding-bottom:2mm;display:flex;justify-content:space-between;}
+.page-num{position:absolute;bottom:12mm;width:100%;text-align:center;font-size:10pt;}
+h1{font-size:14pt;font-weight:bold;margin-top:14pt;margin-bottom:8pt;text-transform:uppercase;page-break-after:avoid;}
+h2{font-size:13pt;font-weight:bold;margin-top:10pt;margin-bottom:6pt;page-break-after:avoid;}
+h3{font-size:12pt;font-weight:bold;margin-top:8pt;margin-bottom:4pt;page-break-after:avoid;}
+p{margin-bottom:6pt;text-align:justify;text-indent:10mm;}
+p.no-indent{text-indent:0;}
+table{width:100%;border-collapse:collapse;margin:6pt 0 10pt;font-size:10pt;page-break-inside:avoid;}
+.tbl-caption{font-size:10pt;font-style:italic;margin-bottom:4pt;text-align:center;text-indent:0;}
+th{background:#f0f0f0;border:1pt solid #666;padding:5pt 8pt;font-weight:bold;text-align:center;}
+td{border:1pt solid #666;padding:4pt 8pt;vertical-align:top;}
+ul,ol{padding-left:15mm;margin:4pt 0 8pt;page-break-inside:avoid;}
+li{margin-bottom:3pt;font-size:11pt;line-height:1.5;}
+.note{border-left:3pt solid #000;padding:6pt 10pt;margin:8pt 0;background:#f9f9f9;font-size:11pt;page-break-inside:avoid;}
+.note-title{font-weight:bold;margin-bottom:4pt;font-size:10pt;text-transform:uppercase;}
+.toc-entry{display:flex;align-items:baseline;gap:3pt;margin-bottom:4pt;font-size:11pt;}
+.toc-entry-sub{display:flex;align-items:baseline;gap:3pt;margin-bottom:3pt;font-size:11pt;padding-left:8mm;}
+.toc-text{flex:0 0 auto;max-width:130mm;}
+.toc-dots{flex:1;border-bottom:1pt dotted #000;margin:0 3mm 2pt;min-width:5mm;}
+.toc-page{white-space:nowrap;font-weight:bold;}
+.stat-row{display:flex;gap:8pt;margin:8pt 0;}
+.stat-cell{flex:1;border:1pt solid #000;text-align:center;padding:8pt 4pt;}
+.stat-num{font-size:18pt;font-weight:bold;line-height:1.1;}
+.stat-lbl{font-size:8pt;text-transform:uppercase;margin-top:3pt;color:#444;}
+.abstract-box{border:1pt solid #666;padding:10pt 14pt;margin:10pt 0;page-break-inside:avoid;}
+.abstract-lang{font-weight:bold;font-size:10pt;text-transform:uppercase;border-bottom:1pt solid #ccc;padding-bottom:4pt;margin-bottom:6pt;letter-spacing:1px;}
 @media print{
   *{-webkit-print-color-adjust:exact !important;print-color-adjust:exact !important;}
-  body{margin:0;padding:0;}
+  body{margin:0;}
   .page{page-break-after:always;}
-  .page-inner{padding:14mm 18mm 10mm;}
   .page:last-child{page-break-after:avoid;}
-  table{page-break-inside:avoid;}
-  .box{page-break-inside:avoid;}
-  .col2{page-break-inside:avoid;}
-  .stat-grid{page-break-inside:avoid;}
-  .abstract{page-break-inside:avoid;}
-  .flow{page-break-inside:avoid;}
-  ul{page-break-inside:avoid;}
-  ol{page-break-inside:avoid;}
-  h1{page-break-after:avoid;margin-top:12px;}
-  h2{page-break-after:avoid;margin-top:10px;}
+  table,ul,ol,.note,.abstract-box,.stat-row{page-break-inside:avoid;}
+  h1,h2,h3{page-break-after:avoid;}
   p{orphans:3;widows:3;}
 }
 @page{size:A4 portrait;margin:0;}
@@ -108,492 +62,355 @@ ol li{margin-bottom:1px;font-size:10pt;line-height:1.4;}
 </head>
 <body>
 
-<!-- ══ COVER ══ -->
+<!-- COVER -->
 <div class="page">
-<div class="cover">
-  <div class="cover-top">
-    <div class="cover-school">ИНДРА КИБЕР ИНСТИТУТ</div>
-    <div class="cover-dept">Программ хангамжийн тэнхим</div>
-    <hr class="cover-line"/>
-    <div style="font-size:10pt;color:#444;letter-spacing:0;margin-bottom:6mm;">ДИПЛОМЫН АЖЛЫН ТАЙЛАН</div>
-  </div>
-
-  <div class="cover-title-wrap">
-    <div class="cover-main-title">ARENAHUB</div>
-    <div class="cover-sub">Gamified AI-Powered Coding Learning Platform</div>
-    <div class="cover-type">Full-Stack Web Application</div>
-    <hr class="cover-line"/>
-  </div>
-
-  <div class="cover-info">
-    <div class="cover-row">
-      <span class="cover-label">Оюутны нэр:</span>
-      <span class="cover-value">Б.Батбаясгалан</span>
-    </div>
-    <div class="cover-row">
-      <span class="cover-label">Анги:</span>
-      <span class="cover-value">SW25-01</span>
-    </div>
-    <div class="cover-row">
-      <span class="cover-label">Мэргэжил:</span>
-      <span class="cover-value">Fullstack Developer</span>
-    </div>
-    <div class="cover-row">
-      <span class="cover-label">Удирдагч багш:</span>
-      <span class="cover-value">Чинхүслэн</span>
-    </div>
-    <div class="cover-year">Улаанбаатар — 2026</div>
-  </div>
+<div class="cover-content">
+  <div class="cover-uni">Индра Кибер Институт</div>
+  <div class="cover-dept">Программ хангамжийн тэнхим</div>
+  <div class="cover-sep"></div>
+  <div class="cover-label">ДИПЛОМЫН АЖЛЫН ТАЙЛАН</div>
+  <div class="cover-title">ARENAHUB</div>
+  <div class="cover-subtitle">Gamified AI-Powered Coding Learning Platform</div>
+  <div class="cover-type">Full-Stack Web Application</div>
+  <div class="cover-sep"></div>
+  <table class="cover-table">
+    <tr><td>Оюутны нэр:</td><td>Б.Батбаясгалан</td></tr>
+    <tr><td>Анги:</td><td>SW25-01</td></tr>
+    <tr><td>Мэргэжил:</td><td>Fullstack Developer</td></tr>
+    <tr><td>Удирдагч багш:</td><td>Чинхүслэн</td></tr>
+  </table>
+  <div class="cover-city">Улаанбаатар — 2026</div>
 </div>
 </div>
 
-<!-- ══ ABSTRACT ══ -->
+<!-- ABSTRACT -->
 <div class="page">
-<div class="page-inner">
-  <div class="page-header"><span class="page-header-title">ARENAHUB · ДИПЛОМЫН ТАЙЛАН</span><span>2026</span></div>
+<div class="content">
   <h1>Хураангуй</h1>
-
-  <div class="abstract">
-    <div class="abstract-title">Монгол</div>
-    <p>ArenaHub нь AI болон gamification технологид суурилсан full-stack coding learning platform юм. Энэхүү систем нь хэрэглэгчдэд програмчлалын хичээл судлах, coding даалгавар бодох, AI assistant-аас тусламж авах, achievement болон leaderboard системээр дамжуулан идэвхээ нэмэгдүүлэх боломжийг олгодог.</p>
-    <p>Төслийн frontend хэсэгт Next.js 15, React 19, Tailwind CSS ашигласан бол backend хэсэгт Next.js API Routes, JWT authentication, Prisma ORM, PostgreSQL database ашигласан. Мөн Groq API дээр суурилсан AI tutor системийг хэрэгжүүлсэн.</p>
-    <p style="margin-bottom:0"><strong>Түлхүүр үг:</strong> gamification, AI tutor, coding learning platform, Next.js, PostgreSQL, JWT</p>
+  <div class="abstract-box">
+    <div class="abstract-lang">Монгол хэл</div>
+    <p class="no-indent">ArenaHub нь AI болон gamification технологид суурилсан full-stack coding learning platform юм. Хэрэглэгчид програмчлалын хичээл судлах, coding даалгавар бодох, AI assistant-аас тусламж авах, achievement болон leaderboard системээр дамжуулан идэвхээ нэмэгдүүлэх боломжтой. Систем нь 23 database table, 30+ API endpoint, 280+ coding task бүхий production-level architecture ашиглан бүтээгдсэн.</p>
+    <p class="no-indent" style="margin-bottom:0"><strong>Түлхүүр үг:</strong> gamification, AI tutor, coding learning platform, Next.js, PostgreSQL, JWT</p>
   </div>
-
-  <div class="abstract">
-    <div class="abstract-title">English</div>
-    <p>ArenaHub is a full-stack coding learning platform built on AI and gamification technologies. The system enables users to study programming courses, solve coding tasks, receive assistance from an AI assistant, and increase their engagement through achievement and leaderboard systems.</p>
-    <p>The frontend was built with Next.js 15, React 19, and Tailwind CSS, while the backend uses Next.js API Routes, JWT authentication, Prisma ORM, and PostgreSQL. An AI tutor system based on the Groq API was also implemented.</p>
-    <p style="margin-bottom:0"><strong>Keywords:</strong> gamification, AI tutor, coding learning platform, Next.js, PostgreSQL, JWT</p>
+  <div class="abstract-box">
+    <div class="abstract-lang">English</div>
+    <p class="no-indent">ArenaHub is a full-stack coding learning platform built on AI and gamification technologies. Users can study programming courses, solve coding tasks, receive AI assistant help, and increase engagement through achievement and leaderboard systems. The system was built with 23 database tables, 30+ API endpoints, and 280+ coding tasks.</p>
+    <p class="no-indent" style="margin-bottom:0"><strong>Keywords:</strong> gamification, AI tutor, coding learning platform, Next.js, PostgreSQL, JWT</p>
   </div>
-
-  <div class="stat-grid" style="margin-top:14px;">
-    <div class="stat-box"><div class="stat-num">8</div><div class="stat-lbl">Courses</div></div>
-    <div class="stat-box"><div class="stat-num">280+</div><div class="stat-lbl">Tasks</div></div>
-    <div class="stat-box"><div class="stat-num">23</div><div class="stat-lbl">DB Tables</div></div>
-    <div class="stat-box"><div class="stat-num">30+</div><div class="stat-lbl">API Routes</div></div>
+  <div class="stat-row">
+    <div class="stat-cell"><div class="stat-num">8</div><div class="stat-lbl">Courses</div></div>
+    <div class="stat-cell"><div class="stat-num">280+</div><div class="stat-lbl">Tasks</div></div>
+    <div class="stat-cell"><div class="stat-num">56</div><div class="stat-lbl">Lessons</div></div>
+    <div class="stat-cell"><div class="stat-num">23</div><div class="stat-lbl">DB Tables</div></div>
+    <div class="stat-cell"><div class="stat-num">30+</div><div class="stat-lbl">API Routes</div></div>
   </div>
 </div>
-<div class="page-footer"><span>ARENAHUB · Дипломын Тайлан · 2026</span><span>1</span></div>
+<div class="page-num">i</div>
 </div>
 
-<!-- ══ TABLE OF CONTENTS ══ -->
+<!-- TABLE OF CONTENTS -->
 <div class="page">
-<div class="page-inner">
-  <div class="page-header"><span class="page-header-title">ARENAHUB · ДИПЛОМЫН ТАЙЛАН</span><span>2026</span></div>
-  <h1>Гарчиг</h1>
-  <div style="margin-top:8px;">
-    <div class="toc-item"><span class="toc-num">1.</span><span class="toc-title">Оршил</span><span class="toc-page">4</span></div>
-    <div class="toc-item"><span class="toc-num">2.</span><span class="toc-title">Судалгааны үндэслэл</span><span class="toc-page">5</span></div>
-    <div class="toc-item"><span class="toc-num">3.</span><span class="toc-title">Асуудлын тодорхойлолт</span><span class="toc-page">6</span></div>
-    <div class="toc-item"><span class="toc-num">4.</span><span class="toc-title">Зорилго ба зорилт</span><span class="toc-page">6</span></div>
-    <div class="toc-item"><span class="toc-num">5.</span><span class="toc-title">Системийн шинжилгээ</span><span class="toc-page">7</span></div>
-    <div class="toc-item"><span class="toc-num">6.</span><span class="toc-title">Ашигласан технологиуд</span><span class="toc-page">8</span></div>
-    <div class="toc-item"><span class="toc-num">7.</span><span class="toc-title">Frontend хөгжүүлэлт</span><span class="toc-page">9</span></div>
-    <div class="toc-item"><span class="toc-num">8.</span><span class="toc-title">Backend хөгжүүлэлт</span><span class="toc-page">10</span></div>
-    <div class="toc-item"><span class="toc-num">9.</span><span class="toc-title">Authentication system</span><span class="toc-page">11</span></div>
-    <div class="toc-item"><span class="toc-num">10.</span><span class="toc-title">Database бүтэц</span><span class="toc-page">12</span></div>
-    <div class="toc-item"><span class="toc-num">11.</span><span class="toc-title">AI system</span><span class="toc-page">13</span></div>
-    <div class="toc-item"><span class="toc-num">12.</span><span class="toc-title">Gamification system</span><span class="toc-page">14</span></div>
-    <div class="toc-item"><span class="toc-num">13.</span><span class="toc-title">Security system</span><span class="toc-page">15</span></div>
-    <div class="toc-item"><span class="toc-num">14.</span><span class="toc-title">Deployment</span><span class="toc-page">16</span></div>
-    <div class="toc-item"><span class="toc-num">15.</span><span class="toc-title">Туршилт ба үр дүн</span><span class="toc-page">17</span></div>
-    <div class="toc-item"><span class="toc-num">16.</span><span class="toc-title">Дүгнэлт</span><span class="toc-page">18</span></div>
-    <div class="toc-item"><span class="toc-num">17.</span><span class="toc-title">Ном зүй</span><span class="toc-page">19</span></div>
-  </div>
+<div class="content">
+  <h1>Агуулга</h1>
+  <div class="toc-entry"><span class="toc-text"><strong>1. Оршил</strong></span><span class="toc-dots"></span><span class="toc-page">1</span></div>
+  <div class="toc-entry-sub"><span class="toc-text">1.1 Судалгааны зорилго</span><span class="toc-dots"></span><span class="toc-page">1</span></div>
+  <div class="toc-entry-sub"><span class="toc-text">1.2 Тайлангийн бүтэц</span><span class="toc-dots"></span><span class="toc-page">1</span></div>
+  <div class="toc-entry"><span class="toc-text"><strong>2. Судалгааны Үндэслэл</strong></span><span class="toc-dots"></span><span class="toc-page">2</span></div>
+  <div class="toc-entry-sub"><span class="toc-text">2.1 Одоогийн байдлын шинжилгээ</span><span class="toc-dots"></span><span class="toc-page">2</span></div>
+  <div class="toc-entry-sub"><span class="toc-text">2.2 Асуудлын тодорхойлолт</span><span class="toc-dots"></span><span class="toc-page">2</span></div>
+  <div class="toc-entry"><span class="toc-text"><strong>3. Зорилго ба Зорилт</strong></span><span class="toc-dots"></span><span class="toc-page">3</span></div>
+  <div class="toc-entry-sub"><span class="toc-text">3.1 Ерөнхий зорилго</span><span class="toc-dots"></span><span class="toc-page">3</span></div>
+  <div class="toc-entry-sub"><span class="toc-text">3.2 Тусгай зорилтууд</span><span class="toc-dots"></span><span class="toc-page">3</span></div>
+  <div class="toc-entry"><span class="toc-text"><strong>4. Системийн Шинжилгээ</strong></span><span class="toc-dots"></span><span class="toc-page">3</span></div>
+  <div class="toc-entry-sub"><span class="toc-text">4.1 Функциональ шаардлагууд</span><span class="toc-dots"></span><span class="toc-page">3</span></div>
+  <div class="toc-entry-sub"><span class="toc-text">4.2 Функциональ бус шаардлагууд</span><span class="toc-dots"></span><span class="toc-page">4</span></div>
+  <div class="toc-entry"><span class="toc-text"><strong>5. Ашигласан Технологиуд</strong></span><span class="toc-dots"></span><span class="toc-page">4</span></div>
+  <div class="toc-entry-sub"><span class="toc-text">5.1 Frontend технологиуд</span><span class="toc-dots"></span><span class="toc-page">4</span></div>
+  <div class="toc-entry-sub"><span class="toc-text">5.2 Backend болон Database технологиуд</span><span class="toc-dots"></span><span class="toc-page">4</span></div>
+  <div class="toc-entry"><span class="toc-text"><strong>6. Системийн Хэрэгжилт</strong></span><span class="toc-dots"></span><span class="toc-page">5</span></div>
+  <div class="toc-entry-sub"><span class="toc-text">6.1 Frontend хөгжүүлэлт</span><span class="toc-dots"></span><span class="toc-page">5</span></div>
+  <div class="toc-entry-sub"><span class="toc-text">6.2 Backend хөгжүүлэлт</span><span class="toc-dots"></span><span class="toc-page">5</span></div>
+  <div class="toc-entry-sub"><span class="toc-text">6.3 Authentication систем</span><span class="toc-dots"></span><span class="toc-page">5</span></div>
+  <div class="toc-entry-sub"><span class="toc-text">6.4 Database бүтэц</span><span class="toc-dots"></span><span class="toc-page">6</span></div>
+  <div class="toc-entry-sub"><span class="toc-text">6.5 AI систем</span><span class="toc-dots"></span><span class="toc-page">6</span></div>
+  <div class="toc-entry-sub"><span class="toc-text">6.6 Gamification систем</span><span class="toc-dots"></span><span class="toc-page">7</span></div>
+  <div class="toc-entry-sub"><span class="toc-text">6.7 Аюулгүй байдлын систем</span><span class="toc-dots"></span><span class="toc-page">7</span></div>
+  <div class="toc-entry"><span class="toc-text"><strong>7. Deployment</strong></span><span class="toc-dots"></span><span class="toc-page">8</span></div>
+  <div class="toc-entry"><span class="toc-text"><strong>8. Туршилт ба Үр Дүн</strong></span><span class="toc-dots"></span><span class="toc-page">8</span></div>
+  <div class="toc-entry"><span class="toc-text"><strong>9. Дүгнэлт</strong></span><span class="toc-dots"></span><span class="toc-page">9</span></div>
+  <div class="toc-entry"><span class="toc-text"><strong>Ашигласан материал</strong></span><span class="toc-dots"></span><span class="toc-page">9</span></div>
 </div>
-<div class="page-footer"><span>ARENAHUB · Дипломын Тайлан · 2026</span><span>2</span></div>
+<div class="page-num">ii</div>
 </div>
 
-<!-- ══ 1. ОРШИЛ ══ -->
+<!-- 1. ОРШИЛ + 2. СУДАЛГАА -->
 <div class="page">
-<div class="page-inner">
-  <div class="page-header"><span class="page-header-title">ARENAHUB · ДИПЛОМЫН ТАЙЛАН</span><span>2026</span></div>
+<div class="content">
+  <div class="running-header"><span>ArenaHub — Дипломын Тайлан</span><span>2026</span></div>
   <h1>1. Оршил</h1>
   <p>Сүүлийн жилүүдэд online learning platform-ууд хурдацтай хөгжиж байгаа боловч хэрэглэгчийн идэвх, personalized learning experience хангалтгүй хэвээр байна. Ихэнх coding platform-ууд хэрэглэгчийг удаан хугацаанд идэвхтэй байлгах gamification system болон AI assistance дутмаг байдаг.</p>
-  <p>Иймээс ArenaHub платформыг боловсруулсан бөгөөд энэхүү систем нь дараах боломжуудыг нэгтгэсэн:</p>
-  <ul>
-    <li><strong>AI-powered tutor</strong> — Groq API дээр суурилсан personalized assistant</li>
-    <li><strong>Interactive coding environment</strong> — Monaco Editor ашигласан VS Code-style editor</li>
-    <li><strong>Gamification system</strong> — XP, level, combo, HP, streak mechanics</li>
-    <li><strong>Achievement &amp; leaderboard</strong> — Global ranking болон reward system</li>
-    <li><strong>Contest system</strong> — Мөнгөн шагналтай coding тэмцээн</li>
-    <li><strong>Multi-language support</strong> — Монгол болон Англи хэлний дэмжлэг</li>
-  </ul>
-  <h2>Төслийн Зорилго</h2>
+  <h2>1.1 Судалгааны Зорилго</h2>
   <p>Програмчлал сурах процессыг тоглоом шиг сонирхолтой, interactive, personalized болгох замаар хэрэглэгчийн суралцах идэвх, мэдлэгийн чанарыг нэмэгдүүлэх.</p>
-  <div class="box">
-    <div class="box-title">Онцлог</div>
-    <p style="margin:0;">ArenaHub нь Монголд анх удаа gamification болон AI туторыг нэгтгэсэн coding learning platform юм. Систем нь Vercel болон Neon.tech дээр production-д deployed байна: <strong>btbn-arenahub.vercel.app</strong></p>
-  </div>
-</div>
-<div class="page-footer"><span>ARENAHUB · Дипломын Тайлан · 2026</span><span>3</span></div>
-</div>
+  <h2>1.2 Тайлангийн Бүтэц</h2>
+  <p>Тайлан нь 9 бүлгээс бүрдэх бөгөөд судалгааны үндэслэл, системийн архитектур, хэрэгжүүлэлт болон туршилтын үр дүнг агуулна.</p>
 
-<!-- ══ 2. СУДАЛГАА ══ -->
-<div class="page">
-<div class="page-inner">
-  <div class="page-header"><span class="page-header-title">ARENAHUB · ДИПЛОМЫН ТАЙЛАН</span><span>2026</span></div>
   <h1>2. Судалгааны Үндэслэл</h1>
-  <h2>Online Learning Platform-ийн Харьцуулалт</h2>
+  <h2>2.1 Одоогийн Байдлын Шинжилгээ</h2>
+  <p>Орчин үеийн coding learning platform-уудыг харьцуулан судаллаа.</p>
+  <p class="tbl-caption no-indent"><em>Хүснэгт 2.1 — Coding Learning Platform-уудын Харьцуулалт</em></p>
   <table>
     <tr><th>Платформ</th><th>Давуу тал</th><th>Дутагдал</th></tr>
-    <tr><td><strong>LeetCode</strong></td><td>Олон task, contest</td><td>AI байхгүй, монгол хэлгүй</td></tr>
-    <tr><td><strong>HackerRank</strong></td><td>Certification system</td><td>Gamification сул</td></tr>
-    <tr><td><strong>Codecademy</strong></td><td>Beginner-friendly</td><td>Үнэтэй, AI дутмаг</td></tr>
+    <tr><td>LeetCode</td><td>Олон task, contest</td><td>AI байхгүй, МН хэлгүй</td></tr>
+    <tr><td>HackerRank</td><td>Certification system</td><td>Gamification сул</td></tr>
+    <tr><td>Codecademy</td><td>Beginner-friendly</td><td>Үнэтэй, AI дутмаг</td></tr>
     <tr><td><strong>ArenaHub</strong></td><td>AI + Gamification + МН хэл</td><td>Шинэ платформ</td></tr>
   </table>
-  <h2>Судалгааны Үр Дүн</h2>
-  <ul>
-    <li>Gamification нь хэрэглэгчийн retention-ийг 40% хүртэл нэмэгдүүлдэг</li>
-    <li>AI personalization нь суралцах хугацааг бууруулдаг</li>
-    <li>Монгол хэлний дэмжлэг орон нутгийн хэрэглэгчдэд чухал</li>
-    <li>Serverless architecture нь хөгжүүлэлтийн зардлыг бууруулдаг</li>
-  </ul>
 
-  <h1 style="margin-top:20px;">3. Асуудлын Тодорхойлолт</h1>
-  <div class="col2">
-    <div>
-      <h2>Үндсэн Асуудлууд</h2>
-      <ol>
-        <li><strong>Motivation буурах</strong> — хэрэглэгчид дунд зэрэгт орхидог</li>
-        <li><strong>Personalized guidance байхгүй</strong> — AI assistant дутмаг</li>
-        <li><strong>Real-time feedback сул</strong> — debug support хангалтгүй</li>
-        <li><strong>Gamification system сул</strong> — XP, reward, contest байхгүй</li>
-      </ol>
-    </div>
-    <div>
-      <h2>ArenaHub Шийдэл</h2>
-      <ul>
-        <li>AI tutor (Groq API)</li>
-        <li>Gamification mechanics</li>
-        <li>Live progress tracking</li>
-        <li>Achievement system</li>
-        <li>Contest platform</li>
-      </ul>
-    </div>
-  </div>
-
-</div>
-<div class="page-footer"><span>ARENAHUB · Дипломын Тайлан · 2026</span><span>4</span></div>
-</div>
-
-<!-- ══ 4. ЗОРИЛГО ══ -->
-<div class="page">
-<div class="page-inner">
-  <div class="page-header"><span class="page-header-title">ARENAHUB · ДИПЛОМЫН ТАЙЛАН</span><span>2026</span></div>
-  <h1>4. Зорилго ба Зорилт</h1>
-  <p><strong>Ерөнхий зорилго:</strong> Gamification болон AI технологид суурилсан modern coding learning platform хөгжүүлэх.</p>
+  <h2>2.2 Асуудлын Тодорхойлолт</h2>
+  <p>Судалгааны үр дүнд дараах үндсэн асуудлуудыг тодорхойлов:</p>
   <ol>
-    <li>AI tutor system — Groq API дээр суурилсан bilingual assistant</li>
-    <li>Gamification — XP, level, combo, HP, achievement, leaderboard</li>
-    <li>Secure authentication — OAuth болон JWT dual system</li>
-    <li>Cloud deployment — Vercel + Neon.tech production</li>
-    <li>Multi-language — Монгол болон Англи 300+ translation keys</li>
+    <li><strong>Motivation буурах</strong> — хэрэглэгчид дунд зэрэгт суралцахаа больдог.</li>
+    <li><strong>Personalized guidance дутмаг</strong> — AI assistant ашигладаггүй платформ давамгайлж байна.</li>
+    <li><strong>Real-time feedback сул</strong> — debug, тайлбарын дэмжлэг хангалтгүй.</li>
+    <li><strong>Gamification system сул</strong> — XP, reward, contest механизм дутмаг.</li>
   </ol>
 </div>
-<div class="page-footer"><span>ARENAHUB · Дипломын Тайлан · 2026</span><span>5</span></div>
+<div class="page-num">1</div>
 </div>
 
-<!-- ══ 5-6. СИСТЕМИЙН ШИНЖИЛГЭЭ / ТЕХНОЛОГИ ══ -->
+<!-- 3. ЗОРИЛГО + 4. СИСТЕМИЙН ШИНЖИЛГЭЭ -->
 <div class="page">
-<div class="page-inner">
-  <div class="page-header"><span class="page-header-title">ARENAHUB · ДИПЛОМЫН ТАЙЛАН</span><span>2026</span></div>
-  <h1>5. Системийн Шинжилгээ</h1>
-  <div class="col2">
-    <div>
-      <h2>Functional Requirements</h2>
-      <ul>
-        <li>Google / GitHub / Email бүртгэл</li>
-        <li>Course болон lesson үзэх</li>
-        <li>Quiz болон code task бодох</li>
-        <li>AI assistant ашиглах (token)</li>
-        <li>Contest-д оролцох</li>
-        <li>Achievement болон reward авах</li>
-        <li>Leaderboard харах (PRO/VIP)</li>
-      </ul>
-    </div>
-    <div>
-      <h2>Non-functional Requirements</h2>
-      <ul>
-        <li>Responsive UI (Mobile, Desktop)</li>
-        <li>API &lt;200ms response time</li>
-        <li>Production-level security</li>
-        <li>Serverless auto-scaling</li>
-        <li>99.9% uptime (Vercel)</li>
-      </ul>
-    </div>
-  </div>
-  <h2>Architecture Flow</h2>
-  <div class="flow">
-    <div class="flow-step">Browser<br/>(React)</div><div class="flow-arrow"> → </div>
-    <div class="flow-step">Next.js<br/>(SSR+API)</div><div class="flow-arrow"> → </div>
-    <div class="flow-step">Auth<br/>(JWT)</div><div class="flow-arrow"> → </div>
-    <div class="flow-step">Prisma<br/>(ORM)</div><div class="flow-arrow"> → </div>
-    <div class="flow-step">PostgreSQL<br/>(Neon)</div>
-  </div>
+<div class="content">
+  <div class="running-header"><span>ArenaHub — Дипломын Тайлан</span><span>2026</span></div>
+  <h1>3. Зорилго ба Зорилт</h1>
+  <h2>3.1 Ерөнхий Зорилго</h2>
+  <p>Gamification болон AI технологид суурилсан modern coding learning platform хөгжүүлж, хэрэглэгчийн суралцах идэвх, чанарыг дээшлүүлэх.</p>
+  <h2>3.2 Тусгай Зорилтууд</h2>
+  <ol>
+    <li>Groq API дээр суурилсан bilingual AI tutor system хөгжүүлэх.</li>
+    <li>XP, level, combo, HP, achievement, leaderboard gamification хэрэгжүүлэх.</li>
+    <li>OAuth болон JWT dual authentication system хийх.</li>
+    <li>Vercel + Neon.tech дээр production deployment хийх.</li>
+    <li>Монгол болон Англи 300+ translation key нэмэх.</li>
+  </ol>
 
-  <h1 style="margin-top:18px;">6. Ашигласан Технологиуд</h1>
-  <div class="col2">
-    <div>
-      <h2>Frontend</h2>
-      <table>
-        <tr><th>Технологи</th><th>Хувилбар</th></tr>
-        <tr><td>Next.js</td><td>15.3.9</td></tr>
-        <tr><td>React</td><td>19</td></tr>
-        <tr><td>TypeScript</td><td>5</td></tr>
-        <tr><td>Tailwind CSS</td><td>3.4</td></tr>
-        <tr><td>Monaco Editor</td><td>0.52</td></tr>
-        <tr><td>Three.js</td><td>0.169</td></tr>
-      </table>
-    </div>
-    <div>
-      <h2>Backend &amp; DB</h2>
-      <table>
-        <tr><th>Технологи</th><th>Зориулалт</th></tr>
-        <tr><td>Node.js</td><td>Runtime</td></tr>
-        <tr><td>JWT</td><td>Auth tokens</td></tr>
-        <tr><td>bcryptjs</td><td>Password hashing</td></tr>
-        <tr><td>Zod</td><td>Validation</td></tr>
-        <tr><td>Prisma ORM v6</td><td>Database ORM</td></tr>
-        <tr><td>PostgreSQL</td><td>Relational DB</td></tr>
-      </table>
-    </div>
-  </div>
+  <h1>4. Системийн Шинжилгээ</h1>
+  <h2>4.1 Функциональ Шаардлагууд</h2>
+  <p class="tbl-caption no-indent"><em>Хүснэгт 4.1 — Функциональ Шаардлагуудын Жагсаалт</em></p>
+  <table>
+    <tr><th>Хэрэглэгч</th><th>Удирдагч (Admin)</th></tr>
+    <tr>
+      <td><ul style="padding-left:10mm;margin:2pt 0;"><li>Google / GitHub / Email нэвтрэлт</li><li>Course, lesson үзэх</li><li>Quiz, code task бодох</li><li>AI assistant ашиглах</li><li>Contest-д оролцох</li><li>Achievement, reward авах</li></ul></td>
+      <td><ul style="padding-left:10mm;margin:2pt 0;"><li>Course / Lesson / Task CRUD</li><li>User management</li><li>XP / Coins / Token засах</li><li>Contest management</li><li>Payment confirmation</li><li>Analytics, reports</li></ul></td>
+    </tr>
+  </table>
+
+  <h2>4.2 Функциональ Бус Шаардлагууд</h2>
+  <p class="tbl-caption no-indent"><em>Хүснэгт 4.2 — Функциональ Бус Шаардлагуудын Жагсаалт</em></p>
+  <table>
+    <tr><th>Шаардлага</th><th>Тайлбар</th><th>Хэрэгжилт</th></tr>
+    <tr><td>Responsive UI</td><td>Mobile, tablet, desktop дэмжих</td><td>CSS Media Query</td></tr>
+    <tr><td>Performance</td><td>API &lt;200ms хариу</td><td>Server-side cache</td></tr>
+    <tr><td>Security</td><td>Production-level хамгаалалт</td><td>CSP + JWT + bcrypt</td></tr>
+    <tr><td>Scalability</td><td>Serverless auto-scale</td><td>Vercel</td></tr>
+    <tr><td>Availability</td><td>99.9% uptime</td><td>Neon + Vercel</td></tr>
+  </table>
 </div>
-<div class="page-footer"><span>ARENAHUB · Дипломын Тайлан · 2026</span><span>6</span></div>
+<div class="page-num">2</div>
 </div>
 
-<!-- ══ 7-8. FRONTEND / BACKEND ══ -->
+<!-- 5. ТЕХНОЛОГИУД -->
 <div class="page">
-<div class="page-inner">
-  <div class="page-header"><span class="page-header-title">ARENAHUB · ДИПЛОМЫН ТАЙЛАН</span><span>2026</span></div>
-  <h1>7. Frontend Хөгжүүлэлт</h1>
-  <p>Frontend хэсгийг Next.js 15 App Router architecture ашиглан боловсруулсан. Pixel-art dark cyberpunk aesthetic бүхий UI дизайн хэрэгжүүлсэн.</p>
-  <div class="col2">
-    <div>
-      <h2>Гол Онцлогууд</h2>
-      <ul>
-        <li>Responsive design (Mobile + Desktop)</li>
-        <li>Monaco Editor — VS Code style coding</li>
-        <li>Three.js 3D pixel character rendering</li>
-        <li>21 улсын SVG pixel art flags</li>
-        <li>Game HUD — HP, XP, combo display</li>
-      </ul>
-    </div>
-    <div>
-      <h2>State Management</h2>
-      <ul>
-        <li><strong>AuthContext</strong> — User session, login/logout</li>
-        <li><strong>LanguageContext</strong> — МН/EN switching</li>
-        <li><strong>useState/useEffect</strong> — Local state</li>
-        <li><strong>useSyncExternalStore</strong> — SSR-safe hydration</li>
-      </ul>
-    </div>
-  </div>
-
-  <h1 style="margin-top:16px;">8. Backend Хөгжүүлэлт</h1>
-  <p>Backend нь Next.js API Routes дээр суурилсан serverless architecture ашиглан бүтээгдсэн. Нийт 30+ REST endpoint хэрэгжүүлсэн.</p>
-  <div class="col2">
-    <div>
-      <h2>API Endpoints</h2>
-      <ul>
-        <li>/api/auth — login, register, OAuth</li>
-        <li>/api/courses — CRUD, enroll</li>
-        <li>/api/tasks — submit, execute</li>
-        <li>/api/ai — AI chat, token balance</li>
-        <li>/api/contest — join, leaderboard</li>
-        <li>/api/payment — QR, history</li>
-      </ul>
-    </div>
-    <div>
-      <h2>Validation &amp; Error</h2>
-      <ul>
-        <li>Zod schema validation бүх input-д</li>
-        <li>5xx алдааг client-д нуудаг</li>
-        <li>Dual auth: NextAuth + Bearer</li>
-        <li>Rate limiting per IP/user</li>
-        <li>In-memory cache 10s–60s TTL</li>
-      </ul>
-    </div>
-  </div>
-
-  <h1 style="margin-top:16px;">9. Authentication System</h1>
-  <div class="col2">
-    <div class="box">
-      <div class="box-title">1. NextAuth.js — OAuth</div>
-      <ul><li>Google OAuth 2.0</li><li>GitHub OAuth</li><li>Session cookie (HttpOnly)</li></ul>
-    </div>
-    <div class="box">
-      <div class="box-title">2. Custom JWT</div>
-      <ul><li>Email/password login</li><li>Access token (15 минут)</li><li>Refresh token (7 хоног)</li></ul>
-    </div>
-  </div>
-  <div class="flow">
-    <div class="flow-step">Login</div><div class="flow-arrow">→</div>
-    <div class="flow-step">Verify</div><div class="flow-arrow">→</div>
-    <div class="flow-step">JWT</div><div class="flow-arrow">→</div>
-    <div class="flow-step">localStorage</div><div class="flow-arrow">→</div>
-    <div class="flow-step">API Auth</div>
-  </div>
+<div class="content">
+  <div class="running-header"><span>ArenaHub — Дипломын Тайлан</span><span>2026</span></div>
+  <h1>5. Ашигласан Технологиуд</h1>
+  <h2>5.1 Frontend Технологиуд</h2>
+  <p class="tbl-caption no-indent"><em>Хүснэгт 5.1 — Frontend Технологиудын Жагсаалт</em></p>
+  <table>
+    <tr><th>Технологи</th><th>Хувилбар</th><th>Зориулалт</th></tr>
+    <tr><td>Next.js</td><td>15.3.9</td><td>React framework, App Router, SSR, API Routes</td></tr>
+    <tr><td>React</td><td>19</td><td>UI component library, hooks, context</td></tr>
+    <tr><td>TypeScript</td><td>5</td><td>Type safety, code quality</td></tr>
+    <tr><td>Tailwind CSS</td><td>3.4</td><td>Utility-first CSS styling</td></tr>
+    <tr><td>Monaco Editor</td><td>0.52</td><td>VS Code-style code editor</td></tr>
+    <tr><td>Three.js</td><td>0.169</td><td>3D pixel character rendering</td></tr>
+  </table>
+  <h2>5.2 Backend болон Database Технологиуд</h2>
+  <p class="tbl-caption no-indent"><em>Хүснэгт 5.2 — Backend болон Database Технологиуд</em></p>
+  <table>
+    <tr><th>Технологи</th><th>Зориулалт</th></tr>
+    <tr><td>Node.js 24</td><td>JavaScript runtime environment</td></tr>
+    <tr><td>Next.js API Routes</td><td>REST API (30+ serverless endpoint)</td></tr>
+    <tr><td>JWT (jsonwebtoken)</td><td>Access token (15min) + Refresh token (7d)</td></tr>
+    <tr><td>bcryptjs</td><td>Password хэш (12 rounds)</td></tr>
+    <tr><td>Zod</td><td>Input validation, schema parsing</td></tr>
+    <tr><td>Prisma ORM v6</td><td>Type-safe database client, migrations</td></tr>
+    <tr><td>PostgreSQL 16</td><td>Relational database (23 table)</td></tr>
+    <tr><td>Neon.tech</td><td>Serverless PostgreSQL cloud hosting</td></tr>
+    <tr><td>Groq API</td><td>AI inference — llama-3.3-70b-versatile</td></tr>
+    <tr><td>NextAuth.js v4</td><td>OAuth authentication (Google, GitHub)</td></tr>
+    <tr><td>Vercel</td><td>Frontend + API serverless hosting</td></tr>
+  </table>
 </div>
-<div class="page-footer"><span>ARENAHUB · Дипломын Тайлан · 2026</span><span>7</span></div>
+<div class="page-num">3</div>
 </div>
 
-<!-- ══ 10-13. DB / AI / GAMIFICATION / SECURITY ══ -->
+<!-- 6.1-6.3 FRONTEND/BACKEND/AUTH -->
 <div class="page">
-<div class="page-inner">
-  <div class="page-header"><span class="page-header-title">ARENAHUB · ДИПЛОМЫН ТАЙЛАН</span><span>2026</span></div>
-  <h1>10. Database Бүтэц</h1>
-  <div class="col2">
-    <div>
-      <h2>Гол Tables (23 нийт)</h2>
-      <table>
-        <tr><th>Table</th><th>Зориулалт</th></tr>
-        <tr><td>User</td><td>Хэрэглэгч, profile</td></tr>
-        <tr><td>Course / Lesson / Task</td><td>Сургалтын агуулга</td></tr>
-        <tr><td>TaskSubmission</td><td>Хариулт, XP</td></tr>
-        <tr><td>Achievement / Reward</td><td>Gamification</td></tr>
-        <tr><td>Payment / Subscription</td><td>Төлбөр, PRO/VIP</td></tr>
-        <tr><td>Contest</td><td>Тэмцээн</td></tr>
-        <tr><td>Notification</td><td>Мэдэгдэл</td></tr>
-      </table>
-    </div>
-    <div>
-      <div class="stat-grid" style="grid-template-columns:1fr 1fr;gap:8px;">
-        <div class="stat-box"><div class="stat-num" style="font-size:14pt;">23</div><div class="stat-lbl">Tables</div></div>
-        <div class="stat-box"><div class="stat-num" style="font-size:14pt;">280+</div><div class="stat-lbl">Tasks</div></div>
-        <div class="stat-box"><div class="stat-num" style="font-size:14pt;">56</div><div class="stat-lbl">Lessons</div></div>
-        <div class="stat-box"><div class="stat-num" style="font-size:14pt;">8</div><div class="stat-lbl">Courses</div></div>
-      </div>
-      <div class="box" style="margin-top:8px;">
-        <div class="box-title">Prisma ORM v6</div>
-        <p style="margin:0;font-size:10pt;">Type-safe queries · Auto-generated client · Schema migrations · Neon.tech serverless PostgreSQL</p>
-      </div>
-    </div>
+<div class="content">
+  <div class="running-header"><span>ArenaHub — Дипломын Тайлан</span><span>2026</span></div>
+  <h1>6. Системийн Хэрэгжилт</h1>
+  <h2>6.1 Frontend Хөгжүүлэлт</h2>
+  <p>Frontend хэсгийг Next.js 15 App Router architecture ашиглан боловсруулсан. Pixel-art dark cyberpunk aesthetic бүхий UI дизайн, responsive layout хэрэгжүүлсэн. State management-д React Context API ашигласан: <strong>AuthContext</strong> нь хэрэглэгчийн session удирдана, <strong>LanguageContext</strong> нь МН/EN хэлний солилтыг удирдана.</p>
+  <h2>6.2 Backend Хөгжүүлэлт</h2>
+  <p>Backend нь Next.js API Routes дээр суурилсан serverless architecture ашиглан 30 гаруй REST endpoint хэрэгжүүлсэн. Бүх request дээр Zod schema validation ашигласан. 5xx алдааг client-д нуух замаар мэдээлэл алдагдахаас хамгаалдаг.</p>
+  <h2>6.3 Authentication Систем</h2>
+  <p>Систем нь <strong>dual authentication architecture</strong> ашигладаг: NextAuth.js v4 ашиглан Google болон GitHub OAuth нэвтрэлт, custom JWT токен (15 минутын access + 7 хоногийн refresh) ашиглан email/password нэвтрэлт.</p>
+  <p class="tbl-caption no-indent"><em>Зураг 6.1 — Authentication Flow Diagram</em></p>
+  <div style="border:1pt solid #666;padding:8pt;margin:6pt 0;text-align:center;background:#fafafa;font-size:10pt;">
+    Login → Verify credentials → JWT Create → localStorage → API Request → Authorization check
   </div>
+</div>
+<div class="page-num">4</div>
+</div>
 
-  <h1 style="margin-top:14px;">11. AI System</h1>
-  <p>ArenaHub нь Groq API болон <strong>llama-3.3-70b-versatile</strong> model ашиглан bilingual AI tutor хэрэгжүүлсэн.</p>
+<!-- 6.4-6.5 DATABASE / AI -->
+<div class="page">
+<div class="content">
+  <div class="running-header"><span>ArenaHub — Дипломын Тайлан</span><span>2026</span></div>
+  <h2>6.4 Database Бүтэц</h2>
+  <p>Систем нь PostgreSQL database болон Prisma ORM v6 ашиглан нийт 23 table-тай бүтээгдсэн. Neon.tech serverless cloud дээр deploy хийгдсэн.</p>
+  <p class="tbl-caption no-indent"><em>Хүснэгт 6.1 — Гол Database Table-уудын Жагсаалт</em></p>
+  <table>
+    <tr><th>Table</th><th>Зориулалт</th><th>Гол талбарууд</th></tr>
+    <tr><td>User</td><td>Хэрэглэгч, profile</td><td>id, username, email, role, xp, level</td></tr>
+    <tr><td>Course / Lesson / Task</td><td>Сургалтын агуулга</td><td>id, title, content, orderIndex</td></tr>
+    <tr><td>TaskSubmission</td><td>Хариулт бүртгэл</td><td>userId, taskId, status, xpEarned</td></tr>
+    <tr><td>Achievement</td><td>Achievement тодорхойлолт</td><td>id, title, condition, rarity</td></tr>
+    <tr><td>Payment / Subscription</td><td>Төлбөр, PRO/VIP</td><td>amount, status, plan</td></tr>
+    <tr><td>Contest</td><td>Тэмцээн</td><td>startDate, endDate, prizeFirst</td></tr>
+    <tr><td>TokenBalance</td><td>AI token</td><td>userId, balance, totalUsed</td></tr>
+  </table>
+  <div class="stat-row">
+    <div class="stat-cell"><div class="stat-num">23</div><div class="stat-lbl">Tables</div></div>
+    <div class="stat-cell"><div class="stat-num">280+</div><div class="stat-lbl">Tasks</div></div>
+    <div class="stat-cell"><div class="stat-num">56</div><div class="stat-lbl">Lessons</div></div>
+    <div class="stat-cell"><div class="stat-num">8</div><div class="stat-lbl">Courses</div></div>
+  </div>
+  <h2>6.5 AI Систем</h2>
+  <p>ArenaHub нь Groq API болон <strong>llama-3.3-70b-versatile</strong> model ашиглан bilingual AI tutor хэрэгжүүлсэн. Монгол болон Англи хэл дэмжинэ. AI систем нь хэрэглэгчийн level, pass rate, сүүлийн алдааг харгалзан personalized response үүсгэнэ.</p>
+  <p class="tbl-caption no-indent"><em>Хүснэгт 6.2 — AI Token Зарцуулалтын Систем</em></p>
   <table>
     <tr><th>Feature</th><th>Token</th><th>Тайлбар</th></tr>
-    <tr><td>💡 Hint</td><td style="text-align:center;font-weight:bold;">1</td><td>Алхмаар чиглүүлнэ, шийдэл өгөхгүй</td></tr>
-    <tr><td>📖 Тайлбар</td><td style="text-align:center;font-weight:bold;">2</td><td>Concept гүнзгий тайлбар</td></tr>
-    <tr><td>🔍 Debug</td><td style="text-align:center;font-weight:bold;">3</td><td>Алдааны шалтгаан задлал</td></tr>
-    <tr><td>🔓 Full Solution</td><td style="text-align:center;font-weight:bold;">5</td><td>Бүрэн шийдэл</td></tr>
+    <tr><td>💡 Hint авах</td><td style="text-align:center;">1</td><td>Алхмаар чиглүүлнэ, шийдэл өгөхгүй</td></tr>
+    <tr><td>📖 Тайлбар авах</td><td style="text-align:center;">2</td><td>Concept гүнзгий тайлбарлана</td></tr>
+    <tr><td>🔍 Debug дэмжлэг</td><td style="text-align:center;">3</td><td>Алдааны шалтгааныг задлана</td></tr>
+    <tr><td>🔓 Бүтэн шийдэл</td><td style="text-align:center;">5</td><td>Бүрэн шийдэл гаргаж өгнө</td></tr>
   </table>
+</div>
+<div class="page-num">5</div>
+</div>
 
-</div>
-<div class="page-footer"><span>ARENAHUB · Дипломын Тайлан · 2026</span><span>8</span></div>
-</div>
+<!-- 6.6-6.7 GAMIFICATION / SECURITY -->
 <div class="page">
-<div class="page-inner">
-  <div class="page-header"><span class="page-header-title">ARENAHUB · ДИПЛОМЫН ТАЙЛАН</span><span>2026</span></div>
-  <h1>12. Gamification System</h1>
-  <div class="col2">
-    <div>
-      <h2>Game Mechanics</h2>
-      <ul>
-        <li><strong>XP System</strong> — Task дүүргэх тутам XP</li>
-        <li><strong>Level System</strong> — 200 XP = 1 level</li>
-        <li><strong>Combo</strong> — Дараалсан зөв × multiplier</li>
-        <li><strong>HP System</strong> — Буруу хариулт HP хасна</li>
-        <li><strong>Streak</strong> — Өдөр тутмын идэвх</li>
-        <li><strong>Leaderboard</strong> — Global XP ranking</li>
-      </ul>
-    </div>
-    <div>
-      <h2>Achievement Types</h2>
-      <ul>
-        <li><strong>COMMON</strong> — Эхний task, level 5</li>
-        <li><strong>RARE</strong> — 50 task, 7-day streak</li>
-        <li><strong>EPIC</strong> — Top 10, level 20</li>
-      </ul>
-      <p style="margin-top:8px;font-size:10pt;"><strong>15</strong> Achievement · <strong>10</strong> Reward</p>
-    </div>
-  </div>
-
-  <h1 style="margin-top:14px;">13. Security System</h1>
+<div class="content">
+  <div class="running-header"><span>ArenaHub — Дипломын Тайлан</span><span>2026</span></div>
+  <h2>6.6 Gamification Систем</h2>
+  <p>Gamification систем нь хэрэглэгчийн суралцах идэвхийг нэмэгдүүлэх зорилгоор дараах механизмуудыг хэрэгжүүлсэн.</p>
+  <p class="tbl-caption no-indent"><em>Хүснэгт 6.3 — Gamification Механизмуудын Тайлбар</em></p>
+  <table>
+    <tr><th>Механизм</th><th>Тайлбар</th></tr>
+    <tr><td>XP System</td><td>Task дүүргэх тутам XP цуглуулна. 200 XP = 1 level.</td></tr>
+    <tr><td>Level System</td><td>XP хуримтлуулж level ахина.</td></tr>
+    <tr><td>Combo Multiplier</td><td>Дараалсан зөв хариулт комбо нэмэгдүүлнэ.</td></tr>
+    <tr><td>HP System</td><td>Буруу хариулт HP хасна. HP дуусахад combo тасарна.</td></tr>
+    <tr><td>Daily Streak</td><td>Өдөр тутмын идэвхтэй суралцалт streak нэмэгдүүлнэ.</td></tr>
+    <tr><td>Achievement (15)</td><td>COMMON, RARE, EPIC гурван түвшинтэй.</td></tr>
+    <tr><td>Leaderboard</td><td>Global XP ranking. PRO/VIP эрхтэй хэрэглэгчдэд.</td></tr>
+    <tr><td>Contest</td><td>Мөнгөн шагналтай coding тэмцээн.</td></tr>
+  </table>
+  <h2>6.7 Аюулгүй Байдлын Систем</h2>
+  <p class="tbl-caption no-indent"><em>Хүснэгт 6.4 — Аюулгүй Байдлын Арга Хэмжээнүүд</em></p>
   <table>
     <tr><th>Хамгаалалт</th><th>Тайлбар</th></tr>
-    <tr><td>CSP Headers</td><td>Content Security Policy — XSS хамгаалалт</td></tr>
-    <tr><td>HSTS (1 жил)</td><td>HTTPS enforcement</td></tr>
-    <tr><td>bcrypt (12 rounds)</td><td>Password хэш</td></tr>
-    <tr><td>JWT 15m expiry</td><td>Богино хугацааны access token</td></tr>
-    <tr><td>Zod validation</td><td>Бүх API input schema check</td></tr>
-    <tr><td>Rate limiting</td><td>IP болон user тутамд хязгаар</td></tr>
-    <tr><td>VM sandbox</td><td>Code execution isolation</td></tr>
+    <tr><td>CSP Headers</td><td>XSS халдлагаас хамгаалах HTTP header</td></tr>
+    <tr><td>HSTS (1 жил)</td><td>HTTPS protocol-ийг заавал мөрдүүлнэ</td></tr>
+    <tr><td>X-Frame-Options: DENY</td><td>Clickjacking халдлагаас хамгаалалт</td></tr>
+    <tr><td>bcrypt (12 rounds)</td><td>Нууц үгийг hash хийж хадгална</td></tr>
+    <tr><td>JWT 15 минутын хугацаа</td><td>Богино хугацааны access token</td></tr>
+    <tr><td>Zod validation</td><td>Бүх API input-д schema баталгаажуулалт</td></tr>
+    <tr><td>Rate limiting</td><td>IP болон user тутамд хүсэлтийн хязгаар</td></tr>
+    <tr><td>VM sandbox</td><td>Code execution-г тусгаарлана</td></tr>
   </table>
 </div>
-<div class="page-footer"><span>ARENAHUB · Дипломын Тайлан · 2026</span><span>9</span></div>
+<div class="page-num">6</div>
 </div>
 
-<!-- ══ 14-17. DEPLOYMENT / RESULTS / CONCLUSION / REFERENCES ══ -->
+<!-- 7. DEPLOYMENT + 8. ТУРШИЛТ -->
 <div class="page">
-<div class="page-inner">
-  <div class="page-header"><span class="page-header-title">ARENAHUB · ДИПЛОМЫН ТАЙЛАН</span><span>2026</span></div>
-  <h1>14. Deployment</h1>
+<div class="content">
+  <div class="running-header"><span>ArenaHub — Дипломын Тайлан</span><span>2026</span></div>
+  <h1>7. Deployment</h1>
+  <p>Систем нь бүгд үнэгүй тарифтай serverless платформуудыг ашиглан production-д deploy хийгдсэн. Нийт hosting зардал сард $0 байна.</p>
+  <p class="tbl-caption no-indent"><em>Хүснэгт 7.1 — Hosting Платформуудын Жагсаалт</em></p>
   <table>
     <tr><th>Платформ</th><th>Зориулалт</th><th>Tier</th></tr>
-    <tr><td><strong>Vercel</strong></td><td>Frontend + API serverless hosting</td><td>Free</td></tr>
-    <tr><td><strong>Neon.tech</strong></td><td>PostgreSQL serverless cloud</td><td>Free</td></tr>
-    <tr><td><strong>GitHub</strong></td><td>Source control, CI/CD</td><td>Free</td></tr>
-    <tr><td><strong>Groq</strong></td><td>AI inference API</td><td>Free</td></tr>
+    <tr><td>Vercel</td><td>Frontend + API serverless hosting, Global CDN</td><td>Free</td></tr>
+    <tr><td>Neon.tech</td><td>PostgreSQL serverless cloud, auto-scaling</td><td>Free</td></tr>
+    <tr><td>GitHub</td><td>Source control, CI/CD trigger</td><td>Free</td></tr>
+    <tr><td>Groq</td><td>AI inference API</td><td>Free</td></tr>
   </table>
-  <div class="flow" style="margin-top:8px;">
-    <div class="flow-step">git push</div><div class="flow-arrow">→</div>
-    <div class="flow-step">GitHub</div><div class="flow-arrow">→</div>
-    <div class="flow-step">Vercel build</div><div class="flow-arrow">→</div>
-    <div class="flow-step">Production</div>
-  </div>
-  <p><strong>URL:</strong> https://btbn-arenahub.vercel.app · Нийт зардал: $0/сар</p>
+  <p>CI/CD pipeline: git push → GitHub webhook → Vercel build → Production автоматаар deploy хийгддэг.</p>
+  <div class="note"><div class="note-title">Production URL</div>https://btbn-arenahub.vercel.app</div>
 
-  <h1 style="margin-top:16px;">15. Туршилт ба Үр Дүн</h1>
+  <h1>8. Туршилт ба Үр Дүн</h1>
+  <h2>8.1 Туршилтын Үр Дүн</h2>
+  <p class="tbl-caption no-indent"><em>Хүснэгт 8.1 — Туршилтын Үр Дүнгийн Хүснэгт</em></p>
   <table>
-    <tr><th>Туршилтын төрөл</th><th>Үр дүн</th></tr>
-    <tr><td>Authentication testing (Google/GitHub/Email)</td><td>✓ PASS</td></tr>
-    <tr><td>API endpoint testing (30+ endpoint)</td><td>✓ PASS</td></tr>
-    <tr><td>Code execution sandbox testing</td><td>✓ PASS</td></tr>
-    <tr><td>Responsive UI (Mobile/Tablet/Desktop)</td><td>✓ PASS</td></tr>
-    <tr><td>i18n testing (МН/EN 300+ keys)</td><td>✓ PASS</td></tr>
-    <tr><td>Security (CSP/JWT/Rate limit)</td><td>✓ PASS</td></tr>
+    <tr><th>Туршилтын төрөл</th><th>Тайлбар</th><th>Үр дүн</th></tr>
+    <tr><td>Authentication</td><td>Google/GitHub/Email нэвтрэлт</td><td>✓ Амжилттай</td></tr>
+    <tr><td>API endpoints</td><td>30+ endpoint туршсан</td><td>✓ Амжилттай</td></tr>
+    <tr><td>Code execution</td><td>JS/HTML/CSS/SQL sandbox</td><td>✓ Амжилттай</td></tr>
+    <tr><td>Responsive UI</td><td>Mobile/Tablet/Desktop</td><td>✓ Амжилттай</td></tr>
+    <tr><td>i18n (МН/EN)</td><td>300+ translation key</td><td>✓ Амжилттай</td></tr>
+    <tr><td>Security</td><td>CSP/JWT/Rate limiting</td><td>✓ Амжилттай</td></tr>
   </table>
-
-</div>
-<div class="page-footer"><span>ARENAHUB · Дипломын Тайлан · 2026</span><span>10</span></div>
-</div>
-<div class="page">
-<div class="page-inner">
-  <div class="page-header"><span class="page-header-title">ARENAHUB · ДИПЛОМЫН ТАЙЛАН</span><span>2026</span></div>
-  <h1>16. Дүгнэлт</h1>
-  <p>ArenaHub нь AI болон gamification технологийг нэгтгэсэн modern coding learning platform юм. Тавигдсан бүх зорилт амжилттай хэрэгжсэн:</p>
-  <ul>
-    <li>Full-stack production system (Vercel + Neon cloud)</li>
-    <li>AI integration — Groq llama-3.3-70b bilingual tutor</li>
-    <li>Gamification — XP, combo, HP, leaderboard mechanics</li>
-    <li>Secure dual authentication (OAuth + JWT)</li>
-    <li>Responsive UI (Mobile + Desktop)</li>
-    <li>МН/EN localization (300+ translation keys)</li>
-  </ul>
-  <div class="box" style="margin-top:10px;">
-    <div class="box-title">Цаашдын Төлөвлөгөө</div>
-    <p style="margin:0;">Real-time multiplayer contest · AI voice tutor · Mobile application · WebSocket live coding · Advanced analytics</p>
+  <h2>8.2 Хэрэгжилтийн Статистик</h2>
+  <div class="stat-row">
+    <div class="stat-cell"><div class="stat-num">8</div><div class="stat-lbl">Courses</div></div>
+    <div class="stat-cell"><div class="stat-num">56</div><div class="stat-lbl">Lessons</div></div>
+    <div class="stat-cell"><div class="stat-num">280+</div><div class="stat-lbl">Tasks</div></div>
+    <div class="stat-cell"><div class="stat-num">30+</div><div class="stat-lbl">API Routes</div></div>
+    <div class="stat-cell"><div class="stat-num">23</div><div class="stat-lbl">DB Tables</div></div>
   </div>
+</div>
+<div class="page-num">7</div>
+</div>
 
-  <h1 style="margin-top:16px;">17. Ном Зүй</h1>
+<!-- 9. ДҮГНЭЛТ + НОМ ЗҮЙ -->
+<div class="page">
+<div class="content">
+  <div class="running-header"><span>ArenaHub — Дипломын Тайлан</span><span>2026</span></div>
+  <h1>9. Дүгнэлт</h1>
+  <p>ArenaHub нь AI болон gamification технологийг нэгтгэсэн modern coding learning platform юм. Дипломын ажлын хүрээнд тавигдсан бүх зорилт амжилттай хэрэгжсэн.</p>
+  <p>Хэрэгжүүлсэн системийн гол ололтыг дурдвал: full-stack production архитектур, Groq llama-3.3-70b AI bilingual tutor, XP/combo/HP/leaderboard gamification, OAuth + JWT dual authentication, Vercel дээрх cloud deployment, Монгол-Англи localization.</p>
+  <p>Цаашид real-time multiplayer contest, AI voice tutor, mobile application, WebSocket live coding, advanced analytics зэрэг боломжуудыг нэмж хөгжүүлэхээр төлөвлөж байна.</p>
+  <div class="note"><div class="note-title">Дүгнэлт</div>ArenaHub нь Монголын edtech салбарт шинэ түвшний хэрэглэгчийн туршлага бий болгосон, production-ready full-stack платформ юм.</div>
+
+  <h1>Ашигласан Материал</h1>
   <ol>
     <li>Next.js Team. (2024). <em>Next.js 15 Documentation</em>. Vercel Inc. https://nextjs.org/docs</li>
     <li>Meta Open Source. (2024). <em>React 19 Documentation</em>. https://react.dev</li>
     <li>Prisma Team. (2024). <em>Prisma ORM v6 Documentation</em>. https://www.prisma.io/docs</li>
-    <li>PostgreSQL Global Development Group. (2024). <em>PostgreSQL 16 Documentation</em>. https://postgresql.org/docs</li>
-    <li>Tailwind Labs. (2024). <em>Tailwind CSS v3 Documentation</em>. https://tailwindcss.com</li>
+    <li>PostgreSQL Global Development Group. (2024). <em>PostgreSQL 16 Documentation</em>. https://postgresql.org</li>
+    <li>Tailwind Labs. (2024). <em>Tailwind CSS v3</em>. https://tailwindcss.com</li>
     <li>NextAuth.js. (2024). <em>NextAuth.js v4 Documentation</em>. https://next-auth.js.org</li>
     <li>Groq Inc. (2024). <em>Groq API Documentation</em>. https://console.groq.com/docs</li>
-    <li>Deterding, S. et al. (2011). <em>From game design elements to gamefulness</em>. MindTrek'11.</li>
-    <li>Hamari, J. et al. (2014). <em>Does Gamification Work?</em> HICSS 2014.</li>
+    <li>Deterding, S., Dixon, D., Khaled, R., &amp; Nacke, L. (2011). <em>From game design elements to gamefulness: Defining gamification</em>. MindTrek'11.</li>
+    <li>Hamari, J., Koivisto, J., &amp; Sarsa, H. (2014). <em>Does Gamification Work?</em> HICSS 2014.</li>
   </ol>
 </div>
-<div class="page-footer"><span>ARENAHUB · Дипломын Тайлан · 2026</span><span>11</span></div>
+<div class="page-num">8</div>
 </div>
 
 </body>
