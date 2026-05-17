@@ -6,7 +6,7 @@
 <style>
 
 *{margin:0;padding:0;box-sizing:border-box;}
-body{background:#fff;color:#111;font-family:'Times New Roman',serif;font-size:12pt;line-height:1.8;}
+body{background:#fff;color:#111;font-family:'Times New Roman',serif;font-size:11pt;line-height:1.5;}
 
 /* PAGE */
 .page{width:210mm;min-height:297mm;background:#fff;position:relative;page-break-after:always;display:flex;flex-direction:column;}
@@ -35,7 +35,7 @@ body{background:#fff;color:#111;font-family:'Times New Roman',serif;font-size:12
 h1{font-size:14pt;font-weight:bold;margin:16px 0 10px;padding-bottom:4px;border-bottom:2px solid #111;text-transform:uppercase;letter-spacing:0;}
 h2{font-size:12pt;font-weight:bold;margin:14px 0 8px;padding-left:10px;border-left:4px solid #111;}
 h3{font-size:11pt;font-weight:bold;margin:10px 0 6px;}
-p{margin-bottom:10px;text-align:justify;}
+p{margin-bottom:6px;text-align:justify;}
 
 /* HEADER */
 .page-header{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #111;padding-bottom:6px;margin-bottom:16px;font-size:9pt;color:#444;}
@@ -48,10 +48,10 @@ td{padding:6px 10px;border:1px solid #ccc;font-size:10pt;}
 tr:nth-child(even) td{background:#f5f5f5;}
 
 /* LISTS */
-ul{padding-left:20px;margin:8px 0;}
-ul li{margin-bottom:4px;font-size:11pt;}
-ol{padding-left:20px;margin:8px 0;}
-ol li{margin-bottom:4px;font-size:11pt;}
+ul{padding-left:20px;margin:6px 0;page-break-inside:avoid;}
+ul li{margin-bottom:2px;font-size:11pt;line-height:1.6;}
+ol{padding-left:20px;margin:6px 0;page-break-inside:avoid;}
+ol li{margin-bottom:2px;font-size:11pt;line-height:1.6;}
 
 /* BOX */
 .box{border:1px solid #ccc;border-left:4px solid #111;padding:10px 14px;margin:10px 0;background:#f9f9f9;}
@@ -92,8 +92,15 @@ ol li{margin-bottom:4px;font-size:11pt;}
   .page:last-child{page-break-after:avoid;}
   table{page-break-inside:avoid;}
   .box{page-break-inside:avoid;}
-  h1{page-break-after:avoid;}
-  h2{page-break-after:avoid;}
+  .col2{page-break-inside:avoid;}
+  .stat-grid{page-break-inside:avoid;}
+  .abstract{page-break-inside:avoid;}
+  .flow{page-break-inside:avoid;}
+  ul{page-break-inside:avoid;}
+  ol{page-break-inside:avoid;}
+  h1{page-break-after:avoid;margin-top:12px;}
+  h2{page-break-after:avoid;margin-top:10px;}
+  p{orphans:3;widows:3;}
 }
 @page{size:A4 portrait;margin:0;}
 </style>
