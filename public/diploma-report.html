@@ -120,9 +120,30 @@ tr:hover td{background:#eff6ff;}
 
 /* ── PRINT ── */
 @media print{
-  body{-webkit-print-color-adjust:exact;print-color-adjust:exact;}
-  .page{page-break-after:always;}
+  *{-webkit-print-color-adjust:exact !important;print-color-adjust:exact !important;}
+  body{margin:0;padding:0;background:#fff;}
+  .page{
+    page-break-after:always;
+    page-break-inside:avoid;
+    width:210mm;
+    min-height:297mm;
+    max-height:297mm;
+    overflow:hidden;
+    box-shadow:none;
+  }
   .page:last-child{page-break-after:avoid;}
+  .cover{
+    -webkit-print-color-adjust:exact !important;
+    print-color-adjust:exact !important;
+    background:linear-gradient(180deg,#05080f 0%,#0a1628 100%) !important;
+  }
+  .page-inner{padding:15mm 20mm 14mm;}
+  /* Prevent table/box splitting across pages */
+  table{page-break-inside:avoid;}
+  .box{page-break-inside:avoid;}
+  .col2{page-break-inside:avoid;}
+  h1{page-break-after:avoid;}
+  h2{page-break-after:avoid;}
 }
 @page{size:A4 portrait;margin:0;}
 </style>
