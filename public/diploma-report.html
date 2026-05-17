@@ -9,10 +9,10 @@
 body{background:#fff;color:#111;font-family:'Times New Roman',serif;font-size:11pt;line-height:1.5;}
 
 /* PAGE */
-.page{width:210mm;min-height:297mm;background:#fff;position:relative;page-break-after:always;display:flex;flex-direction:column;}
+.page{width:210mm;background:#fff;position:relative;page-break-after:always;display:flex;flex-direction:column;}
 .page:last-child{page-break-after:avoid;}
-.page-inner{flex:1;padding:25mm 25mm 20mm;}
-.page-footer{padding:6px 25mm;border-top:1px solid #ccc;display:flex;justify-content:space-between;font-size:9pt;color:#666;}
+.page-inner{flex:1;padding:18mm 22mm 16mm;}
+.page-footer{padding:5px 22mm;border-top:1px solid #ccc;display:flex;justify-content:space-between;font-size:9pt;color:#666;}
 
 /* COVER */
 .cover{display:flex;flex-direction:column;align-items:center;justify-content:space-between;padding:30mm 25mm 25mm;min-height:297mm;border:2px solid #111;}
@@ -88,7 +88,8 @@ ol li{margin-bottom:2px;font-size:11pt;line-height:1.6;}
 @media print{
   *{-webkit-print-color-adjust:exact !important;print-color-adjust:exact !important;}
   body{margin:0;padding:0;}
-  .page{page-break-after:always;overflow:hidden;}
+  .page{page-break-after:always;}
+  .page-inner{padding:18mm 20mm 14mm;}
   .page:last-child{page-break-after:avoid;}
   table{page-break-inside:avoid;}
   .box{page-break-inside:avoid;}
@@ -173,7 +174,7 @@ ol li{margin-bottom:2px;font-size:11pt;line-height:1.6;}
     <div class="stat-box"><div class="stat-num">30+</div><div class="stat-lbl">API Routes</div></div>
   </div>
 </div>
-<div class="page-footer"><span>ARENAHUB · Дипломын Тайлан · 2026</span><span>2</span></div>
+<div class="page-footer"><span>ARENAHUB · Дипломын Тайлан · 2026</span><span>1</span></div>
 </div>
 
 <!-- ══ TABLE OF CONTENTS ══ -->
@@ -201,7 +202,7 @@ ol li{margin-bottom:2px;font-size:11pt;line-height:1.6;}
     <div class="toc-item"><span class="toc-num">17.</span><span class="toc-title">Ном зүй</span><span class="toc-page">19</span></div>
   </div>
 </div>
-<div class="page-footer"><span>ARENAHUB · Дипломын Тайлан · 2026</span><span>3</span></div>
+<div class="page-footer"><span>ARENAHUB · Дипломын Тайлан · 2026</span><span>2</span></div>
 </div>
 
 <!-- ══ 1. ОРШИЛ ══ -->
@@ -226,7 +227,7 @@ ol li{margin-bottom:2px;font-size:11pt;line-height:1.6;}
     <p style="margin:0;">ArenaHub нь Монголд анх удаа gamification болон AI туторыг нэгтгэсэн coding learning platform юм. Систем нь Vercel болон Neon.tech дээр production-д deployed байна: <strong>btbn-arenahub.vercel.app</strong></p>
   </div>
 </div>
-<div class="page-footer"><span>ARENAHUB · Дипломын Тайлан · 2026</span><span>4</span></div>
+<div class="page-footer"><span>ARENAHUB · Дипломын Тайлан · 2026</span><span>3</span></div>
 </div>
 
 <!-- ══ 2. СУДАЛГАА ══ -->
@@ -273,7 +274,15 @@ ol li{margin-bottom:2px;font-size:11pt;line-height:1.6;}
     </div>
   </div>
 
-  <h1 style="margin-top:14px;">4. Зорилго ба Зорилт</h1>
+</div>
+<div class="page-footer"><span>ARENAHUB · Дипломын Тайлан · 2026</span><span>4</span></div>
+</div>
+
+<!-- ══ 4. ЗОРИЛГО ══ -->
+<div class="page">
+<div class="page-inner">
+  <div class="page-header"><span class="page-header-title">ARENAHUB · ДИПЛОМЫН ТАЙЛАН</span><span>2026</span></div>
+  <h1>4. Зорилго ба Зорилт</h1>
   <p><strong>Ерөнхий зорилго:</strong> Gamification болон AI технологид суурилсан modern coding learning platform хөгжүүлэх.</p>
   <ol>
     <li>AI tutor system — Groq API дээр суурилсан bilingual assistant</li>
@@ -474,7 +483,13 @@ ol li{margin-bottom:2px;font-size:11pt;line-height:1.6;}
     <tr><td>🔓 Full Solution</td><td style="text-align:center;font-weight:bold;">5</td><td>Бүрэн шийдэл</td></tr>
   </table>
 
-  <h1 style="margin-top:14px;">12. Gamification System</h1>
+</div>
+<div class="page-footer"><span>ARENAHUB · Дипломын Тайлан · 2026</span><span>8</span></div>
+</div>
+<div class="page">
+<div class="page-inner">
+  <div class="page-header"><span class="page-header-title">ARENAHUB · ДИПЛОМЫН ТАЙЛАН</span><span>2026</span></div>
+  <h1>12. Gamification System</h1>
   <div class="col2">
     <div>
       <h2>Game Mechanics</h2>
@@ -510,7 +525,7 @@ ol li{margin-bottom:2px;font-size:11pt;line-height:1.6;}
     <tr><td>VM sandbox</td><td>Code execution isolation</td></tr>
   </table>
 </div>
-<div class="page-footer"><span>ARENAHUB · Дипломын Тайлан · 2026</span><span>8</span></div>
+<div class="page-footer"><span>ARENAHUB · Дипломын Тайлан · 2026</span><span>9</span></div>
 </div>
 
 <!-- ══ 14-17. DEPLOYMENT / RESULTS / CONCLUSION / REFERENCES ══ -->
@@ -544,7 +559,13 @@ ol li{margin-bottom:2px;font-size:11pt;line-height:1.6;}
     <tr><td>Security (CSP/JWT/Rate limit)</td><td>✓ PASS</td></tr>
   </table>
 
-  <h1 style="margin-top:16px;">16. Дүгнэлт</h1>
+</div>
+<div class="page-footer"><span>ARENAHUB · Дипломын Тайлан · 2026</span><span>10</span></div>
+</div>
+<div class="page">
+<div class="page-inner">
+  <div class="page-header"><span class="page-header-title">ARENAHUB · ДИПЛОМЫН ТАЙЛАН</span><span>2026</span></div>
+  <h1>16. Дүгнэлт</h1>
   <p>ArenaHub нь AI болон gamification технологийг нэгтгэсэн modern coding learning platform юм. Тавигдсан бүх зорилт амжилттай хэрэгжсэн:</p>
   <ul>
     <li>Full-stack production system (Vercel + Neon cloud)</li>
@@ -572,7 +593,7 @@ ol li{margin-bottom:2px;font-size:11pt;line-height:1.6;}
     <li>Hamari, J. et al. (2014). <em>Does Gamification Work?</em> HICSS 2014.</li>
   </ol>
 </div>
-<div class="page-footer"><span>ARENAHUB · Дипломын Тайлан · 2026</span><span>9</span></div>
+<div class="page-footer"><span>ARENAHUB · Дипломын Тайлан · 2026</span><span>11</span></div>
 </div>
 
 </body>
