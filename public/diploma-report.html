@@ -4,7 +4,7 @@
 <meta charset="UTF-8"/>
 <title>ArenaHub — Дипломын Тайлан</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
 *{margin:0;padding:0;box-sizing:border-box;}
 body{background:#fff;color:#111;font-family:'Times New Roman',serif;font-size:12pt;line-height:1.8;}
 
@@ -17,14 +17,14 @@ body{background:#fff;color:#111;font-family:'Times New Roman',serif;font-size:12
 /* COVER */
 .cover{display:flex;flex-direction:column;align-items:center;justify-content:space-between;padding:30mm 25mm 25mm;min-height:297mm;border:2px solid #111;}
 .cover-top{text-align:center;width:100%;}
-.cover-school{font-size:13pt;font-weight:bold;text-align:center;line-height:1.6;margin-bottom:4mm;text-transform:uppercase;letter-spacing:1px;}
+.cover-school{font-size:13pt;font-weight:bold;text-align:center;line-height:1.6;margin-bottom:4mm;text-transform:uppercase;letter-spacing:0;}
 .cover-dept{font-size:11pt;text-align:center;line-height:1.6;margin-bottom:8mm;}
 .cover-line{border:none;border-top:1px solid #111;margin:6mm 0;}
 .cover-title-wrap{text-align:center;margin:10mm 0;}
-.cover-badge{font-size:10pt;border:1px solid #111;padding:3px 14px;display:inline-block;margin-bottom:8mm;letter-spacing:2px;}
-.cover-main-title{font-family:'Press Start 2P',monospace;font-size:22pt;letter-spacing:4px;margin-bottom:6mm;line-height:1.4;}
+.cover-badge{font-size:10pt;border:1px solid #111;padding:3px 14px;display:inline-block;margin-bottom:8mm;letter-spacing:0;}
+.cover-main-title{font-family:Arial,sans-serif;font-size:22pt;letter-spacing:0;margin-bottom:6mm;line-height:1.4;}
 .cover-sub{font-size:13pt;margin-bottom:4mm;}
-.cover-type{font-size:10pt;color:#444;letter-spacing:2px;margin-bottom:10mm;}
+.cover-type{font-size:10pt;color:#444;letter-spacing:0;margin-bottom:10mm;}
 .cover-info{width:100%;max-width:130mm;}
 .cover-row{display:flex;gap:4px;margin-bottom:5mm;padding-bottom:3mm;border-bottom:1px solid #ddd;}
 .cover-label{font-size:10pt;min-width:42mm;color:#444;}
@@ -32,14 +32,14 @@ body{background:#fff;color:#111;font-family:'Times New Roman',serif;font-size:12
 .cover-year{text-align:center;font-size:11pt;margin-top:6mm;}
 
 /* TYPOGRAPHY */
-h1{font-size:14pt;font-weight:bold;margin:16px 0 10px;padding-bottom:4px;border-bottom:2px solid #111;text-transform:uppercase;letter-spacing:1px;}
+h1{font-size:14pt;font-weight:bold;margin:16px 0 10px;padding-bottom:4px;border-bottom:2px solid #111;text-transform:uppercase;letter-spacing:0;}
 h2{font-size:12pt;font-weight:bold;margin:14px 0 8px;padding-left:10px;border-left:4px solid #111;}
 h3{font-size:11pt;font-weight:bold;margin:10px 0 6px;}
 p{margin-bottom:10px;text-align:justify;}
 
 /* HEADER */
 .page-header{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #111;padding-bottom:6px;margin-bottom:16px;font-size:9pt;color:#444;}
-.page-header-title{font-weight:bold;letter-spacing:1px;}
+.page-header-title{font-weight:bold;letter-spacing:0;}
 
 /* TABLE */
 table{width:100%;border-collapse:collapse;margin:10px 0;}
@@ -55,7 +55,7 @@ ol li{margin-bottom:4px;font-size:11pt;}
 
 /* BOX */
 .box{border:1px solid #ccc;border-left:4px solid #111;padding:10px 14px;margin:10px 0;background:#f9f9f9;}
-.box-title{font-weight:bold;font-size:10pt;margin-bottom:6px;text-transform:uppercase;letter-spacing:1px;}
+.box-title{font-weight:bold;font-size:10pt;margin-bottom:6px;text-transform:uppercase;letter-spacing:0;}
 
 /* TOC */
 .toc-item{display:flex;gap:4px;padding:4px 0;border-bottom:1px dotted #ccc;}
@@ -66,8 +66,8 @@ ol li{margin-bottom:4px;font-size:11pt;}
 /* STAT GRID */
 .stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:10px 0;}
 .stat-box{border:2px solid #111;padding:10px;text-align:center;}
-.stat-num{font-family:'Press Start 2P',monospace;font-size:18pt;line-height:1.2;margin-bottom:4px;}
-.stat-lbl{font-size:8pt;text-transform:uppercase;letter-spacing:1px;color:#444;}
+.stat-num{font-family:Arial,sans-serif;font-size:22pt;font-weight:bold;line-height:1.2;margin-bottom:4px;}
+.stat-lbl{font-size:8pt;text-transform:uppercase;letter-spacing:0;color:#444;}
 
 /* COL2 */
 .col2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:10px 0;}
@@ -82,7 +82,7 @@ ol li{margin-bottom:4px;font-size:11pt;}
 
 /* ABSTRACT */
 .abstract{border:1px solid #ccc;padding:14px 18px;margin:12px 0;}
-.abstract-title{font-weight:bold;font-size:10pt;text-transform:uppercase;letter-spacing:2px;margin-bottom:8px;border-bottom:1px solid #ccc;padding-bottom:4px;}
+.abstract-title{font-weight:bold;font-size:10pt;text-transform:uppercase;letter-spacing:0;margin-bottom:8px;border-bottom:1px solid #ccc;padding-bottom:4px;}
 
 /* PRINT */
 @media print{
@@ -107,7 +107,7 @@ ol li{margin-bottom:4px;font-size:11pt;}
     <div class="cover-school">ИНДРА КИБЕР ИНСТИТУТ</div>
     <div class="cover-dept">Программ хангамжийн тэнхим</div>
     <hr class="cover-line"/>
-    <div style="font-size:10pt;color:#444;letter-spacing:2px;margin-bottom:6mm;">ДИПЛОМЫН АЖЛЫН ТАЙЛАН</div>
+    <div style="font-size:10pt;color:#444;letter-spacing:0;margin-bottom:6mm;">ДИПЛОМЫН АЖЛЫН ТАЙЛАН</div>
   </div>
 
   <div class="cover-title-wrap">
