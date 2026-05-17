@@ -7,7 +7,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&display=swap');
 :root{--bg:#05080f;--bg2:#0a0f1e;--bg3:#0d1628;--cyan:#00d4ff;--green:#00ff88;--yellow:#ffc832;--purple:#c77dff;--red:#ff3366;--text:#e2eaf8;--dim:#3a5070;--fp:'Press Start 2P',monospace;--fm:'Share Tech Mono',monospace;--orb:'Orbitron',monospace;}
 *{margin:0;padding:0;box-sizing:border-box;}
-body{background:var(--bg);color:var(--text);font-family:var(--fm);}
+body{background:var(--bg);color:var(--text);font-family:var(--fp);}
 .slide{width:297mm;min-height:210mm;background:var(--bg);position:relative;overflow:hidden;page-break-after:always;display:flex;flex-direction:column;}
 .slide:last-child{page-break-after:avoid;}
 .slide::before{content:'';position:absolute;inset:0;pointer-events:none;background-image:linear-gradient(rgba(0,212,255,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,212,255,.03) 1px,transparent 1px);background-size:24px 24px;}
@@ -38,12 +38,12 @@ body{background:var(--bg);color:var(--text);font-family:var(--fm);}
 /* table */
 table{width:100%;border-collapse:collapse;}
 th{background:rgba(0,212,255,.1);border:1px solid rgba(0,212,255,.2);padding:7px 12px;font-family:var(--fp);font-size:5px;color:var(--cyan);letter-spacing:2px;text-align:left;}
-td{border:1px solid rgba(255,255,255,.05);padding:6px 12px;font-size:11px;color:#c0d0e0;}
+td{border:1px solid rgba(255,255,255,.05);padding:5px 10px;font-family:var(--fp);font-size:6px;color:#c0d0e0;line-height:2;}
 tr:nth-child(even) td{background:rgba(0,212,255,.02);}
 /* check item */
 .ci{display:flex;align-items:flex-start;gap:8px;margin-bottom:6px;}
 .ci-dot{width:6px;height:6px;flex-shrink:0;margin-top:4px;}
-.ci-txt{font-size:11px;color:#b0c8e0;line-height:1.7;}
+.ci-txt{font-family:var(--fp);font-size:6px;color:#b0c8e0;line-height:2;}
 .ci-bold{font-family:var(--fp);font-size:6px;color:var(--cyan);display:block;margin-bottom:2px;}
 /* badge */
 .badge{display:inline-block;padding:3px 9px;border:1px solid;font-family:var(--fp);font-size:5px;letter-spacing:1px;margin:2px;}
@@ -59,7 +59,7 @@ tr:nth-child(even) td{background:rgba(0,212,255,.02);}
 .slbl{font-family:var(--fp);font-size:4px;color:var(--dim);letter-spacing:2px;}
 /* flow */
 .flow{display:flex;align-items:center;background:rgba(8,12,22,.8);border:1px solid rgba(0,212,255,.1);padding:10px 16px;}
-.fs{flex:1;text-align:center;font-family:var(--fp);font-size:6px;color:var(--cyan);letter-spacing:1px;line-height:1.8;}
+.fs{flex:1;text-align:center;font-family:var(--fp);font-size:6px;color:var(--cyan);letter-spacing:1px;line-height:2;}
 .fa{font-size:14px;color:rgba(0,212,255,.4);flex-shrink:0;padding:0 6px;}
 /* hero */
 .hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse at 20% 50%,rgba(0,212,255,.07) 0%,transparent 50%),radial-gradient(ellipse at 80% 30%,rgba(199,125,255,.06) 0%,transparent 50%),radial-gradient(ellipse at 50% 80%,rgba(0,255,136,.04) 0%,transparent 40%);}
@@ -67,7 +67,7 @@ tr:nth-child(even) td{background:rgba(0,212,255,.02);}
 .slabel{font-family:var(--fp);font-size:5px;color:var(--cyan);letter-spacing:4px;margin-bottom:10px;display:flex;align-items:center;gap:8px;}
 .slabel::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,rgba(0,212,255,.3),transparent);}
 /* note */
-.note{position:absolute;bottom:18px;left:32px;right:100px;font-family:var(--fp);font-size:4px;color:rgba(0,212,255,.25);letter-spacing:1px;line-height:1.8;}
+.note{position:absolute;bottom:18px;left:32px;right:100px;font-family:var(--fp);font-size:4px;color:rgba(0,212,255,.25);letter-spacing:1px;line-height:2;}
 @media print{body{-webkit-print-color-adjust:exact;print-color-adjust:exact;}}
 @page{size:A4 landscape;margin:0;}
 </style>
@@ -134,7 +134,7 @@ tr:nth-child(even) td{background:rgba(0,212,255,.02);}
       </div>
       <div>
         <div style="font-family:var(--fp);font-size:6px;color:var(--green);margin-bottom:10px;letter-spacing:2px;">ЗОРИЛГО</div>
-        <div style="font-size:11px;color:#8090b0;line-height:2;margin-bottom:14px;">Програмчлал сурах процессыг <span style="color:var(--cyan);">илүү сонирхолтой</span>, <span style="color:var(--green);">interactive</span>, <span style="color:var(--yellow);">personalized</span> болгох</div>
+        <div style="font-size:7px;color:#8090b0;line-height:2;margin-bottom:14px;">Програмчлал сурах процессыг <span style="color:var(--cyan);">илүү сонирхолтой</span>, <span style="color:var(--green);">interactive</span>, <span style="color:var(--yellow);">personalized</span> болгох</div>
         <div class="g2" style="gap:8px;">
           <div class="stat"><div class="snum" style="font-size:20px;">8</div><div class="slbl">COURSES</div></div>
           <div class="stat"><div class="snum" style="font-size:20px;color:var(--green);">280+</div><div class="slbl">TASKS</div></div>
@@ -229,17 +229,17 @@ tr:nth-child(even) td{background:rgba(0,212,255,.02);}
         <div class="flow" style="flex-direction:column;gap:0;padding:0;">
           <div style="text-align:center;padding:12px;background:rgba(0,212,255,.08);border-bottom:1px solid rgba(0,212,255,.15);width:100%;">
             <div style="font-family:var(--fp);font-size:6px;color:var(--cyan);">🖥️ FRONTEND</div>
-            <div style="font-size:10px;color:var(--dim);margin-top:3px;">Next.js 15 · React 19 · TypeScript</div>
+            <div style="font-size:6px;color:var(--dim);margin-top:3px;">Next.js 15 · React 19 · TypeScript</div>
           </div>
           <div style="text-align:center;padding:6px;color:rgba(0,212,255,.4);font-size:16px;">⬇</div>
           <div style="text-align:center;padding:12px;background:rgba(0,255,136,.06);border-bottom:1px solid rgba(0,212,255,.1);width:100%;">
             <div style="font-family:var(--fp);font-size:6px;color:var(--green);">⚙️ API LAYER</div>
-            <div style="font-size:10px;color:var(--dim);margin-top:3px;">Next.js API Routes · REST · 30+ endpoints</div>
+            <div style="font-size:6px;color:var(--dim);margin-top:3px;">Next.js API Routes · REST · 30+ endpoints</div>
           </div>
           <div style="text-align:center;padding:6px;color:rgba(0,212,255,.4);font-size:16px;">⬇</div>
           <div style="text-align:center;padding:12px;background:rgba(255,200,50,.06);border-bottom:1px solid rgba(0,212,255,.1);width:100%;">
             <div style="font-family:var(--fp);font-size:6px;color:var(--yellow);">🔐 AUTH LAYER</div>
-            <div style="font-size:10px;color:var(--dim);margin-top:3px;">NextAuth · JWT · Google · GitHub</div>
+            <div style="font-size:6px;color:var(--dim);margin-top:3px;">NextAuth · JWT · Google · GitHub</div>
           </div>
           <div style="text-align:center;padding:6px;color:rgba(0,212,255,.4);font-size:16px;">⬇</div>
           <div style="display:grid;grid-template-columns:1fr 1fr;width:100%;">
@@ -299,11 +299,11 @@ tr:nth-child(even) td{background:rgba(0,212,255,.02);}
         <div style="font-family:var(--fp);font-size:5px;color:var(--purple);margin-bottom:8px;letter-spacing:2px;">ТЕХНОЛОГИ</div>
         <div class="card" style="margin-bottom:8px;border-color:rgba(0,212,255,.2);">
           <div style="font-family:var(--fp);font-size:7px;color:var(--cyan);margin-bottom:6px;">PostgreSQL</div>
-          <div style="font-size:10px;color:#8090b0;line-height:1.8;">Neon.tech — Serverless cloud · Auto-scale · SSL · Free tier · Connection pooling</div>
+          <div style="font-size:6px;color:#8090b0;line-height:2;">Neon.tech — Serverless cloud · Auto-scale · SSL · Free tier · Connection pooling</div>
         </div>
         <div class="card" style="margin-bottom:10px;border-color:rgba(199,125,255,.2);">
           <div style="font-family:var(--fp);font-size:7px;color:var(--purple);margin-bottom:6px;">Prisma ORM v6</div>
-          <div style="font-size:10px;color:#8090b0;line-height:1.8;">Type-safe queries · Auto-generated client · Schema migrations · Studio UI</div>
+          <div style="font-size:6px;color:#8090b0;line-height:2;">Type-safe queries · Auto-generated client · Schema migrations · Studio UI</div>
         </div>
         <div class="g4" style="gap:8px;">
           <div class="stat"><div class="snum" style="font-size:18px;">23</div><div class="slbl">TABLES</div></div>
@@ -334,7 +334,7 @@ tr:nth-child(even) td{background:rgba(0,212,255,.02);}
             <span class="badge bg">GitHub OAuth</span>
             <span class="badge bp">Session Cookie</span>
           </div>
-          <div style="font-size:10px;color:var(--dim);margin-top:6px;">User-friendly social login, cookie-based session</div>
+          <div style="font-size:6px;color:var(--dim);margin-top:6px;">User-friendly social login, cookie-based session</div>
         </div>
         <div class="card" style="border-color:rgba(0,255,136,.3);">
           <div style="font-family:var(--fp);font-size:7px;color:var(--green);margin-bottom:8px;">2. CUSTOM JWT — EMAIL/PASSWORD</div>
@@ -342,7 +342,7 @@ tr:nth-child(even) td{background:rgba(0,212,255,.02);}
             <span class="badge bg">Access Token (15m)</span>
             <span class="badge by">Refresh Token (7d)</span>
           </div>
-          <div style="font-size:10px;color:var(--dim);margin-top:6px;">API/Mobile flexibility, Bearer token</div>
+          <div style="font-size:6px;color:var(--dim);margin-top:6px;">API/Mobile flexibility, Bearer token</div>
         </div>
       </div>
       <div>
@@ -376,7 +376,7 @@ tr:nth-child(even) td{background:rgba(0,212,255,.02);}
       <div>
         <div class="card" style="margin-bottom:8px;border-color:rgba(255,51,102,.3);">
           <div style="font-family:var(--fp);font-size:7px;color:var(--red);margin-bottom:8px;">🤖 GROQ API</div>
-          <div style="font-size:10px;color:#8090b0;line-height:1.8;">Model: <span style="color:var(--green);">llama-3.3-70b-versatile</span><br/>Ultra-fast inference · Low latency · Free tier<br/>Bilingual: МН + EN · Max 1024 tokens</div>
+          <div style="font-size:6px;color:#8090b0;line-height:2;">Model: <span style="color:var(--green);">llama-3.3-70b-versatile</span><br/>Ultra-fast inference · Low latency · Free tier<br/>Bilingual: МН + EN · Max 1024 tokens</div>
         </div>
         <div style="font-family:var(--fp);font-size:5px;color:var(--yellow);margin-bottom:8px;letter-spacing:2px;">AI FEATURES</div>
         <div class="ci"><div class="ci-dot" style="background:var(--green)"></div><div class="ci-txt"><span class="ci-bold">Hint System</span>Шийдэл өгөхгүй — алхмаар чиглүүлнэ</div></div>
@@ -394,7 +394,7 @@ tr:nth-child(even) td{background:rgba(0,212,255,.02);}
           <tr><td>🔍 Debug help</td><td style="color:var(--yellow);font-family:var(--fp);text-align:center;">3</td><td style="color:var(--dim);">Error analysis</td></tr>
           <tr><td>🔓 Full solution</td><td style="color:var(--red);font-family:var(--fp);text-align:center;">5</td><td style="color:var(--dim);">Complete answer</td></tr>
         </table>
-        <div style="font-size:10px;color:var(--dim);line-height:1.8;background:rgba(255,51,102,.04);padding:10px;border-left:2px solid var(--red);">
+        <div style="font-size:6px;color:var(--dim);line-height:2;background:rgba(255,51,102,.04);padding:10px;border-left:2px solid var(--red);">
           <strong style="color:var(--red);">Яагаад AI?</strong><br/>
           Personalized learning · Instant feedback · Teacher dependency багасна · Retention нэмэгдэнэ
         </div>
@@ -490,7 +490,7 @@ tr:nth-child(even) td{background:rgba(0,212,255,.02);}
           <tr><td style="color:var(--yellow);">TypeScript</td><td>Type checking</td></tr>
           <tr><td style="color:var(--purple);">dynamic import</td><td>Lazy loading</td></tr>
         </table>
-        <div style="background:rgba(8,12,22,.9);border:1px solid rgba(0,212,255,.15);padding:12px;font-family:var(--fm);font-size:10px;border-left:3px solid var(--cyan);">
+        <div style="background:rgba(8,12,22,.9);border:1px solid rgba(0,212,255,.15);padding:12px;font-family:var(--fp);font-size:6px;border-left:3px solid var(--cyan);">
           <div style="color:#569cd6;">function </div>
           <div style="color:var(--yellow);">solution<span style="color:#c0c0c0;">(</span><span style="color:#9cdcfe;">input</span><span style="color:#c0c0c0;">)</span> {</div>
           <div style="color:#c0c0c0;padding-left:16px;"><span style="color:#c586c0;">return</span> input + <span style="color:#b5cea8;">10</span>;</div>
@@ -518,12 +518,12 @@ tr:nth-child(even) td{background:rgba(0,212,255,.02);}
           <div class="card" style="text-align:center;border-color:rgba(0,212,255,.3);">
             <div style="font-size:28px;margin-bottom:6px;">🇲🇳</div>
             <div style="font-family:var(--fp);font-size:7px;color:var(--cyan);">МОНГОЛ</div>
-            <div style="font-size:10px;color:var(--dim);margin-top:4px;">Үндсэн хэл</div>
+            <div style="font-size:6px;color:var(--dim);margin-top:4px;">Үндсэн хэл</div>
           </div>
           <div class="card" style="text-align:center;border-color:rgba(0,255,136,.3);">
             <div style="font-size:28px;margin-bottom:6px;">🇺🇸</div>
             <div style="font-family:var(--fp);font-size:7px;color:var(--green);">ENGLISH</div>
-            <div style="font-size:10px;color:var(--dim);margin-top:4px;">International</div>
+            <div style="font-size:6px;color:var(--dim);margin-top:4px;">International</div>
           </div>
         </div>
         <div style="font-family:var(--fp);font-size:5px;color:var(--yellow);margin-bottom:8px;letter-spacing:2px;">FEATURES</div>
@@ -537,9 +537,9 @@ tr:nth-child(even) td{background:rgba(0,212,255,.02);}
         <div style="font-family:var(--fp);font-size:5px;color:var(--purple);margin-bottom:8px;letter-spacing:2px;">ТЕХНИК ХЭРЭГЖИЛТ</div>
         <div class="card" style="margin-bottom:10px;">
           <div style="font-family:var(--fp);font-size:6px;color:var(--purple);margin-bottom:6px;">React Context API</div>
-          <div style="font-size:10px;color:#8090b0;line-height:1.8;">LanguageContext → бүх component-д хэрэглэгдэнэ<br/>useLang() hook → t('key') функц</div>
+          <div style="font-size:6px;color:#8090b0;line-height:2;">LanguageContext → бүх component-д хэрэглэгдэнэ<br/>useLang() hook → t('key') функц</div>
         </div>
-        <div style="background:rgba(8,12,22,.9);border:1px solid rgba(0,212,255,.15);padding:12px;font-family:var(--fm);font-size:10px;border-left:3px solid var(--purple);">
+        <div style="background:rgba(8,12,22,.9);border:1px solid rgba(0,212,255,.15);padding:12px;font-family:var(--fp);font-size:6px;border-left:3px solid var(--purple);">
           <div style="color:#569cd6;">const</div>
           <div style="color:#9cdcfe;padding-left:8px;">{ lang, setLang, t } = useLang()</div>
           <br/>
@@ -585,9 +585,9 @@ tr:nth-child(even) td{background:rgba(0,212,255,.02);}
         <div style="margin-top:10px;padding:10px;background:rgba(255,51,102,.04);border:1px solid rgba(255,51,102,.2);">
           <div style="font-family:var(--fp);font-size:4px;color:var(--red);margin-bottom:6px;letter-spacing:2px;">PRODUCTION SECURITY SCORES</div>
           <div style="display:flex;gap:8px;">
-            <div style="flex:1;text-align:center;"><div style="font-family:var(--fp);font-size:12px;color:var(--yellow);">B+</div><div style="font-size:9px;color:var(--dim);">Security</div></div>
-            <div style="flex:1;text-align:center;"><div style="font-family:var(--fp);font-size:12px;color:var(--green);">A</div><div style="font-size:9px;color:var(--dim);">Headers</div></div>
-            <div style="flex:1;text-align:center;"><div style="font-family:var(--fp);font-size:12px;color:var(--cyan);">A</div><div style="font-size:9px;color:var(--dim);">Auth</div></div>
+            <div style="flex:1;text-align:center;"><div style="font-family:var(--fp);font-size:7px;color:var(--yellow);">B+</div><div style="font-size:9px;color:var(--dim);">Security</div></div>
+            <div style="flex:1;text-align:center;"><div style="font-family:var(--fp);font-size:7px;color:var(--green);">A</div><div style="font-size:9px;color:var(--dim);">Headers</div></div>
+            <div style="flex:1;text-align:center;"><div style="font-family:var(--fp);font-size:7px;color:var(--cyan);">A</div><div style="font-size:9px;color:var(--dim);">Auth</div></div>
           </div>
         </div>
       </div>
@@ -638,7 +638,7 @@ tr:nth-child(even) td{background:rgba(0,212,255,.02);}
         <div class="ci"><div class="ci-dot" style="background:var(--red)"></div><div class="ci-txt"><span class="ci-bold">Free tier</span>Нийт зардал $0</div></div>
         <div style="margin-top:10px;" class="card" style="border-color:rgba(0,255,136,.2);">
           <div style="font-family:var(--fp);font-size:5px;color:var(--green);margin-bottom:4px;">🌐 PRODUCTION URL</div>
-          <div style="font-size:10px;color:var(--cyan);">btbn-arenahub.vercel.app</div>
+          <div style="font-size:6px;color:var(--cyan);">btbn-arenahub.vercel.app</div>
         </div>
       </div>
     </div>
@@ -710,7 +710,7 @@ tr:nth-child(even) td{background:rgba(0,212,255,.02);}
         <div class="ci"><div class="ci-dot" style="background:var(--purple)"></div><div class="ci-txt"><span class="ci-bold">Vercel Blob</span>Screenshot cloud storage</div></div>
         <div style="margin-top:14px;padding:12px;background:rgba(0,212,255,.04);border:1px solid rgba(0,212,255,.15);text-align:center;">
           <div style="font-family:var(--fp);font-size:5px;color:var(--dim);margin-bottom:8px;letter-spacing:3px;">VISION</div>
-          <div style="font-size:11px;color:#b0c8e0;line-height:1.9;">ArenaHub-г Монголын <span style="color:var(--cyan);">IT боловсролын</span><br/>хамгийн <span style="color:var(--green);">innovative платформ</span> болгох</div>
+          <div style="font-size:7px;color:#b0c8e0;line-height:1.9;">ArenaHub-г Монголын <span style="color:var(--cyan);">IT боловсролын</span><br/>хамгийн <span style="color:var(--green);">innovative платформ</span> болгох</div>
         </div>
       </div>
     </div>
@@ -727,7 +727,7 @@ tr:nth-child(even) td{background:rgba(0,212,255,.02);}
     <div style="font-family:var(--fp);font-size:5px;color:var(--dim);letter-spacing:6px;margin-bottom:12px;">ДҮГНЭЛТ</div>
     <svg width="56" height="56" style="margin-bottom:14px;"><use href="#ah-logo"/></svg>
     <div style="font-family:var(--orb);font-weight:900;font-size:32px;color:var(--cyan);letter-spacing:4px;text-shadow:0 0 40px rgba(0,212,255,.5);margin-bottom:8px;">ARENAHUB</div>
-    <div style="max-width:580px;font-size:12px;color:#8090b0;line-height:2;margin-bottom:20px;">
+    <div style="max-width:580px;font-size:7px;color:#8090b0;line-height:2;margin-bottom:20px;">
       ArenaHub нь <span style="color:var(--cyan);">modern full-stack architecture</span>,
       <span style="color:var(--green);">AI-powered learning</span>,
       <span style="color:var(--yellow);">gamification system</span> болон
