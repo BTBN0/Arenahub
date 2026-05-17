@@ -62,7 +62,7 @@ function TokenBadge({ cost }: { cost:number }) {
 
 export default function AIPage() {
   const { user, isAuthenticated, loading } = useAuth()
-  const { t } = useLang()
+  const { t, lang } = useLang()
   const router = useRouter()
   const [msgs,       setMsgs]       = useState<Msg[]>([])
   const [input,      setInput]      = useState('')
@@ -114,7 +114,7 @@ export default function AIPage() {
       const res = await fetch('/api/ai', {
         method:'POST',
         headers:{ 'Content-Type':'application/json', Authorization:`Bearer ${token}` },
-        body: JSON.stringify({ message:msg, requestType:type, history:newMsgs.slice(-8) }),
+        body: JSON.stringify({ message:msg, requestType:type, history:newMsgs.slice(-8), lang }),
       })
       const d = await res.json()
       if (res.status === 402) {
