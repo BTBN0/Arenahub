@@ -68,7 +68,7 @@ function RewardCard({ reward, userReward, onClaim, claiming }: { reward:Reward; 
 
           <div style={{ flex:1, minWidth:0 }}>
             <div style={{ display:'flex', alignItems:'flex-start', gap:8, marginBottom:5 }}>
-              <span style={{ fontFamily:'var(--fp)', fontSize:10, color: assigned ? '#c0d0e0' : '#2a3a54', lineHeight:1.2 }}>{reward.title}</span>
+              <span style={{ fontFamily:'var(--fp)', fontSize:13, color: assigned ? '#c0d0e0' : '#2a3a54', lineHeight:1.2 }}>{reward.title}</span>
               <span style={{ fontFamily:'var(--fp)', fontSize:3, color:col, padding:'2px 6px', border:`1px solid ${col}44`, background:`${col}0f`, marginLeft:'auto', flexShrink:0, letterSpacing:1 }}>
                 {TYPE_ICON[reward.type] ?? '◆'} {reward.type.toUpperCase()}
               </span>
@@ -76,25 +76,25 @@ function RewardCard({ reward, userReward, onClaim, claiming }: { reward:Reward; 
             <div style={{ fontFamily:'var(--fm)', fontSize:11, color:'#3a5070', marginBottom:10, lineHeight:1.5 }}>{reward.description}</div>
             <div style={{ display:'flex', alignItems:'center', gap:8 }}>
               {reward.value > 0 && (
-                <span style={{ fontFamily:'var(--fp)', fontSize:8, color:col, background:`${col}12`, padding:'2px 8px', border:`1px solid ${col}33` }}>
+                <span style={{ fontFamily:'var(--fp)', fontSize:11, color:col, background:`${col}12`, padding:'2px 8px', border:`1px solid ${col}33` }}>
                   +{reward.value} {reward.type.toUpperCase()}
                 </span>
               )}
               {claimed && userReward?.claimedAt && (
-                <span style={{ fontFamily:'var(--fp)', fontSize:10, color:`${col}66`, marginLeft:'auto' }}>
+                <span style={{ fontFamily:'var(--fp)', fontSize:13, color:`${col}66`, marginLeft:'auto' }}>
                   ✓ {new Date(userReward.claimedAt).toLocaleDateString('mn-MN')}
                 </span>
               )}
               {claimable && (
                 <button onClick={() => onClaim(reward.id)} disabled={isClaiming}
-                  style={{ fontFamily:'var(--fp)', fontSize:9, padding:'7px 18px', cursor: isClaiming ? 'wait' : 'pointer', background: isClaiming ? `${col}22` : `${col}22`, color:col, border:`1px solid ${col}`, marginLeft:'auto', transition:'background .15s,box-shadow .15s', boxShadow: !isClaiming ? `0 0 10px ${col}44` : 'none', letterSpacing:1 }}
+                  style={{ fontFamily:'var(--fp)', fontSize:12, padding:'7px 18px', cursor: isClaiming ? 'wait' : 'pointer', background: isClaiming ? `${col}22` : `${col}22`, color:col, border:`1px solid ${col}`, marginLeft:'auto', transition:'background .15s,box-shadow .15s', boxShadow: !isClaiming ? `0 0 10px ${col}44` : 'none', letterSpacing:1 }}
                   onMouseEnter={e => { if (!isClaiming) (e.currentTarget as HTMLButtonElement).style.background = `${col}44` }}
                   onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = `${col}22` }}>
                   {isClaiming ? t('rw_claiming') : t('rw_claim')}
                 </button>
               )}
               {!assigned && (
-                <span style={{ fontFamily:'var(--fp)', fontSize:10, color:'#1a3050', marginLeft:'auto', letterSpacing:1 }}>LOCKED</span>
+                <span style={{ fontFamily:'var(--fp)', fontSize:13, color:'#1a3050', marginLeft:'auto', letterSpacing:1 }}>LOCKED</span>
               )}
             </div>
           </div>
@@ -182,24 +182,24 @@ export default function RewardsPage() {
           <div style={{ position:'absolute', top:0, left:0, right:0, height:1, background:'linear-gradient(90deg,transparent,#ff6b3544,transparent)' }}/>
 
           <div style={{ padding:'16px 28px', borderRight:'1px solid #0d1a28', flexShrink:0, display:'flex', flexDirection:'column', justifyContent:'center', gap:6 }}>
-            <div style={{ fontFamily:'var(--fp)', fontSize:8, color:'#1a3050', letterSpacing:4 }}>ARENAHUB</div>
-            <div style={{ fontFamily:'var(--fp)', fontSize:10, color:'#ff6b35', letterSpacing:3, textShadow:'0 0 12px rgba(255,107,53,.4)' }}>LOOT</div>
+            <div style={{ fontFamily:'var(--fp)', fontSize:11, color:'#1a3050', letterSpacing:4 }}>ARENAHUB</div>
+            <div style={{ fontFamily:'var(--fp)', fontSize:13, color:'#ff6b35', letterSpacing:3, textShadow:'0 0 12px rgba(255,107,53,.4)' }}>LOOT</div>
           </div>
 
           <div style={{ flex:1, padding:'0 28px', display:'flex', alignItems:'center', gap:16 }}>
             <div style={{ display:'flex', alignItems:'center', gap:10 }}>
-              <span style={{ fontFamily:'var(--fp)', fontSize:8, color:'#1a3050' }}>▸</span>
-              <span style={{ fontFamily:'var(--fp)', fontSize:10, color:'#ff6b35', letterSpacing:3, textShadow:'0 0 10px rgba(255,107,53,.3)' }}>{t('rw_title')}</span>
+              <span style={{ fontFamily:'var(--fp)', fontSize:11, color:'#1a3050' }}>▸</span>
+              <span style={{ fontFamily:'var(--fp)', fontSize:13, color:'#ff6b35', letterSpacing:3, textShadow:'0 0 10px rgba(255,107,53,.3)' }}>{t('rw_title')}</span>
             </div>
             {claimableRewards.length > 0 && (
-              <span style={{ fontFamily:'var(--fp)', fontSize:9, color:'#ffd700', border:'1px solid #ffd70033', padding:'3px 10px', background:'rgba(255,215,0,.06)', letterSpacing:1, animation:'rw-pulse 2s ease-in-out infinite', '--pulse-col':'rgba(255,215,0,.2)' } as React.CSSProperties}>
+              <span style={{ fontFamily:'var(--fp)', fontSize:12, color:'#ffd700', border:'1px solid #ffd70033', padding:'3px 10px', background:'rgba(255,215,0,.06)', letterSpacing:1, animation:'rw-pulse 2s ease-in-out infinite', '--pulse-col':'rgba(255,215,0,.2)' } as React.CSSProperties}>
                 {claimableRewards.length} AVAILABLE
               </span>
             )}
           </div>
 
           <div style={{ padding:'16px 28px', borderLeft:'1px solid #0d1a28', display:'flex', alignItems:'center', flexShrink:0 }}>
-            <span style={{ fontFamily:'var(--fp)', fontSize:10, color:'#3a5070' }}>{user?.username?.toUpperCase()} · LV.{user?.level ?? 1}</span>
+            <span style={{ fontFamily:'var(--fp)', fontSize:13, color:'#3a5070' }}>{user?.username?.toUpperCase()} · LV.{user?.level ?? 1}</span>
           </div>
         </div>
 
@@ -213,7 +213,7 @@ export default function RewardsPage() {
           ].map((s, i) => (
             <div key={s.k} style={{ padding:'18px 24px', borderRight: i < 3 ? '1px solid #0d1a28' : 'none', position:'relative' }}>
               <div style={{ position:'absolute', top:0, left:0, right:0, height:2, background:`linear-gradient(90deg,transparent,${s.col}44,transparent)` }}/>
-              <div style={{ fontFamily:'var(--fp)', fontSize:8, color:'#1a3050', letterSpacing:3, marginBottom:8 }}>{s.k}</div>
+              <div style={{ fontFamily:'var(--fp)', fontSize:11, color:'#1a3050', letterSpacing:3, marginBottom:8 }}>{s.k}</div>
               <div style={{ fontFamily:'var(--fp)', fontSize:14, color:s.col, textShadow:`0 0 10px ${s.col}55`, marginBottom: s.bar ? 8 : 0 }}>{s.v}</div>
               {s.bar > 0 && (
                 <div style={{ height:2, background:'rgba(12,18,34,.62)',  backdropFilter:'blur(16px)' }}>
@@ -229,7 +229,7 @@ export default function RewardsPage() {
 
           {/* Flash */}
           {flash && (
-            <div style={{ fontFamily:'var(--fp)', fontSize:9, padding:'11px 18px', marginBottom:16, color: flash.ok ? '#00ff41' : '#ff2d55', border:`1px solid ${flash.ok ? '#00ff4144' : '#ff2d5544'}`, background:`${flash.ok ? '#00ff41' : '#ff2d55'}0d`, letterSpacing:1 }}>
+            <div style={{ fontFamily:'var(--fp)', fontSize:12, padding:'11px 18px', marginBottom:16, color: flash.ok ? '#00ff41' : '#ff2d55', border:`1px solid ${flash.ok ? '#00ff4144' : '#ff2d5544'}`, background:`${flash.ok ? '#00ff41' : '#ff2d55'}0d`, letterSpacing:1 }}>
               {flash.msg}
             </div>
           )}
@@ -237,7 +237,7 @@ export default function RewardsPage() {
           {/* Filters */}
           <div style={{ display:'flex', gap:6, marginBottom:18, flexWrap:'wrap', alignItems:'center' }}>
             {([['ALL','rw_all'],['AVAILABLE','rw_available'],['CLAIMED','rw_claimed'],['LOCKED','ach_locked']] as const).map(([f, tk]) => (
-              <button key={f} onClick={() => setStatusFilter(f)} style={{ fontFamily:'var(--fp)', fontSize:9, padding:'7px 14px', cursor:'pointer', background: statusFilter===f ? 'rgba(255,107,53,.1)' : 'transparent', color: statusFilter===f ? '#ff6b35' : '#2a3a54', border:`1px solid ${statusFilter===f ? '#ff6b3566' : '#0d1a28'}`, letterSpacing:1, transition:'all .15s' }}>
+              <button key={f} onClick={() => setStatusFilter(f)} style={{ fontFamily:'var(--fp)', fontSize:12, padding:'7px 14px', cursor:'pointer', background: statusFilter===f ? 'rgba(255,107,53,.1)' : 'transparent', color: statusFilter===f ? '#ff6b35' : '#2a3a54', border:`1px solid ${statusFilter===f ? '#ff6b3566' : '#0d1a28'}`, letterSpacing:1, transition:'all .15s' }}>
                 {f === 'AVAILABLE' && claimableRewards.length > 0 ? `${t(tk)} (${claimableRewards.length})` : t(tk)}
               </button>
             ))}
@@ -246,7 +246,7 @@ export default function RewardsPage() {
               const col   = tp === 'ALL' ? '#2a3a54' : (TYPE_COLOR[tp] ?? '#2a3a54')
               const active = typeFilter === tp
               return (
-                <button key={tp} onClick={() => setTypeFilter(tp)} style={{ fontFamily:'var(--fp)', fontSize:9, padding:'7px 14px', cursor:'pointer', background: active ? `${col}12` : 'transparent', color: active ? col : '#2a3a54', border:`1px solid ${active ? col+'55' : '#0d1a28'}`, letterSpacing:1, transition:'all .15s' }}>
+                <button key={tp} onClick={() => setTypeFilter(tp)} style={{ fontFamily:'var(--fp)', fontSize:12, padding:'7px 14px', cursor:'pointer', background: active ? `${col}12` : 'transparent', color: active ? col : '#2a3a54', border:`1px solid ${active ? col+'55' : '#0d1a28'}`, letterSpacing:1, transition:'all .15s' }}>
                   {tp === 'ALL' ? t('rw_all') : `${TYPE_ICON[tp] ?? ''} ${tp.toUpperCase()}`}
                 </button>
               )
@@ -258,7 +258,7 @@ export default function RewardsPage() {
             <div style={{ marginBottom:24 }}>
               <div style={{ display:'flex', alignItems:'center', gap:10, marginBottom:12 }}>
                 <div style={{ width:3, height:18, background:'#ffd700', boxShadow:'0 0 8px #ffd700' }}/>
-                <span style={{ fontFamily:'var(--fp)', fontSize:9, color:'#ffd700', letterSpacing:2 }}>CLAIM ХИЙХ БОЛОМЖТОЙ</span>
+                <span style={{ fontFamily:'var(--fp)', fontSize:12, color:'#ffd700', letterSpacing:2 }}>CLAIM ХИЙХ БОЛОМЖТОЙ</span>
                 <div style={{ flex:1, height:1, background:'linear-gradient(90deg,#ffd70033,transparent)' }}/>
               </div>
               <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(320px,1fr))', gap:10 }}>
@@ -294,7 +294,7 @@ export default function RewardsPage() {
                 <>
                   <div style={{ display:'flex', alignItems:'center', gap:10, marginBottom:12, marginTop: claimableRewards.length > 0 ? 12 : 0 }}>
                     <div style={{ width:3, height:18, background:'#1a3050' }}/>
-                    <span style={{ fontFamily:'var(--fp)', fontSize:9, color:'#2a3a54', letterSpacing:2 }}>ALL REWARDS</span>
+                    <span style={{ fontFamily:'var(--fp)', fontSize:12, color:'#2a3a54', letterSpacing:2 }}>ALL REWARDS</span>
                     <div style={{ flex:1, height:1, background:'rgba(13,20,38,.65)', backdropFilter:'blur(16px)' }}/>
                   </div>
                   <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(320px,1fr))', gap:10 }}>
@@ -312,7 +312,7 @@ export default function RewardsPage() {
           {!loading && allRewards.length === 0 && (
             <div style={{ textAlign:'center', padding:'56px 24px', border:'1px dashed #0d1a28', marginTop:8 }}>
               <div style={{ fontSize:40, marginBottom:14 }}>🎁</div>
-              <div style={{ fontFamily:'var(--fp)', fontSize:8, color:'#1a3050', letterSpacing:2, marginBottom:8 }}>REWARD БАЙХГҮЙ</div>
+              <div style={{ fontFamily:'var(--fp)', fontSize:11, color:'#1a3050', letterSpacing:2, marginBottom:8 }}>REWARD БАЙХГҮЙ</div>
               <div style={{ fontFamily:'var(--fm)', fontSize:11, color:'#0d1a28' }}>Admin panel → Rewards → ⚡ SEED DEFAULTS</div>
             </div>
           )}

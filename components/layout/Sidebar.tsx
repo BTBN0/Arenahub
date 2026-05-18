@@ -262,7 +262,7 @@ export default function Sidebar() {
                     <span style={{
                       position:'absolute',top:-6,right:-8,
                       background:'#ff2d55',color:'#fff',
-                      fontSize:8,padding:'1px 4px',
+                      fontSize:11,padding:'1px 4px',
                       fontFamily:'var(--fp)',lineHeight:1.4,
                     }}>{notifCount}</span>
                   )}
@@ -270,7 +270,7 @@ export default function Sidebar() {
 
                 {/* Label */}
                 <span style={{
-                  fontFamily:'var(--fp)',fontSize:10,letterSpacing:1,
+                  fontFamily:'var(--fp)',fontSize:13,letterSpacing:1,
                   opacity:open?1:0,
                   transform:open?'translateX(0)':'translateX(-6px)',
                   transition:'opacity .18s, transform .18s',
@@ -320,7 +320,7 @@ export default function Sidebar() {
               <rect x="4" y="7" width="2" height="2" fill="currentColor"/>
             </svg>
             <span style={{
-              fontFamily:'var(--fp)',fontSize:10,letterSpacing:1,color:'inherit',
+              fontFamily:'var(--fp)',fontSize:13,letterSpacing:1,color:'inherit',
               opacity:open?1:0,
               transform:open?'translateX(0)':'translateX(-6px)',
               transition:'opacity .18s, transform .18s',
@@ -415,7 +415,7 @@ export default function Sidebar() {
               border:'1px solid #bf5af2',
               background:'rgba(191,90,242,0.12)',
               display:'flex',alignItems:'center',justifyContent:'center',
-              fontSize:10,color:'#bf5af2',fontFamily:'var(--fp)',
+              fontSize:13,color:'#bf5af2',fontFamily:'var(--fp)',
             }}>
               {avatar}
             </div>
@@ -425,11 +425,11 @@ export default function Sidebar() {
               transition:'opacity .18s, transform .18s',
               minWidth:0,overflow:'hidden',
             }}>
-              <div style={{fontFamily:'var(--fp)',fontSize:10,color:'var(--text)',
+              <div style={{fontFamily:'var(--fp)',fontSize:13,color:'var(--text)',
                 whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis'}}>
                 {uname}
               </div>
-              <div style={{fontFamily:'var(--fp)',fontSize:8,color:'var(--dim2)',marginTop:3}}>
+              <div style={{fontFamily:'var(--fp)',fontSize:11,color:'var(--dim2)',marginTop:3}}>
                 LV{level} · {xp}XP
               </div>
             </div>
@@ -463,7 +463,7 @@ export default function Sidebar() {
               <path d="M2 2 Q0 4 0 5 Q0 9 5 9 Q10 9 10 5 Q10 4 8 2" stroke="currentColor" strokeWidth="1.5" fill="none"/>
             </svg>
             <span style={{
-              fontFamily:'var(--fp)',fontSize:10,letterSpacing:1,
+              fontFamily:'var(--fp)',fontSize:13,letterSpacing:1,
               opacity:open?1:0,
               transition:'opacity .18s',
             }}>LOGOUT</span>

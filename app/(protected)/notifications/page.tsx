@@ -70,28 +70,28 @@ export default function NotificationsPage() {
           <div style={{ position:'absolute', top:0, left:0, right:0, height:1, background:'linear-gradient(90deg,transparent,#00e5ff44,transparent)' }}/>
 
           <div style={{ padding:'16px 28px', borderRight:'1px solid #0d1a28', flexShrink:0, display:'flex', flexDirection:'column', justifyContent:'center', gap:6 }}>
-            <div style={{ fontFamily:'var(--fp)', fontSize:8, color:'#1a3050', letterSpacing:4 }}>ARENAHUB</div>
-            <div style={{ fontFamily:'var(--fp)', fontSize:10, color:'#00e5ff', letterSpacing:3, textShadow:'0 0 12px rgba(0,229,255,.4)' }}>INBOX</div>
+            <div style={{ fontFamily:'var(--fp)', fontSize:11, color:'#1a3050', letterSpacing:4 }}>ARENAHUB</div>
+            <div style={{ fontFamily:'var(--fp)', fontSize:13, color:'#00e5ff', letterSpacing:3, textShadow:'0 0 12px rgba(0,229,255,.4)' }}>INBOX</div>
           </div>
 
           <div style={{ flex:1, padding:'0 28px', display:'flex', alignItems:'center', gap:16 }}>
             <div style={{ display:'flex', alignItems:'center', gap:10 }}>
-              <span style={{ fontFamily:'var(--fp)', fontSize:8, color:'#1a3050' }}>▸</span>
-              <span style={{ fontFamily:'var(--fp)', fontSize:10, color:'#00e5ff', letterSpacing:3, textShadow:'0 0 10px rgba(0,229,255,.3)' }}>{t('nt_title')}</span>
+              <span style={{ fontFamily:'var(--fp)', fontSize:11, color:'#1a3050' }}>▸</span>
+              <span style={{ fontFamily:'var(--fp)', fontSize:13, color:'#00e5ff', letterSpacing:3, textShadow:'0 0 10px rgba(0,229,255,.3)' }}>{t('nt_title')}</span>
             </div>
             {unread > 0 && (
-              <span style={{ fontFamily:'var(--fp)', fontSize:9, color:'#ff2d55', border:'1px solid #ff2d5533', padding:'3px 10px', background:'rgba(255,45,85,.06)', letterSpacing:1 }}>
+              <span style={{ fontFamily:'var(--fp)', fontSize:12, color:'#ff2d55', border:'1px solid #ff2d5533', padding:'3px 10px', background:'rgba(255,45,85,.06)', letterSpacing:1 }}>
                 {unread} UNREAD
               </span>
             )}
             <div style={{ width:1, height:24, background:'rgba(13,20,38,.65)', backdropFilter:'blur(16px)' }}/>
-            <span style={{ fontFamily:'var(--fp)', fontSize:9, color:'#2a3a54', letterSpacing:2 }}>{notifs.length} НИЙТ</span>
+            <span style={{ fontFamily:'var(--fp)', fontSize:12, color:'#2a3a54', letterSpacing:2 }}>{notifs.length} НИЙТ</span>
           </div>
 
           {unread > 0 && (
             <div style={{ padding:'0 28px', borderLeft:'1px solid #0d1a28', display:'flex', alignItems:'center', flexShrink:0 }}>
               <button onClick={markAll}
-                style={{ fontFamily:'var(--fp)', fontSize:9, color:'#00e5ff', background:'transparent', border:'1px solid #00e5ff33', padding:'8px 18px', cursor:'pointer', letterSpacing:1, transition:'all .15s' }}
+                style={{ fontFamily:'var(--fp)', fontSize:12, color:'#00e5ff', background:'transparent', border:'1px solid #00e5ff33', padding:'8px 18px', cursor:'pointer', letterSpacing:1, transition:'all .15s' }}
                 onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = 'rgba(0,229,255,.08)'; (e.currentTarget as HTMLButtonElement).style.borderColor = '#00e5ff88' }}
                 onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = 'transparent'; (e.currentTarget as HTMLButtonElement).style.borderColor = '#00e5ff33' }}>
                 {t('nt_mark_all')}
@@ -109,7 +109,7 @@ export default function NotificationsPage() {
           ].map((s, i) => (
             <div key={s.k} style={{ padding:'16px 24px', borderRight: i < 2 ? '1px solid #0d1a28' : 'none', position:'relative' }}>
               <div style={{ position:'absolute', top:0, left:0, right:0, height:2, background:`linear-gradient(90deg,transparent,${s.col}44,transparent)` }}/>
-              <div style={{ fontFamily:'var(--fp)', fontSize:8, color:'#1a3050', letterSpacing:3, marginBottom:6 }}>{s.k}</div>
+              <div style={{ fontFamily:'var(--fp)', fontSize:11, color:'#1a3050', letterSpacing:3, marginBottom:6 }}>{s.k}</div>
               <div style={{ fontFamily:'var(--fp)', fontSize:14, color:s.col, textShadow:`0 0 10px ${s.col}55` }}>{s.v}</div>
             </div>
           ))}
@@ -120,7 +120,7 @@ export default function NotificationsPage() {
           {notifs.length === 0 && (
             <div style={{ textAlign:'center', padding:'80px 0' }}>
               <div style={{ fontSize:48, marginBottom:16 }}>📭</div>
-              <div style={{ fontFamily:'var(--fp)', fontSize:8, color:'#1a3050', letterSpacing:3 }}>{t('nt_no_notifs')}</div>
+              <div style={{ fontFamily:'var(--fp)', fontSize:11, color:'#1a3050', letterSpacing:3 }}>{t('nt_no_notifs')}</div>
             </div>
           )}
 
@@ -146,17 +146,17 @@ export default function NotificationsPage() {
                     </div>
 
                     <div style={{ flex:1 }}>
-                      <div style={{ fontFamily:'var(--fp)', fontSize:10, color: n.isRead ? '#3a5070' : '#c0d0e0', letterSpacing:1, marginBottom:5 }}>{n.title}</div>
+                      <div style={{ fontFamily:'var(--fp)', fontSize:13, color: n.isRead ? '#3a5070' : '#c0d0e0', letterSpacing:1, marginBottom:5 }}>{n.title}</div>
                       <div style={{ fontFamily:'var(--fm)', fontSize:12, color:'#3a5070', lineHeight:1.6 }}>{n.message}</div>
                     </div>
 
                     <div style={{ flexShrink:0, display:'flex', flexDirection:'column', alignItems:'flex-end', gap:8 }}>
-                      <div style={{ fontFamily:'var(--fp)', fontSize:8, color:'#1a3050', letterSpacing:1 }}>
+                      <div style={{ fontFamily:'var(--fp)', fontSize:11, color:'#1a3050', letterSpacing:1 }}>
                         {new Date(n.createdAt).toLocaleDateString('mn-MN')}
                       </div>
                       {!n.isRead && (
                         <button onClick={() => markRead(n.id)}
-                          style={{ fontFamily:'var(--fp)', fontSize:8, color:tc.col, background:'transparent', border:`1px solid ${tc.col}33`, padding:'4px 10px', cursor:'pointer', letterSpacing:1, transition:'background .15s' }}
+                          style={{ fontFamily:'var(--fp)', fontSize:11, color:tc.col, background:'transparent', border:`1px solid ${tc.col}33`, padding:'4px 10px', cursor:'pointer', letterSpacing:1, transition:'background .15s' }}
                           onMouseEnter={e => (e.currentTarget as HTMLButtonElement).style.background = `${tc.col}12`}
                           onMouseLeave={e => (e.currentTarget as HTMLButtonElement).style.background = 'transparent'}>
                           УНШСАН
