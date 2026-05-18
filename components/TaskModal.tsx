@@ -13,7 +13,7 @@ const MonacoEditor = dynamic(
   () => import('@monaco-editor/react').then(m => m.default),
   { ssr: false, loading: () => (
     <div style={{flex:1,background:'#0d1117',display:'flex',alignItems:'center',justifyContent:'center',
-      fontFamily:"'Press Start 2P',monospace",fontSize:10,color:'#2a4060',letterSpacing:2}}>
+      fontFamily:"'Press Start 2P',monospace",fontSize:8,color:'#2a4060',letterSpacing:2}}>
       LOADING EDITOR...
     </div>
   )}
@@ -385,8 +385,8 @@ export default function TaskModal({ lessonId, onClose, onDone }: Props) {
         {/* CRITICAL HIT popup */}
         {critHit && (
           <div style={{position:'absolute',top:'18%',left:'50%',transform:'translateX(-50%)',zIndex:60,pointerEvents:'none',textAlign:'center',animation:'tm-critical 1.5s ease forwards'}}>
-            <div style={{...fp,fontSize:11,color:'#ff6b35',textShadow:'0 0 24px #ff6b35',letterSpacing:2}}>CRITICAL HIT!</div>
-            <div style={{...fp,fontSize:10,color:'#ffd700',marginTop:6}}>+{critXP} BONUS XP</div>
+            <div style={{...fp,fontSize:9,color:'#ff6b35',textShadow:'0 0 24px #ff6b35',letterSpacing:2}}>CRITICAL HIT!</div>
+            <div style={{...fp,fontSize:8,color:'#ffd700',marginTop:6}}>+{critXP} BONUS XP</div>
           </div>
         )}
 
@@ -395,13 +395,13 @@ export default function TaskModal({ lessonId, onClose, onDone }: Props) {
 
           {/* mission title */}
           <div style={{padding:'10px 20px',borderRight:'1px solid #0d1a28',display:'flex',flexDirection:'column',justifyContent:'center',gap:5,flexShrink:0,maxWidth:260}}>
-            <div style={{...fp,fontSize:11,color:'#1a3050',letterSpacing:3}}>{tx.mission}</div>
-            <div style={{...fp,fontSize:9,color:'#00e5ff',letterSpacing:1,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{lesson?.title||'...'}</div>
+            <div style={{...fp,fontSize:9,color:'#1a3050',letterSpacing:3}}>{tx.mission}</div>
+            <div style={{...fp,fontSize:7,color:'#00e5ff',letterSpacing:1,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{lesson?.title||'...'}</div>
           </div>
 
           {/* task dots */}
           <div style={{padding:'10px 16px',borderRight:'1px solid #0d1a28',display:'flex',flexDirection:'column',justifyContent:'center',gap:5}}>
-            <div style={{...fp,fontSize:11,color:'#1a3050',letterSpacing:2}}>{passedCount}/{tasks.length}</div>
+            <div style={{...fp,fontSize:9,color:'#1a3050',letterSpacing:2}}>{passedCount}/{tasks.length}</div>
             <div style={{display:'flex',gap:4,alignItems:'center'}}>
               {tasks.map((tk,i)=>{
                 const isP=passed[tk.id]===true,isF=passed[tk.id]===false,isA=tk.id===activeId
@@ -412,15 +412,15 @@ export default function TaskModal({ lessonId, onClose, onDone }: Props) {
 
           {/* COMBO */}
           <div style={{padding:'10px 18px',borderRight:'1px solid #0d1a28',display:'flex',flexDirection:'column',justifyContent:'center',gap:4,minWidth:80}}>
-            <div style={{...fp,fontSize:11,color:'#2a3a54',letterSpacing:2}}>COMBO</div>
-            <div style={{...fp,fontSize:11,color:comboColor,textShadow:combo>0?`0 0 12px ${comboColor}66`:'none',animation:combo>0?'tm-combo .4s ease':'none'}}>
+            <div style={{...fp,fontSize:9,color:'#2a3a54',letterSpacing:2}}>COMBO</div>
+            <div style={{...fp,fontSize:9,color:comboColor,textShadow:combo>0?`0 0 12px ${comboColor}66`:'none',animation:combo>0?'tm-combo .4s ease':'none'}}>
               {combo>0?`×${combo}`:'×–'}
             </div>
           </div>
 
           {/* HP */}
           <div style={{padding:'10px 16px',borderRight:'1px solid #0d1a28',display:'flex',flexDirection:'column',justifyContent:'center',gap:5}}>
-            <div style={{...fp,fontSize:11,color:'#2a3a54',letterSpacing:2}}>HP</div>
+            <div style={{...fp,fontSize:9,color:'#2a3a54',letterSpacing:2}}>HP</div>
             <div style={{display:'flex',gap:5}}>
               {[0,1,2].map(i=>(
                 <div key={i} style={{width:16,height:16,background:i<hp?'#ff2d55':'#1a2840',border:`1px solid ${i<hp?'#ff2d5555':'#0d1a28'}`,boxShadow:i<hp?'0 0 10px rgba(255,45,85,.6)':'none',transition:'all .35s'}}/>
@@ -430,21 +430,21 @@ export default function TaskModal({ lessonId, onClose, onDone }: Props) {
 
           {/* STREAK */}
           <div style={{padding:'10px 14px',borderRight:'1px solid #0d1a28',display:'flex',flexDirection:'column',justifyContent:'center',gap:4,minWidth:70}}>
-            <div style={{...fp,fontSize:11,color:'#2a3a54',letterSpacing:2}}>STREAK</div>
-            <div style={{...fp,fontSize:9,color:streak>=5?'#ff6b35':streak>=3?'#ffd700':'#ffe600'}}>{streak}</div>
+            <div style={{...fp,fontSize:9,color:'#2a3a54',letterSpacing:2}}>STREAK</div>
+            <div style={{...fp,fontSize:7,color:streak>=5?'#ff6b35':streak>=3?'#ffd700':'#ffe600'}}>{streak}</div>
           </div>
 
           {/* XP */}
           <div style={{padding:'10px 14px',borderRight:'1px solid #0d1a28',display:'flex',flexDirection:'column',justifyContent:'center',gap:4,minWidth:70}}>
-            <div style={{...fp,fontSize:11,color:'#2a3a54',letterSpacing:2}}>XP</div>
-            <div style={{...fp,fontSize:9,color:'#00ff41'}}>+{totalXP}</div>
+            <div style={{...fp,fontSize:9,color:'#2a3a54',letterSpacing:2}}>XP</div>
+            <div style={{...fp,fontSize:7,color:'#00ff41'}}>+{totalXP}</div>
           </div>
 
           {/* WPM (code only) */}
           {isCode && (
             <div style={{padding:'10px 14px',borderRight:'1px solid #0d1a28',display:'flex',flexDirection:'column',justifyContent:'center',gap:4,minWidth:60}}>
-              <div style={{...fp,fontSize:11,color:'#2a3a54',letterSpacing:2}}>WPM</div>
-              <div style={{...fp,fontSize:9,color:wpm>60?'#00ff41':wpm>30?'#ffd700':'#5a8aaa'}}>{wpm||'–'}</div>
+              <div style={{...fp,fontSize:9,color:'#2a3a54',letterSpacing:2}}>WPM</div>
+              <div style={{...fp,fontSize:7,color:wpm>60?'#00ff41':wpm>30?'#ffd700':'#5a8aaa'}}>{wpm||'–'}</div>
             </div>
           )}
 
@@ -452,19 +452,19 @@ export default function TaskModal({ lessonId, onClose, onDone }: Props) {
 
           {/* ACCURACY */}
           <div style={{padding:'10px 14px',borderLeft:'1px solid #0d1a28',display:'flex',flexDirection:'column',justifyContent:'center',gap:4,minWidth:70}}>
-            <div style={{...fp,fontSize:11,color:'#2a3a54',letterSpacing:2}}>ACC%</div>
-            <div style={{...fp,fontSize:9,color:accuracy===100?'#00ff41':accuracy>=80?'#ffd700':'#ff0040'}}>{accuracy}%</div>
+            <div style={{...fp,fontSize:9,color:'#2a3a54',letterSpacing:2}}>ACC%</div>
+            <div style={{...fp,fontSize:7,color:accuracy===100?'#00ff41':accuracy>=80?'#ffd700':'#ff0040'}}>{accuracy}%</div>
           </div>
 
           {allPassed&&!lessonDone&&(
             <button disabled={completing} onClick={handleComplete}
               style={{padding:'0 16px',background:'rgba(0,255,65,.06)',border:'none',borderLeft:'2px solid #00ff4133',cursor:'pointer',flexShrink:0}}>
-              <div style={{...fp,fontSize:9,color:'#00ff41',letterSpacing:2}}>{completing?'...':tx.finish2}</div>
+              <div style={{...fp,fontSize:7,color:'#00ff41',letterSpacing:2}}>{completing?'...':tx.finish2}</div>
             </button>
           )}
           {lessonDone&&(
             <div style={{padding:'0 14px',borderLeft:'1px solid #0d1a28',display:'flex',alignItems:'center'}}>
-              <span style={{...fp,fontSize:9,color:'#00ff41',padding:'3px 8px',border:'1px solid #00ff4133'}}>✓ DONE</span>
+              <span style={{...fp,fontSize:7,color:'#00ff41',padding:'3px 8px',border:'1px solid #00ff4133'}}>✓ DONE</span>
             </div>
           )}
 
@@ -484,7 +484,7 @@ export default function TaskModal({ lessonId, onClose, onDone }: Props) {
                     <><rect x="0" y="0" width="30" height="18" fill="#B22234"/><rect x="0" y="2" width="30" height="2" fill="#fff"/><rect x="0" y="6" width="30" height="2" fill="#fff"/><rect x="0" y="10" width="30" height="2" fill="#fff"/><rect x="0" y="14" width="30" height="2" fill="#fff"/><rect x="0" y="0" width="12" height="10" fill="#3C3B6E"/><rect x="1" y="1" width="2" height="1" fill="#fff"/><rect x="5" y="1" width="2" height="1" fill="#fff"/><rect x="9" y="1" width="2" height="1" fill="#fff"/><rect x="3" y="4" width="2" height="1" fill="#fff"/><rect x="7" y="4" width="2" height="1" fill="#fff"/></>
                   )}
                 </svg>
-                <span style={{...fp, fontSize:9, color: lang===l ? '#00e5ff' : '#3a5070', letterSpacing:1}}>
+                <span style={{...fp, fontSize:7, color: lang===l ? '#00e5ff' : '#3a5070', letterSpacing:1}}>
                   {l==='mn' ? 'МОН' : 'ENG'}
                 </span>
               </button>
@@ -509,7 +509,7 @@ export default function TaskModal({ lessonId, onClose, onDone }: Props) {
         {/* ══ MAIN CONTENT ══ */}
         {fetching?(
           <div style={{flex:1,display:'flex',alignItems:'center',justifyContent:'center',flexDirection:'column',gap:16}}>
-            <div style={{...fp,fontSize:10,color:'#00e5ff',letterSpacing:3,animation:'tm-pulse 1s ease infinite'}}>LOADING...</div>
+            <div style={{...fp,fontSize:8,color:'#00e5ff',letterSpacing:3,animation:'tm-pulse 1s ease infinite'}}>LOADING...</div>
             <div style={{display:'flex',gap:6}}>
               {[0,1,2,3,4].map(i=><div key={i} style={{width:8,height:8,background:'#0d2040',animation:`tm-pulse .8s ease ${i*.12}s infinite`}}/>)}
             </div>
@@ -524,18 +524,18 @@ export default function TaskModal({ lessonId, onClose, onDone }: Props) {
                 <div style={{flex:'0 0 26%',display:'flex',flexDirection:'column',overflow:'hidden',borderRight:'2px solid #0d1a28',background:'#020609'}}>
                   <div style={{padding:'8px 14px',background:'#010508',borderBottom:'1px solid #0d1a28',flexShrink:0,display:'flex',alignItems:'center',gap:8}}>
                     <div style={{width:3,height:14,background:'#00e5ff',boxShadow:'0 0 6px #00e5ff'}}/>
-                    <span style={{...fp,fontSize:10,color:'#2a4a6a',letterSpacing:3}}>{tx.missionBrief}</span>
-                    {activeDone&&<span style={{...fp,fontSize:11,color:'#00ff41',border:'1px solid #00ff4133',padding:'2px 6px',marginLeft:'auto'}}>{tx.passed}</span>}
+                    <span style={{...fp,fontSize:8,color:'#2a4a6a',letterSpacing:3}}>{tx.missionBrief}</span>
+                    {activeDone&&<span style={{...fp,fontSize:9,color:'#00ff41',border:'1px solid #00ff4133',padding:'2px 6px',marginLeft:'auto'}}>{tx.passed}</span>}
                   </div>
                   <div style={{flex:1,overflowY:'auto',padding:'12px'}}>
                     {activeTask&&<>
-                      <div style={{...fp,fontSize:10,color:'#ffe600',marginBottom:10,lineHeight:1.6}}>{activeIdx+1}/{tasks.length} — {activeTitle}</div>
-                      <div style={{...fm,fontSize:10,color:'#7a8aba',lineHeight:2,marginBottom:12,background:'#010508',border:'1px solid #0d1a28',padding:'10px 12px',borderLeft:'3px solid #00e5ff22',whiteSpace:'pre-wrap'}}>
+                      <div style={{...fp,fontSize:8,color:'#ffe600',marginBottom:10,lineHeight:1.6}}>{activeIdx+1}/{tasks.length} — {activeTitle}</div>
+                      <div style={{...fm,fontSize:8,color:'#7a8aba',lineHeight:2,marginBottom:12,background:'#010508',border:'1px solid #0d1a28',padding:'10px 12px',borderLeft:'3px solid #00e5ff22',whiteSpace:'pre-wrap'}}>
                         {(activeDesc||activeTask.description).replace(/^function solution\([^)]*\) нь /,'')}
                       </div>
                       {tcs.length>0&&(
                         <div>
-                          <div style={{...fp,fontSize:11,color:'#2a4a6a',letterSpacing:2,marginBottom:8}}>{tx.testCases}</div>
+                          <div style={{...fp,fontSize:9,color:'#2a4a6a',letterSpacing:2,marginBottom:8}}>{tx.testCases}</div>
                           {tcs.slice(0,4).map((tc,i)=>{
                             const fv=(v:unknown):string=>{if(v===null||v===undefined)return '–';if(typeof v==='string')return v;if(Array.isArray(v))return v.map(fv).join(', ');return JSON.stringify(v)}
                             const res=runResults?.[i]
@@ -543,12 +543,12 @@ export default function TaskModal({ lessonId, onClose, onDone }: Props) {
                               <div key={i} style={{marginBottom:8,padding:'8px 10px',background:'#010407',border:`1px solid ${res?(res.passed?'#00ff4133':'#ff004033'):'#0d1a28'}`,borderLeft:`3px solid ${res?(res.passed?'#00ff41':'#ff0040'):'#1a3a5a'}`}}>
                                 <div style={{...fp,fontSize:3,color:'#2a4a6a',marginBottom:3,letterSpacing:2}}>#{i+1} — {tc.label||'TEST'}</div>
                                 {tc.input!==undefined&&tc.input!==''&&tc.input!==null&&(
-                                  <div style={{...fm,fontSize:9,color:'#5a8aba',marginBottom:6,wordBreak:'break-all'}}>input: {fv(tc.input)}</div>
+                                  <div style={{...fm,fontSize:7,color:'#5a8aba',marginBottom:6,wordBreak:'break-all'}}>input: {fv(tc.input)}</div>
                                 )}
                                 {/* Prominent expected output */}
                                 <div style={{background:'rgba(0,255,65,.06)',border:'1px solid #00ff4133',padding:'6px 8px',borderRadius:0}}>
                                   <div style={{...fp,fontSize:3,color:'#00ff4188',marginBottom:3,letterSpacing:2}}>{tx.expected}</div>
-                                  <div style={{...fm,fontSize:11,color:'#00ff41',fontWeight:'bold',wordBreak:'break-all'}}>{fv(tc.expected)}</div>
+                                  <div style={{...fm,fontSize:9,color:'#00ff41',fontWeight:'bold',wordBreak:'break-all'}}>{fv(tc.expected)}</div>
                                   {i===0&&!res&&(
                                     <div style={{...fp,fontSize:3,color:'#00ff4155',marginTop:4,letterSpacing:1}}>{tx.targetOutput} {fv(tc.expected)}</div>
                                   )}
@@ -570,39 +570,39 @@ export default function TaskModal({ lessonId, onClose, onDone }: Props) {
                 <div style={{flex:'0 0 44%',display:'flex',flexDirection:'column',overflow:'hidden',borderRight:'2px solid #0d1a28'}}>
                   <div style={{padding:'8px 14px',background:'#010508',borderBottom:'1px solid #0d1a28',flexShrink:0,display:'flex',alignItems:'center',gap:8}}>
                     <div style={{width:3,height:14,background:'#3a6080',boxShadow:'0 0 6px #3a608055'}}/>
-                    <span style={{...fp,fontSize:10,color:'#3a5a7a',letterSpacing:3}}>{tx.codeEditor}</span>
+                    <span style={{...fp,fontSize:8,color:'#3a5a7a',letterSpacing:3}}>{tx.codeEditor}</span>
                     <div style={{marginLeft:'auto',display:'flex',gap:10,alignItems:'center'}}>
-                      {wpm>0&&<span style={{...fp,fontSize:11,color:'#2a4060'}}>WPM {wpm}</span>}
-                      {code.trim()&&<span style={{...fp,fontSize:11,color:'#2a4060'}}>{code.split('\n').length}L</span>}
+                      {wpm>0&&<span style={{...fp,fontSize:9,color:'#2a4060'}}>WPM {wpm}</span>}
+                      {code.trim()&&<span style={{...fp,fontSize:9,color:'#2a4060'}}>{code.split('\n').length}L</span>}
                     </div>
                   </div>
                   <div style={{flex:1,overflow:'hidden',minHeight:0}}>
                     <MonacoEditor height="100%" language={codeLanguage} theme="vs-dark" value={code}
                       onChange={v=>{setCode(v??'');if(!codeStart)setCodeStart(Date.now());setKeyCount(k=>k+1)}}
-                      options={{fontSize:11,minimap:{enabled:false},scrollBeyondLastLine:false,readOnly:activeDone,fontFamily:"'Share Tech Mono','Courier New',monospace",lineNumbers:'on',tabSize:2,wordWrap:'on',quickSuggestions:true,cursorStyle:'block',cursorBlinking:'phase'}}/>
+                      options={{fontSize:9,minimap:{enabled:false},scrollBeyondLastLine:false,readOnly:activeDone,fontFamily:"'Share Tech Mono','Courier New',monospace",lineNumbers:'on',tabSize:2,wordWrap:'on',quickSuggestions:true,cursorStyle:'block',cursorBlinking:'phase'}}/>
                   </div>
                   {/* buttons */}
                   <div style={{display:'flex',gap:8,padding:'8px 12px',background:'#010508',borderTop:'1px solid #0d1a28',flexShrink:0}}>
                     <button disabled={running||activeDone} onClick={handleRun}
-                      style={{...fp,fontSize:10,padding:'8px 16px',cursor:'pointer',border:'1px solid #00e5ff44',background:'rgba(0,229,255,.06)',color:'#00e5ff',transition:'all .15s'}}
+                      style={{...fp,fontSize:8,padding:'8px 16px',cursor:'pointer',border:'1px solid #00e5ff44',background:'rgba(0,229,255,.06)',color:'#00e5ff',transition:'all .15s'}}
                       onMouseEnter={e=>(e.currentTarget as HTMLButtonElement).style.background='rgba(0,229,255,.14)'}
                       onMouseLeave={e=>(e.currentTarget as HTMLButtonElement).style.background='rgba(0,229,255,.06)'}>
                       {running?'...':tx.run}
                     </button>
                     <button disabled={submitting||activeDone} onClick={handleSubmitCode}
-                      style={{...fp,fontSize:10,padding:'8px 16px',cursor:activeDone?'default':'pointer',border:`2px solid ${activeDone?'#00ff4133':runResults&&!runResults.every(r=>r.passed)?'#ff6680':'#00ff41'}`,background:runResults&&!activeDone&&!runResults.every(r=>r.passed)?'rgba(255,0,64,.08)':'rgba(0,255,65,.08)',color:activeDone?'#00ff41':runResults&&!runResults.every(r=>r.passed)?'#ff6680':'#00ff41',transition:'all .15s'}}
+                      style={{...fp,fontSize:8,padding:'8px 16px',cursor:activeDone?'default':'pointer',border:`2px solid ${activeDone?'#00ff4133':runResults&&!runResults.every(r=>r.passed)?'#ff6680':'#00ff41'}`,background:runResults&&!activeDone&&!runResults.every(r=>r.passed)?'rgba(255,0,64,.08)':'rgba(0,255,65,.08)',color:activeDone?'#00ff41':runResults&&!runResults.every(r=>r.passed)?'#ff6680':'#00ff41',transition:'all .15s'}}
                       onMouseEnter={e=>!activeDone&&((e.currentTarget as HTMLButtonElement).style.opacity='0.8')}
                       onMouseLeave={e=>!activeDone&&((e.currentTarget as HTMLButtonElement).style.opacity='1')}>
                       {submitting?'...':activeDone?tx.done:runResults&&!runResults.every(r=>r.passed)?tx.retry:tx.submit}
                     </button>
                     {activeDone&&(
                       <button onClick={()=>{const n=tasks[activeIdx+1] as ExtTask|undefined;if(n)doActivate(n);else handleComplete()}}
-                        style={{...fp,fontSize:10,padding:'8px 14px',cursor:'pointer',border:'1px solid #ffe60033',background:'rgba(255,230,0,.06)',color:'#ffe600',marginLeft:'auto'}}>
+                        style={{...fp,fontSize:8,padding:'8px 14px',cursor:'pointer',border:'1px solid #ffe60033',background:'rgba(255,230,0,.06)',color:'#ffe600',marginLeft:'auto'}}>
                         {tx.next}
                       </button>
                     )}
                     <button onClick={()=>setShowConsole(v=>!v)}
-                      style={{...fp,fontSize:9,padding:'6px 10px',cursor:'pointer',border:`1px solid ${showConsole?'#ffe60033':'#0d1a28'}`,background:'transparent',color:showConsole?'#ffe600':'#2a4060',marginLeft:activeDone?0:'auto'}}>
+                      style={{...fp,fontSize:7,padding:'6px 10px',cursor:'pointer',border:`1px solid ${showConsole?'#ffe60033':'#0d1a28'}`,background:'transparent',color:showConsole?'#ffe600':'#2a4060',marginLeft:activeDone?0:'auto'}}>
                       TERM
                     </button>
                   </div>
@@ -610,12 +610,12 @@ export default function TaskModal({ lessonId, onClose, onDone }: Props) {
                   {/* terminal */}
                   {showConsole&&(
                     <div ref={consoleRef} style={{maxHeight:150,overflowY:'auto',background:'#010407',borderTop:'1px solid #0d1a28',padding:'8px 12px',flexShrink:0}}>
-                      <div style={{...fp,fontSize:11,color:'#2a4a6a',letterSpacing:2,marginBottom:6}}>{tx.termOutput}</div>
+                      <div style={{...fp,fontSize:9,color:'#2a4a6a',letterSpacing:2,marginBottom:6}}>{tx.termOutput}</div>
                       {consoleLogs.map((line,i)=>(
-                        <div key={i} style={{...fm,fontSize:9,color:line.col,marginBottom:3,animation:'tm-log .18s ease',letterSpacing:.5}}>{line.text}</div>
+                        <div key={i} style={{...fm,fontSize:7,color:line.col,marginBottom:3,animation:'tm-log .18s ease',letterSpacing:.5}}>{line.text}</div>
                       ))}
                       {(running||submitting)&&consoleLogs.length>0&&(
-                        <div style={{...fp,fontSize:10,color:'#ffe600',animation:'tm-pulse .5s ease infinite'}}>_</div>
+                        <div style={{...fp,fontSize:8,color:'#ffe600',animation:'tm-pulse .5s ease infinite'}}>_</div>
                       )}
                     </div>
                   )}
@@ -634,12 +634,12 @@ export default function TaskModal({ lessonId, onClose, onDone }: Props) {
                 <div style={{flex:'0 0 45%',overflow:'hidden',borderBottom:'2px solid #0d1a28',position:'relative'}}>
                   <GameTaskCanvas state={gameState} lessonTitle={lesson?.title||''} passedCount={passedCount} totalTasks={tasks.length} taskTitle={activeTask?.title||''}/>
                   {gameState==='correct'&&qPassed&&(
-                    <div style={{position:'absolute',top:12,right:12,...fp,fontSize:11,color:'#00ff41',background:'rgba(0,255,65,.1)',border:'1px solid #00ff4133',padding:'6px 14px',animation:'tm-in .2s ease'}}>
+                    <div style={{position:'absolute',top:12,right:12,...fp,fontSize:9,color:'#00ff41',background:'rgba(0,255,65,.1)',border:'1px solid #00ff4133',padding:'6px 14px',animation:'tm-in .2s ease'}}>
                       ✓ +{qXp} XP
                     </div>
                   )}
                   {gameState==='wrong'&&qPassed===false&&(
-                    <div style={{position:'absolute',top:12,right:12,...fp,fontSize:11,color:'#ff0040',background:'rgba(255,0,64,.1)',border:'1px solid #ff004033',padding:'6px 14px',animation:'tm-shake .4s ease'}}>
+                    <div style={{position:'absolute',top:12,right:12,...fp,fontSize:9,color:'#ff0040',background:'rgba(255,0,64,.1)',border:'1px solid #ff004033',padding:'6px 14px',animation:'tm-shake .4s ease'}}>
                       COMBO BREAK
                     </div>
                   )}
@@ -653,7 +653,7 @@ export default function TaskModal({ lessonId, onClose, onDone }: Props) {
                     {showGuide&&<GuidePanel gameType={gt3} passedCount={passedCount} tasks={tasks} totalXP={totalXP}/>}
                   </div>
                   <button onClick={()=>setShowGuide(v=>!v)}
-                    style={{flexShrink:0,width:18,alignSelf:'stretch',background:'#0a1020',border:'none',borderRight:'1px solid #1a2840',cursor:'pointer',display:'flex',alignItems:'center',justifyContent:'center',fontSize:10,color:showGuide?'#00e5ff':'#2a4060'}}>
+                    style={{flexShrink:0,width:18,alignSelf:'stretch',background:'#0a1020',border:'none',borderRight:'1px solid #1a2840',cursor:'pointer',display:'flex',alignItems:'center',justifyContent:'center',fontSize:8,color:showGuide?'#00e5ff':'#2a4060'}}>
                     {showGuide?'◀':'▶'}
                   </button>
 
@@ -667,17 +667,17 @@ export default function TaskModal({ lessonId, onClose, onDone }: Props) {
                             <PixelIcon name="star" size={18} col="#00e5ff"/>
                           </div>
                           <div style={{flex:1}}>
-                            <div style={{...fp,fontSize:11,color:'#ffe600',letterSpacing:1,marginBottom:4}}>{activeIdx+1}/{tasks.length} — {activeTitle}</div>
+                            <div style={{...fp,fontSize:9,color:'#ffe600',letterSpacing:1,marginBottom:4}}>{activeIdx+1}/{tasks.length} — {activeTitle}</div>
                             <div style={{display:'flex',gap:6}}>
-                              <span style={{...fp,fontSize:11,color:'#00e5ff',border:'1px solid #00e5ff22',padding:'2px 6px'}}>QUIZ</span>
-                              <span style={{...fp,fontSize:11,color:'#00ff41',border:'1px solid #00ff4122',padding:'2px 6px'}}>+{activeTask.xpReward} XP</span>
+                              <span style={{...fp,fontSize:9,color:'#00e5ff',border:'1px solid #00e5ff22',padding:'2px 6px'}}>QUIZ</span>
+                              <span style={{...fp,fontSize:9,color:'#00ff41',border:'1px solid #00ff4122',padding:'2px 6px'}}>+{activeTask.xpReward} XP</span>
                             </div>
                           </div>
-                          {activeDone&&<div style={{...fp,fontSize:10,color:'#00ff41',border:'1px solid #00ff4133',padding:'4px 8px'}}>✓</div>}
+                          {activeDone&&<div style={{...fp,fontSize:8,color:'#00ff41',border:'1px solid #00ff4133',padding:'4px 8px'}}>✓</div>}
                         </div>
 
                         {/* description */}
-                        <div style={{...fm,fontSize:11,color:'#8090b0',lineHeight:2,marginBottom:14,background:'#020609',border:'1px solid #0d1a28',padding:'12px 14px',borderLeft:'3px solid #00e5ff22',animation:'tm-in .3s ease .05s both'}}>
+                        <div style={{...fm,fontSize:9,color:'#8090b0',lineHeight:2,marginBottom:14,background:'#020609',border:'1px solid #0d1a28',padding:'12px 14px',borderLeft:'3px solid #00e5ff22',animation:'tm-in .3s ease .05s both'}}>
                           {(activeDesc||activeTask.description).replace(/^function solution\([^)]*\) нь /,'')}
                         </div>
 
@@ -709,12 +709,12 @@ export default function TaskModal({ lessonId, onClose, onDone }: Props) {
                                     background:isCorrectSel||isCorrectOpt?'#00ff41':isWrongSel?'#ff0040':'#0d1830',
                                     border:`1px solid ${isCorrectSel||isCorrectOpt?'#00ff41':isWrongSel?'#ff0040':'#1a2840'}`,
                                     display:'flex',alignItems:'center',justifyContent:'center',
-                                    ...fp,fontSize:9,color:isCorrectSel||isCorrectOpt?'#020609':isWrongSel?'#fff':'#4a6a8a',transition:'all .15s'}}>
+                                    ...fp,fontSize:7,color:isCorrectSel||isCorrectOpt?'#020609':isWrongSel?'#fff':'#4a6a8a',transition:'all .15s'}}>
                                     {isCorrectSel||isCorrectOpt?'✓':isWrongSel?'✗':String.fromCharCode(65+i)}
                                   </div>
-                                  <span style={{...fm,fontSize:11,lineHeight:1.5,color:isCorrectSel||isCorrectOpt?'#00ff41':isWrongSel?'#ff6680':answered?'#3a5070':'#c0d0e0'}}>{opt}</span>
-                                  {isCorrectOpt&&<span style={{...fp,fontSize:11,color:'#00ff41',marginLeft:'auto',border:'1px solid #00ff4133',padding:'2px 6px'}}>{tx.correctWas}</span>}
-                                  {!answered&&<div style={{marginLeft:'auto',...fp,fontSize:11,color:'#1a2840'}}>›</div>}
+                                  <span style={{...fm,fontSize:9,lineHeight:1.5,color:isCorrectSel||isCorrectOpt?'#00ff41':isWrongSel?'#ff6680':answered?'#3a5070':'#c0d0e0'}}>{opt}</span>
+                                  {isCorrectOpt&&<span style={{...fp,fontSize:9,color:'#00ff41',marginLeft:'auto',border:'1px solid #00ff4133',padding:'2px 6px'}}>{tx.correctWas}</span>}
+                                  {!answered&&<div style={{marginLeft:'auto',...fp,fontSize:9,color:'#1a2840'}}>›</div>}
                                 </button>
                               )
                             })}
@@ -723,14 +723,14 @@ export default function TaskModal({ lessonId, onClose, onDone }: Props) {
                             {qPassed!==undefined&&(
                               <div style={{marginTop:8,display:'flex',flexDirection:'column',gap:8,animation:'tm-in .25s ease'}}>
                                 <div style={{padding:'10px 14px',display:'flex',alignItems:'center',gap:12,border:`1px solid ${qPassed?'#00ff4133':'#ff004033'}`,background:`rgba(${qPassed?'0,255,65':'255,0,64'},.06)`}}>
-                                  <div style={{width:26,height:26,flexShrink:0,background:qPassed?'#00ff41':'#ff0040',display:'flex',alignItems:'center',justifyContent:'center',...fp,fontSize:9,color:'#020609'}}>
+                                  <div style={{width:26,height:26,flexShrink:0,background:qPassed?'#00ff41':'#ff0040',display:'flex',alignItems:'center',justifyContent:'center',...fp,fontSize:7,color:'#020609'}}>
                                     {qPassed?'✓':'✗'}
                                   </div>
                                   <div>
-                                    <div style={{...fp,fontSize:11,color:qPassed?'#00ff41':'#ff0040',letterSpacing:1}}>
+                                    <div style={{...fp,fontSize:9,color:qPassed?'#00ff41':'#ff0040',letterSpacing:1}}>
                                       {qPassed ? tx.correct : tx.wrong}
                                     </div>
-                                    <div style={{...fp,fontSize:9,color:qPassed?'#00ff4166':'#ff004055',marginTop:3}}>
+                                    <div style={{...fp,fontSize:7,color:qPassed?'#00ff4166':'#ff004055',marginTop:3}}>
                                       {qPassed?`+${qXp} XP${combo>=3?` · COMBO ×${combo}`:''}`:tx.comboBrk}
                                     </div>
                                   </div>
@@ -738,12 +738,12 @@ export default function TaskModal({ lessonId, onClose, onDone }: Props) {
                                 {qPassed===false&&(
                                   <div style={{display:'flex',gap:8}}>
                                     <button onClick={handleRetryTask}
-                                      style={{flex:1,...fp,fontSize:11,letterSpacing:1,padding:'11px',cursor:'pointer',border:'2px solid #ff6680',background:'rgba(255,0,64,.08)',color:'#ff6680'}}>
+                                      style={{flex:1,...fp,fontSize:9,letterSpacing:1,padding:'11px',cursor:'pointer',border:'2px solid #ff6680',background:'rgba(255,0,64,.08)',color:'#ff6680'}}>
                                       {tx.retry}
                                     </button>
                                     {activeIdx<tasks.length-1&&(
                                       <button onClick={goNext}
-                                        style={{flex:1,...fp,fontSize:11,letterSpacing:1,padding:'11px',cursor:'pointer',border:'1px solid #ff004433',background:'rgba(255,0,64,.04)',color:'#ff6680aa'}}>
+                                        style={{flex:1,...fp,fontSize:9,letterSpacing:1,padding:'11px',cursor:'pointer',border:'1px solid #ff004433',background:'rgba(255,0,64,.04)',color:'#ff6680aa'}}>
                                         {tx.skip}
                                       </button>
                                     )}
@@ -751,13 +751,13 @@ export default function TaskModal({ lessonId, onClose, onDone }: Props) {
                                 )}
                                 {qPassed===true&&activeIdx<tasks.length-1&&(
                                   <button onClick={goNext}
-                                    style={{width:'100%',...fp,fontSize:11,letterSpacing:1,padding:'12px',cursor:'pointer',border:'2px solid #00ff41',background:'rgba(0,255,65,.08)',color:'#00ff41'}}>
+                                    style={{width:'100%',...fp,fontSize:9,letterSpacing:1,padding:'12px',cursor:'pointer',border:'2px solid #00ff41',background:'rgba(0,255,65,.08)',color:'#00ff41'}}>
                                     {tx.nextMission}
                                   </button>
                                 )}
                                 {activeIdx===tasks.length-1&&qPassed===true&&!lessonDone&&(
                                   <button disabled={completing} onClick={handleComplete}
-                                    style={{width:'100%',...fp,fontSize:9,letterSpacing:1,padding:'14px',cursor:'pointer',border:'2px solid #ffe600',background:'rgba(255,230,0,.1)',color:'#ffe600',boxShadow:'0 0 20px rgba(255,230,0,.15)'}}>
+                                    style={{width:'100%',...fp,fontSize:7,letterSpacing:1,padding:'14px',cursor:'pointer',border:'2px solid #ffe600',background:'rgba(255,230,0,.1)',color:'#ffe600',boxShadow:'0 0 20px rgba(255,230,0,.15)'}}>
                                     {completing?'...':tx.completeMission}
                                   </button>
                                 )}
@@ -784,28 +784,28 @@ export default function TaskModal({ lessonId, onClose, onDone }: Props) {
               <div style={{position:'absolute',bottom:0,left:0,right:0,height:1,background:'linear-gradient(90deg,transparent,#ffd70033,transparent)'}}/>
 
               <div style={{animation:'tm-rank .5s ease'}}><PixelIcon name="crown" size={56} col="#ffd700"/></div>
-              <div style={{...fp,fontSize:11,color:'#ffd700',letterSpacing:4,marginTop:4,animation:'tm-rank .5s ease .08s both'}}>{tx.missionComplete}</div>
+              <div style={{...fp,fontSize:9,color:'#ffd700',letterSpacing:4,marginTop:4,animation:'tm-rank .5s ease .08s both'}}>{tx.missionComplete}</div>
 
               {/* score row */}
               <div style={{display:'flex',gap:24,marginTop:8,animation:'tm-xp .4s ease .15s both'}}>
                 <div style={{textAlign:'center'}}>
-                  <div style={{...fp,fontSize:11,color:'#2a4060',letterSpacing:2,marginBottom:4}}>SCORE</div>
+                  <div style={{...fp,fontSize:9,color:'#2a4060',letterSpacing:2,marginBottom:4}}>SCORE</div>
                   <div style={{...fp,fontSize:14,color:'#00ff41'}}>{passedCount}/{tasks.length}</div>
                 </div>
                 <div style={{width:1,background:'#0d1a28'}}/>
                 <div style={{textAlign:'center'}}>
-                  <div style={{...fp,fontSize:11,color:'#2a4060',letterSpacing:2,marginBottom:4}}>XP</div>
+                  <div style={{...fp,fontSize:9,color:'#2a4060',letterSpacing:2,marginBottom:4}}>XP</div>
                   <div style={{...fp,fontSize:14,color:'#ffd700'}}>+{totalXP}</div>
                 </div>
                 <div style={{width:1,background:'#0d1a28'}}/>
                 <div style={{textAlign:'center'}}>
-                  <div style={{...fp,fontSize:11,color:'#2a4060',letterSpacing:2,marginBottom:4}}>ACC</div>
+                  <div style={{...fp,fontSize:9,color:'#2a4060',letterSpacing:2,marginBottom:4}}>ACC</div>
                   <div style={{...fp,fontSize:14,color:accuracy===100?'#00ff41':accuracy>=80?'#ffd700':'#ff6680'}}>{accuracy}%</div>
                 </div>
               </div>
 
               {maxCombo>1&&(
-                <div style={{...fp,fontSize:10,color:comboColor,border:`1px solid ${comboColor}33`,padding:'4px 12px',animation:'tm-combo .3s ease .3s both'}}>
+                <div style={{...fp,fontSize:8,color:comboColor,border:`1px solid ${comboColor}33`,padding:'4px 12px',animation:'tm-combo .3s ease .3s both'}}>
                   MAX COMBO ×{maxCombo}
                 </div>
               )}
@@ -813,21 +813,21 @@ export default function TaskModal({ lessonId, onClose, onDone }: Props) {
               {/* buttons */}
               <div style={{display:'flex',gap:12,marginTop:16,animation:'tm-in .35s ease .3s both'}}>
                 <button onClick={handleRetry}
-                  style={{...fp,fontSize:10,letterSpacing:1,padding:'13px 20px',cursor:'pointer',border:'1px solid #ffe60044',background:'rgba(255,230,0,.05)',color:'#ffe600',transition:'all .15s'}}
+                  style={{...fp,fontSize:8,letterSpacing:1,padding:'13px 20px',cursor:'pointer',border:'1px solid #ffe60044',background:'rgba(255,230,0,.05)',color:'#ffe600',transition:'all .15s'}}
                   onMouseEnter={e=>(e.currentTarget as HTMLButtonElement).style.background='rgba(255,230,0,.12)'}
                   onMouseLeave={e=>(e.currentTarget as HTMLButtonElement).style.background='rgba(255,230,0,.05)'}>
                   {tx.retry}
                 </button>
                 {nextLessonId&&(
                   <button onClick={()=>onDone?.(nextLessonId??undefined)}
-                    style={{...fp,fontSize:10,letterSpacing:1,padding:'13px 22px',cursor:'pointer',border:'2px solid #ffd700',background:'rgba(255,215,0,.08)',color:'#ffd700',boxShadow:'0 0 20px rgba(255,215,0,.1)',transition:'all .15s'}}
+                    style={{...fp,fontSize:8,letterSpacing:1,padding:'13px 22px',cursor:'pointer',border:'2px solid #ffd700',background:'rgba(255,215,0,.08)',color:'#ffd700',boxShadow:'0 0 20px rgba(255,215,0,.1)',transition:'all .15s'}}
                     onMouseEnter={e=>(e.currentTarget as HTMLButtonElement).style.background='rgba(255,215,0,.18)'}
                     onMouseLeave={e=>(e.currentTarget as HTMLButtonElement).style.background='rgba(255,215,0,.08)'}>
                     {tx.nextLesson}
                   </button>
                 )}
                 <button onClick={()=>onDone ? onDone(null) : onClose()}
-                  style={{...fp,fontSize:10,letterSpacing:1,padding:'13px 22px',cursor:'pointer',border:`2px solid ${nextLessonId?'#00e5ff44':'#00e5ff'}`,background:'rgba(0,229,255,.07)',color:nextLessonId?'#00e5ff88':'#00e5ff',boxShadow:nextLessonId?'none':'0 0 20px rgba(0,229,255,.12)',transition:'all .15s'}}
+                  style={{...fp,fontSize:8,letterSpacing:1,padding:'13px 22px',cursor:'pointer',border:`2px solid ${nextLessonId?'#00e5ff44':'#00e5ff'}`,background:'rgba(0,229,255,.07)',color:nextLessonId?'#00e5ff88':'#00e5ff',boxShadow:nextLessonId?'none':'0 0 20px rgba(0,229,255,.12)',transition:'all .15s'}}
                   onMouseEnter={e=>(e.currentTarget as HTMLButtonElement).style.background='rgba(0,229,255,.15)'}
                   onMouseLeave={e=>(e.currentTarget as HTMLButtonElement).style.background='rgba(0,229,255,.07)'}>
                   {nextLessonId ? tx.close : tx.finish}
