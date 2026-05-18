@@ -7,8 +7,8 @@ import React, { useEffect, useRef, useState, useSyncExternalStore } from 'react'
 
 const emptySubscribe = () => () => {}
 
-const W_COLLAPSED = 44
-const W_EXPANDED  = 160
+const W_COLLAPSED = 56
+const W_EXPANDED  = 200
 
 // Colorful pixel icons as SVG
 const icons: Record<string, {svg: React.ReactElement; color: string}> = {
