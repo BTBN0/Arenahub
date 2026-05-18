@@ -2665,11 +2665,78 @@ export default function GameTaskCanvas({
       }
     }
 
+    const drawCity=()=>{
+      const sky=ctx.createLinearGradient(0,0,0,H)
+      sky.addColorStop(0,'#040610'); sky.addColorStop(1,'#080c18')
+      ctx.fillStyle=sky; ctx.fillRect(0,0,W,H)
+      stars(130)
+      r(0,H-35,W,35,'#0a0a18')
+      for(let i=0;i<W;i+=20) r(i,H-35,18,3,'#14142a')
+      const blds=[
+        {x:30, maxH:90, w:40, col:'#1a3060', win:'#4488ff', label:'HTML'},
+        {x:90, maxH:120,w:50, col:'#2a1050', win:'#8844ff', label:'CSS'},
+        {x:160,maxH:80, w:40, col:'#103040', win:'#44ffaa', label:'JS'},
+        {x:220,maxH:100,w:45, col:'#402010', win:'#ff8844', label:'DOM'},
+        {x:285,maxH:70, w:40, col:'#203010', win:'#88ff44', label:'REACT'},
+        {x:345,maxH:110,w:50, col:'#301040', win:'#ff44aa', label:'API'},
+        {x:415,maxH:90, w:45, col:'#102040', win:'#44aaff', label:'FULL'},
+      ]
+      const visibleCount=Math.min(progress,blds.length)
+      blds.slice(0,visibleCount).forEach((b,i)=>{
+        const isNew=i===visibleCount-1&&state==='correct'&&buildAnim<b.maxH
+        const curH=isNew?Math.min(buildAnim,b.maxH):b.maxH
+        if(isNew) buildAnim+=4
+        const by=H-35-curH
+        r(b.x,by,b.w,curH,b.col)
+        for(let wy=by+6;wy<H-40;wy+=12){
+          for(let wx=b.x+4;wx<b.x+b.w-6;wx+=10){
+            const lit=Math.random()>.25
+            r(wx,wy,6,7,lit?b.win:'#0a0a18')
+          }
+        }
+        ctx.fillStyle='#ffffff33';ctx.font='9px monospace';ctx.textAlign='center'
+        ctx.fillText(b.label,b.x+b.w/2,H-38)
+        if(b.maxH>90){ r(b.x+b.w/2-1,by-15,2,16,'#aaa'); r(b.x+b.w/2-4,by-14,8,2,'#aaa') }
+      })
+      if(visibleCount<blds.length){
+        const next=blds[visibleCount]
+        ctx.fillStyle='rgba(100,150,255,0.08)'
+        ctx.fillRect(next.x,H-35-next.maxH,next.w,next.maxH)
+        ctx.strokeStyle='rgba(100,150,255,0.2)';ctx.lineWidth=1;ctx.setLineDash([3,3])
+        ctx.strokeRect(next.x,H-35-next.maxH,next.w,next.maxH)
+        ctx.setLineDash([])
+        ctx.fillStyle='rgba(100,150,255,0.4)';ctx.font='9px monospace';ctx.textAlign='center'
+        ctx.fillText(next.label,next.x+next.w/2,H-38)
+      }
+      const workerX=visibleCount<blds.length?blds[Math.min(visibleCount,blds.length-1)].x+20:W-60
+      const jump=state==='correct'?Math.abs(Math.sin(f*.3))*20:0
+      drawChar(workerX,H-45,'#ffe600',state==='running',jump)
+      r(W-170,8,160,28,'rgba(0,0,0,.5)')
+      r(W-168,10,156,24,'#0a1020')
+      tx(`CITY ${progress}/${Math.min(totalTasks,blds.length)}`,W-90,28,'#ffe600',10)
+      r(W-168,10,Math.floor(156*(progress/Math.max(totalTasks,1))),4,'#00ff41')
+      if(state==='idle') tx('▼ ANSWER TO BUILD',W/2-100,H-8,'#2a4a6a',5,'left')
+      else if(state==='correct'){
+        if(f>5){
+          tx('✓ BUILDING ADDED!',W/2,40,'#00ff41',9)
+          if(f>15){tx('+XP',W/2,58,'#ffe600',7);if(f===16) burst(workerX,H-60,['#ffe600','#00ff41','#4488ff'])}
+        }
+      }
+      else if(state==='wrong'){
+        tx('✗ WRONG!',W/2,35,'#ff0040',8)
+        if(visibleCount>0){
+          const b=blds[visibleCount-1]
+          ctx.fillStyle='rgba(255,0,64,.3)'
+          ctx.fillRect(b.x,H-35-b.maxH,b.w,b.maxH)
+        }
+      }
+    }
+
     const games:Record<string,()=>void>={ jump:drawJump, enemy:drawEnemy, evolution:drawEvolution,
       cssplatform:drawCSSPlatform, codequestbattle:drawCodeQuestBattle,
       autocoderunner:drawAutoCodeRunner, onlinecodefactory:drawOnlineCodeFactory,
       taskbattlesurvival:drawTaskBattleSurvival, multiplayerarena:drawMultiplayerArena,
-      codefactory:drawCodeFactory
+      codefactory:drawCodeFactory, city:drawCity
     }
 
     const draw=()=>{
@@ -2708,6 +2775,7 @@ export default function GameTaskCanvas({
     codefactory:      {icon:'🚀',name:'DEPLOY',         col:'#ffd700'},
     jump:             {icon:'🎯',name:'JUMP',            col:'#bf5af2'},
     enemy:            {icon:'⚡',name:'BUG HUNT',        col:'#ff2244'},
+    city:             {icon:'🏙',name:'CITY BUILD',      col:'#ffe600'},
   }
   const gInfo = GAME_LABELS[gameType] ?? {icon:'🎮',name:'GAME',col:'#1a3050'}
 
