@@ -57,7 +57,7 @@ export const coursesApi = {
 }
 export const lessonsApi = {
   byCourse: (cid:string) => g<{lessons:Lesson[]}>(`/api/lessons?courseId=${cid}`),
-  get:      (id:string)  => g<{lesson:Lesson}>(`/api/lessons/${id}`),
+  get:      (id:string)  => g<LessonDetailData>(`/api/lessons/${id}`),
   complete: (id:string)  => p<{xpEarned:number}>(`/api/lessons/${id}`,{}),
 }
 export const tasksApi = {
@@ -89,6 +89,16 @@ export interface Pagination { page:number;limit:number;total:number;pages:number
 export interface CodeTask extends Task {
   starterCode?: string
   testCases?: { input: unknown; expected: unknown; label?: string }[]
+}
+
+export interface TaskSubmission { status:string; selected:number|null; xpEarned:number; submittedAt:string }
+export interface TaskDetailResponse { id:string; title:string; titleEn:string|null; description:string; descriptionEn:string|null; taskType:string; options:unknown; optionsEn:unknown; starterCode:string|null; testCases:unknown; xpReward:number; orderIndex:number; submitted:TaskSubmission|null }
+export interface GameDetailResponse { id:string; name:string; slug:string; gameType:string; thumbnail:string|null; config:Record<string,unknown>; hpMax:number; xpReward:number; orderIndex:number; tasks:TaskDetailResponse[] }
+export interface LessonDetailData {
+  lesson: { id:string; courseId:string; title:string; content:string|null; gameType:string|null; xpReward:number; orderIndex:number; course:{id:string;title:string}; completed:boolean; completedAt:string|null }
+  games: GameDetailResponse[]
+  tasks: TaskDetailResponse[]
+  meta: { hasGames:boolean; totalGameTasks:number; totalDirectTasks:number }
 }
 
 export const notificationsApi = {

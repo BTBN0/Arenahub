@@ -6,7 +6,7 @@ import GameTaskCanvas from './game/GameCanvas'
 import GuidePanel from './task/GuidePanel'
 import { useAuth } from '@/context/AuthContext'
 import { useLang } from '@/context/LanguageContext'
-import { tasksApi, lessonsApi, Task, Lesson } from '@/lib/api-client'
+import { tasksApi, lessonsApi, Task, Lesson, LessonDetailData } from '@/lib/api-client'
 import PixelIcon from '@/components/ui/PixelIcon'
 
 // Use CDN loader for faster Monaco loading
@@ -129,6 +129,8 @@ export default function TaskModal({ lessonId, onClose, onDone }: Props) {
   const [combo,      setCombo]      = useState(0)
   const [maxCombo,   setMaxCombo]   = useState(0)
   const [hp,         setHp]         = useState(3)
+  const [hpMax,      setHpMax]      = useState(3)
+  const [gameType,   setGameType]   = useState('evolution')
   const [streak,     setStreak]     = useState(0)
   const [critHit,    setCritHit]    = useState(false)
   const [critXP,     setCritXP]     = useState(0)
@@ -143,9 +145,6 @@ export default function TaskModal({ lessonId, onClose, onDone }: Props) {
   const autoCloseRef = useRef<ReturnType<typeof setTimeout>|null>(null)
 
   /* ── Derived ─────────────────────────────────────────────── */
-  const lt3 = (lesson?.title||'').toLowerCase()
-  const gt3 = lt3.includes('вэб')?'walk':lt3.includes('html')?'island':lt3.includes('css')?'jump':lt3.includes('javascript')||lt3.includes('js')?'enemy':lt3.includes('frontend')||lt3.includes('react')?'city':lt3.includes('backend')||lt3.includes('node')?'castle':lt3.includes('mongodb')||lt3.includes('database')?'kingdom':lt3.includes('auth')?'megacity':lt3.includes('sql')||lt3.includes('mysql')?'kingdom':lt3.includes('git')||lt3.includes('terminal')?'timemachine':'walk'
-
   const activeTask  = tasks.find(t => t.id === activeId) as ExtTask|undefined
   const isCode      = activeTask?.taskType === 'code'
   const tcsRaw      = activeTask?.testCases
@@ -190,10 +189,15 @@ export default function TaskModal({ lessonId, onClose, onDone }: Props) {
     let savedVm: Record<string,number> = {}
     try { savedVm = JSON.parse(localStorage.getItem(variantKey) || '{}') } catch {}
 
-    Promise.all([lessonsApi.get(lessonId), tasksApi.byLesson(lessonId)])
-      .then(([ld, td]) => {
-        setLesson(ld.lesson)
-        let list = td.tasks as ExtTask[]
+    lessonsApi.get(lessonId)
+      .then((detail) => {
+        setLesson(detail.lesson as unknown as Lesson)
+        const firstGame = detail.games[0]
+        setGameType(firstGame?.gameType ?? 'evolution')
+        const hm = firstGame?.hpMax ?? 3
+        setHpMax(hm); setHp(hm)
+        const rawTasks = detail.meta.hasGames && firstGame ? firstGame.tasks : detail.tasks
+        let list = rawTasks as unknown as ExtTask[]
 
         if (wasReset) {
           // shuffle task ORDER so user sees different sequence on re-entry
@@ -298,11 +302,11 @@ export default function TaskModal({ lessonId, onClose, onDone }: Props) {
   /* ── Actions ─────────────────────────────────────────────── */
   const doActivate = useCallback((t: ExtTask) => {
     if (autoCloseRef.current) { clearTimeout(autoCloseRef.current); autoCloseRef.current = null }
-    setHpDead(false); setHp(3); setCombo(0)
+    setHpDead(false); setHp(hpMax); setCombo(0)
     setActiveId(t.id); setRunResults(null); setGameState('idle')
     setConsoleLogs([]); setShowConsole(false); setKeyCount(0); setCodeStart(null); setWpm(0)
     if (t.taskType==='code') setCode('')
-  }, [])
+  }, [hpMax])
 
   // cycle to next variant of current task; if single-variant, swap with a random non-passed task
   const handleChangeTask = useCallback(() => {
@@ -341,11 +345,11 @@ export default function TaskModal({ lessonId, onClose, onDone }: Props) {
     })
     setVariantMap(vm); setShuffleMap({}); setPassed({}); setWrongCount(0); setSubmitCount({})
     setRunResults(null); setShowConsole(false); setConsoleLogs([])
-    setGameState('idle'); setCombo(0); setMaxCombo(0); setHp(3); setStreak(0); setCritHit(false)
+    setGameState('idle'); setCombo(0); setMaxCombo(0); setHp(hpMax); setStreak(0); setCritHit(false)
     setLessonDone(false); setXpMap({}); setNextLessonId(null)
     setTasks(ts=>ts.map(t=>({...t,submitted:undefined})))
     const first=tasks[0]; if(first){setActiveId(first.id);if(first.taskType==='code')setCode('')}
-  }, [tasks, variantMap])
+  }, [tasks, variantMap, hpMax])
 
   const handleRetryTask = useCallback(() => {
     if (!activeTask) return
@@ -479,9 +483,9 @@ export default function TaskModal({ lessonId, onClose, onDone }: Props) {
           <div style={{position:'absolute',inset:0,zIndex:90,display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',background:'rgba(8,0,4,.96)',animation:'tm-dead 3s ease forwards',pointerEvents:'all'}}>
             <div style={{fontSize:64,marginBottom:14,filter:'drop-shadow(0 0 32px #ff2d55)',animation:'tm-deadpulse .7s ease infinite'}}>💀</div>
             <div style={{...fp,fontSize:14,color:'#ff2d55',letterSpacing:5,textShadow:'0 0 36px #ff2d55,0 0 60px #ff005540',marginBottom:12,animation:'tm-deadpulse .5s ease infinite'}}>HP ДУУССАН!</div>
-            <div style={{...fp,fontSize:7,color:'#ff6b35',letterSpacing:3,marginBottom:24}}>3 УДАА БУРУУ ХАРИУЛТ</div>
+            <div style={{...fp,fontSize:7,color:'#ff6b35',letterSpacing:3,marginBottom:24}}>{hpMax} УДАА БУРУУ ХАРИУЛТ</div>
             <div style={{display:'flex',gap:10,marginBottom:24}}>
-              {[0,1,2].map(i=>(
+              {Array.from({length:hpMax},(_,i)=>(
                 <div key={i} style={{width:22,height:22,background:'#1a0810',border:'1px solid #ff2d5533',boxShadow:'inset 0 0 10px #ff2d5522'}}/>
               ))}
             </div>
@@ -526,7 +530,7 @@ export default function TaskModal({ lessonId, onClose, onDone }: Props) {
           <div style={{padding:'10px 16px',borderRight:'1px solid #0d1a28',display:'flex',flexDirection:'column',justifyContent:'center',gap:5}}>
             <div style={{...fp,fontSize:9,color:hp===0?'#ff2d55':'#2a3a54',letterSpacing:2,transition:'color .3s'}}>HP</div>
             <div style={{display:'flex',gap:5}}>
-              {[0,1,2].map(i=>(
+              {Array.from({length:hpMax},(_,i)=>(
                 <div key={i} style={{
                   width:16,height:16,
                   background:i<hp?'#ff2d55':'#1a0810',
@@ -747,7 +751,7 @@ export default function TaskModal({ lessonId, onClose, onDone }: Props) {
 
                 {/* RIGHT: game */}
                 <div style={{flex:1,overflow:'hidden',background:'#020609'}}>
-                  <GameTaskCanvas state={gameState} lessonTitle={lesson?.title||''} passedCount={passedCount} totalTasks={tasks.length} taskTitle={activeTask?.title||''}/>
+                  <GameTaskCanvas state={gameState} gameType={gameType} passedCount={passedCount} totalTasks={tasks.length} taskTitle={activeTask?.title||''}/>
                 </div>
               </>
             ) : (
@@ -756,7 +760,7 @@ export default function TaskModal({ lessonId, onClose, onDone }: Props) {
 
                 {/* game top */}
                 <div style={{flex:'0 0 45%',overflow:'hidden',borderBottom:'2px solid #0d1a28',position:'relative'}}>
-                  <GameTaskCanvas state={gameState} lessonTitle={lesson?.title||''} passedCount={passedCount} totalTasks={tasks.length} taskTitle={activeTask?.title||''}/>
+                  <GameTaskCanvas state={gameState} gameType={gameType} passedCount={passedCount} totalTasks={tasks.length} taskTitle={activeTask?.title||''}/>
                   {gameState==='correct'&&qPassed&&(
                     <div style={{position:'absolute',top:12,right:12,...fp,fontSize:9,color:'#00ff41',background:'rgba(0,255,65,.1)',border:'1px solid #00ff4133',padding:'6px 14px',animation:'tm-in .2s ease'}}>
                       ✓ +{qXp} XP
@@ -774,7 +778,7 @@ export default function TaskModal({ lessonId, onClose, onDone }: Props) {
 
                   {/* guide */}
                   <div style={{width:showGuide?240:0,flexShrink:0,borderRight:showGuide?'1px solid #0d1a28':'none',overflowX:'hidden',overflowY:'auto',background:'#020609',transition:'width .3s ease'}}>
-                    {showGuide&&<GuidePanel gameType={gt3} passedCount={passedCount} tasks={tasks} totalXP={totalXP}/>}
+                    {showGuide&&<GuidePanel gameType={gameType} passedCount={passedCount} tasks={tasks} totalXP={totalXP}/>}
                   </div>
                   <button onClick={()=>setShowGuide(v=>!v)}
                     style={{flexShrink:0,width:18,alignSelf:'stretch',background:'#0a1020',border:'none',borderRight:'1px solid #1a2840',cursor:'pointer',display:'flex',alignItems:'center',justifyContent:'center',fontSize:8,color:showGuide?'#00e5ff':'#2a4060'}}>

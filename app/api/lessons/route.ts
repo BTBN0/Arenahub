@@ -73,7 +73,8 @@ export async function POST(req: NextRequest) {
       courseId:   z.string(),
       title:      z.string().min(2),
       content:    z.string().optional(),
-      videoUrl:   z.string().optional(), // parsed but not stored (not in Prisma schema)
+      videoUrl:   z.string().optional(),
+      gameType:   z.string().optional(),
       xpReward:   z.number().optional(),
       orderIndex: z.number().optional(),
     })

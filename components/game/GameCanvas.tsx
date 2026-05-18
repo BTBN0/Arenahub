@@ -27,66 +27,16 @@ interface RunResult { label:string; input:unknown; expected:unknown; actual:unkn
 export type GameState = 'idle'|'running'|'correct'|'wrong'
 
 export default function GameTaskCanvas({
-  state, lessonTitle, passedCount, totalTasks, taskTitle
+  state, gameType, passedCount, totalTasks, taskTitle
 }: {
   state: GameState
-  lessonTitle: string
+  gameType: string
   passedCount: number
   totalTasks: number
   taskTitle: string
 }) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const rafRef    = useRef(0)
-
-  const getGameType = (t: string) => {
-    const s = t.toLowerCase()
-    // ── Course 8: Deployment (FIRST — overlaps frontend/api/git/fullstack) ──
-    if (s.includes('build frontend')||s.includes('env + port')||s.includes('deploy')||
-        s.includes('live api test')||s.includes('final game logic')||
-        s.includes('multiplayer live')||s.includes('final auto game')) return 'codefactory'
-    // ── Course 1: HTML ──
-    if (s.includes('structure')||s.includes('heading')||s.includes('image')||
-        s.includes('input')||s.includes('div')||s.includes('link')||
-        s.includes('form')||s.includes('semantic')||s.includes('game ui')||
-        s.includes('final boss')||s.includes('html')||s.includes('navigation')||
-        s.includes('full game')||s.includes('player name')) return 'evolution'
-    // ── Course 2: CSS ──
-    if (s.includes('basic css')||s.includes('colors')||s.includes('box model')||
-        s.includes('flexbox')||s.includes('grid')||s.includes('position')||
-        s.includes('animation')||s.includes('hover')||s.includes('responsive')||
-        s.includes('final game ui')||s.includes('css')||s.includes('style')) return 'cssplatform'
-    // ── Course 3: JS Basic ──
-    if (s.includes('variables')||s.includes('events')||s.includes('dom')||
-        s.includes('conditions')||s.includes('functions')||s.includes('collision')||
-        s.includes('loop')||s.includes('enemy ai')||s.includes('score')||
-        s.includes('final game')||s.includes('javascript')||s.includes('js')) return 'codequestbattle'
-    // ── Course 4: Advanced JS ──
-    if (s.includes('variables + game')||s.includes('movement logic')||s.includes('game loop')||
-        s.includes('collision system')||s.includes('ai logic')||s.includes('events system')||
-        s.includes('advanced game logic')||s.includes('object')||s.includes('array')||
-        s.includes('random')||s.includes('timer')||s.includes('task system – game')||
-        s.includes('game state')) return 'taskbattlesurvival'
-    // ── Course 5: React ──
-    if (s.includes('react')||s.includes('jsx')||s.includes('state')||
-        s.includes('useeffect')||s.includes('component')||s.includes('conditional')||
-        s.includes('auto game')||s.includes('final ui')||s.includes('enemy system')||
-        s.includes('task system')) return 'autocoderunner'
-    // ── Course 7: Database + Multiplayer (BEFORE backend/onlinecodefactory) ──
-    if (s.includes('sql')||s.includes('queries')||s.includes('insert data')||
-        s.includes('multiplayer sync')||s.includes('api + db')||
-        s.includes('database fundamentals')||s.includes('mongodb')||s.includes('save game data')||
-        s.includes('leaderboard system')||s.includes('multiplayer basics')||
-        s.includes('real-time game')||s.includes('multiplayer game')) return 'multiplayerarena'
-    // ── Course 6: Backend + everything else with server/api/db/git ──
-    if (s.includes('node')||s.includes('server')||s.includes('routes')||
-        s.includes('database')||s.includes('auth')||s.includes('save game')||
-        s.includes('leaderboard')||s.includes('multiplayer')||s.includes('api')||
-        s.includes('security')||s.includes('backend')||s.includes('memory data')||
-        s.includes('frontend')||s.includes('fullstack')||s.includes('git')||
-        s.includes('mysql')||s.includes('integration')) return 'onlinecodefactory'
-    return 'autocoderunner'
-  }
-  const gameType = getGameType(lessonTitle)
 
   useEffect(()=>{
     const canvas = canvasRef.current; if(!canvas) return
