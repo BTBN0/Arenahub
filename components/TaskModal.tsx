@@ -248,7 +248,7 @@ export default function TaskModal({ lessonId, onClose, onDone }: Props) {
     if (consoleRef.current) consoleRef.current.scrollTop=consoleRef.current.scrollHeight
   }, [consoleLogs])
 
-  /* ── HP=0 → dead screen 1.8s → auto-close ─────────────────── */
+  /* ── HP=0 → dead screen 3s → auto-close ───────────────────── */
   useEffect(() => {
     if (hp !== 0 || lessonDone) return
     setHpDead(true)
@@ -256,7 +256,7 @@ export default function TaskModal({ lessonId, onClose, onDone }: Props) {
     autoCloseRef.current = setTimeout(() => {
       setHpDead(false)
       if (onDone) onDone(null); else onClose()
-    }, 1800)
+    }, 3000)
     return () => { if (autoCloseRef.current) clearTimeout(autoCloseRef.current) }
   }, [hp]) // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -476,7 +476,7 @@ export default function TaskModal({ lessonId, onClose, onDone }: Props) {
 
         {/* ══ HP DEAD SCREEN ══ */}
         {hpDead && (
-          <div style={{position:'absolute',inset:0,zIndex:90,display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',background:'rgba(8,0,4,.96)',animation:'tm-dead 1.8s ease forwards',pointerEvents:'all'}}>
+          <div style={{position:'absolute',inset:0,zIndex:90,display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',background:'rgba(8,0,4,.96)',animation:'tm-dead 3s ease forwards',pointerEvents:'all'}}>
             <div style={{fontSize:64,marginBottom:14,filter:'drop-shadow(0 0 32px #ff2d55)',animation:'tm-deadpulse .7s ease infinite'}}>💀</div>
             <div style={{...fp,fontSize:14,color:'#ff2d55',letterSpacing:5,textShadow:'0 0 36px #ff2d55,0 0 60px #ff005540',marginBottom:12,animation:'tm-deadpulse .5s ease infinite'}}>HP ДУУССАН!</div>
             <div style={{...fp,fontSize:7,color:'#ff6b35',letterSpacing:3,marginBottom:24}}>3 УДАА БУРУУ ХАРИУЛТ</div>
@@ -489,7 +489,7 @@ export default function TaskModal({ lessonId, onClose, onDone }: Props) {
               {isMn?'← ХИЧЭЭЛ РҮҮ БУЦАЖ БАЙНА...':'← RETURNING TO LESSONS...'}
             </div>
             <div style={{width:200,height:4,background:'#200010',overflow:'hidden',borderRadius:2}}>
-              <div style={{height:'100%',background:'linear-gradient(90deg,#ff2d55,#ff6b35)',animation:'tm-countdown 1.8s linear forwards'}}/>
+              <div style={{height:'100%',background:'linear-gradient(90deg,#ff2d55,#ff6b35)',animation:'tm-countdown 3s linear forwards'}}/>
             </div>
           </div>
         )}
