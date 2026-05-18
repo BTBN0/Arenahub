@@ -18,7 +18,7 @@ function HudClock() {
   const dateStr = now.toLocaleDateString('mn-MN', { year:'numeric', month:'short', day:'numeric' })
   return (
     <div style={{ padding:'16px 28px', borderLeft:'1px solid #0d1a28', textAlign:'right', flexShrink:0, display:'flex', flexDirection:'column', justifyContent:'center', gap:6 }}>
-      <div style={{ fontFamily:'var(--fp)', fontSize:5, color:'#1a3050', letterSpacing:3 }}>{dateStr}</div>
+      <div style={{ fontFamily:'var(--fp)', fontSize:8, color:'#1a3050', letterSpacing:3 }}>{dateStr}</div>
       <div style={{ fontFamily:'var(--fp)', fontSize:12, color:'#2a5070', letterSpacing:4, fontVariantNumeric:'tabular-nums' }}>{timeStr}</div>
     </div>
   )
@@ -101,7 +101,7 @@ export default function DashboardPage() {
 
           {/* left: system label */}
           <div style={{ padding:'16px 28px', borderRight:'1px solid #0d1a28', flexShrink:0, display:'flex', flexDirection:'column', justifyContent:'center', gap:6 }}>
-            <div style={{ fontFamily:'var(--fp)', fontSize:5, color:'#1a3050', letterSpacing:4 }}>{t('dash_system')}</div>
+            <div style={{ fontFamily:'var(--fp)', fontSize:8, color:'#1a3050', letterSpacing:4 }}>{t('dash_system')}</div>
             <div style={{ fontFamily:'var(--fp)', fontSize:10, color:'#00e5ff', letterSpacing:3, textShadow:'0 0 12px rgba(0,229,255,.4)' }}>ARENAHUB</div>
           </div>
 
@@ -113,12 +113,12 @@ export default function DashboardPage() {
             </div>
             <div style={{ width:1, height:24, background:'rgba(13,20,38,.65)', backdropFilter:'blur(16px)' }}/>
             <div style={{ display:'flex', alignItems:'center', gap:10 }}>
-              <span style={{ fontFamily:'var(--fp)', fontSize:6, color:'#1a3050', letterSpacing:2 }}>USER</span>
+              <span style={{ fontFamily:'var(--fp)', fontSize:9, color:'#1a3050', letterSpacing:2 }}>USER</span>
               <span style={{ fontFamily:'var(--fp)', fontSize:8, color:'#5a8aaa', letterSpacing:1 }}>{user?.username?.toUpperCase()}</span>
               {user?.country && <CountryFlag country={user.country} size={24}/>}
             </div>
             {planCfg && (
-              <span style={{ fontFamily:'var(--fp)', fontSize:6, color:planCfg.col, border:`1px solid ${planCfg.col}55`, padding:'3px 12px', letterSpacing:2, boxShadow:`0 0 12px ${planCfg.glow}`, background:`${planCfg.col}10` }}>
+              <span style={{ fontFamily:'var(--fp)', fontSize:9, color:planCfg.col, border:`1px solid ${planCfg.col}55`, padding:'3px 12px', letterSpacing:2, boxShadow:`0 0 12px ${planCfg.glow}`, background:`${planCfg.col}10` }}>
                 {plan}
               </span>
             )}
@@ -139,7 +139,7 @@ export default function DashboardPage() {
           ].map((s, i) => (
             <div key={s.k} style={{ padding:'20px 24px', borderRight: i < 4 ? '1px solid #0d1a28' : 'none', position:'relative' }}>
               <div style={{ position:'absolute', top:0, left:0, right:0, height:2, background:`linear-gradient(90deg,transparent,${s.col}44,transparent)` }}/>
-              <div style={{ fontFamily:'var(--fp)', fontSize:6, color:'#2a3a54', letterSpacing:3, marginBottom:8 }}>{s.k}</div>
+              <div style={{ fontFamily:'var(--fp)', fontSize:9, color:'#2a3a54', letterSpacing:3, marginBottom:8 }}>{s.k}</div>
               <div style={{ fontFamily:'var(--fp)', fontSize:14, color:s.col, textShadow:`0 0 12px ${s.col}55` }}>{s.v}</div>
             </div>
           ))}
@@ -147,7 +147,7 @@ export default function DashboardPage() {
 
         {/* ── XP PROGRESS BAR ── */}
         <div style={{ position:'relative', zIndex:2, flexShrink:0, padding:'14px 20px', background:'rgba(8,12,22,.96)', backdropFilter:'blur(20px)', borderBottom:'1px solid #0d1a28' }}>
-          <div style={{ display:'flex', justifyContent:'space-between', fontFamily:'var(--fp)', fontSize:6, color:'#2a4060', marginBottom:8 }}>
+          <div style={{ display:'flex', justifyContent:'space-between', fontFamily:'var(--fp)', fontSize:9, color:'#2a4060', marginBottom:8 }}>
             <span style={{ color:'#00ff4155' }}>{t('dash_xp_progress')} → LVL {level + 1}</span>
             <span style={{ color:'#00ff41' }}>{(xp % xpNext).toLocaleString()} / {xpNext.toLocaleString()}</span>
           </div>
@@ -162,7 +162,7 @@ export default function DashboardPage() {
               <div style={{ position:'absolute', inset:0, background:'linear-gradient(90deg,transparent 60%,rgba(255,255,255,.15) 80%,transparent 100%)' }}/>
             </div>
           </div>
-          <div style={{ fontFamily:'var(--fp)', fontSize:5, color:'#1a3050', marginTop:6 }}>
+          <div style={{ fontFamily:'var(--fp)', fontSize:8, color:'#1a3050', marginTop:6 }}>
             {(xpNext - xp % xpNext).toLocaleString()} {t('dash_xp_left')}
           </div>
         </div>
@@ -179,10 +179,10 @@ export default function DashboardPage() {
               <div style={{ width:8, height:8, background:'#ffd700', borderRadius:'50%' }}/>
               <div style={{ position:'absolute', inset:0, borderRadius:'50%', background:'#ffd700', animation:'hud-ping 1.2s ease-out infinite' }}/>
             </div>
-            <div style={{ fontFamily:'var(--fp)', fontSize:4, color:'#ffd700', letterSpacing:3 }}>● {t('dash_live_contest')}</div>
-            <div style={{ fontFamily:'var(--fp)', fontSize:7, color:'#fff', flex:1 }}>{contest.title}</div>
+            <div style={{ fontFamily:'var(--fp)', fontSize:10, color:'#ffd700', letterSpacing:3 }}>● {t('dash_live_contest')}</div>
+            <div style={{ fontFamily:'var(--fp)', fontSize:10, color:'#fff', flex:1 }}>{contest.title}</div>
             <div style={{ fontFamily:'var(--fp)', fontSize:9, color:'#ffd700', letterSpacing:2, fontVariantNumeric:'tabular-nums' }}>{contestLeft}</div>
-            <a href="/pricing?tab=contest" style={{ fontFamily:'var(--fp)', fontSize:5, color:'#060e1a', background:'#ffd700', padding:'5px 14px', textDecoration:'none', letterSpacing:1, flexShrink:0 }}>
+            <a href="/pricing?tab=contest" style={{ fontFamily:'var(--fp)', fontSize:8, color:'#060e1a', background:'#ffd700', padding:'5px 14px', textDecoration:'none', letterSpacing:1, flexShrink:0 }}>
               {t('dash_join')} →
             </a>
           </div>
@@ -195,7 +195,7 @@ export default function DashboardPage() {
           <div className="dash-left">
             <div style={{ display:'flex', alignItems:'center', gap:10 }}>
               <div style={{ width:3, height:18, background:'#00e5ff', boxShadow:'0 0 8px #00e5ff' }}/>
-              <div style={{ fontFamily:'var(--fp)', fontSize:7, color:'#2a4a6a', letterSpacing:4 }}>{t('dash_navigate')}</div>
+              <div style={{ fontFamily:'var(--fp)', fontSize:10, color:'#2a4a6a', letterSpacing:4 }}>{t('dash_navigate')}</div>
             </div>
             <div className="dash-zones">
               {(ZONES as Zone[]).map((z, i) => (

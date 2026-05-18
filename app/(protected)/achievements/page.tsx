@@ -49,21 +49,21 @@ function AchCard({ ach, unlocked, unlockedAt }: { ach:Achievement; unlocked:bool
 
         <div style={{ flex:1, minWidth:0 }}>
           <div style={{ display:'flex', alignItems:'center', gap:6, marginBottom:4 }}>
-            <span style={{ fontFamily:'var(--fp)', fontSize:7, color: unlocked ? (rc?.col ?? '#ffd700') : '#2a3a54' }}>{ach.title}</span>
+            <span style={{ fontFamily:'var(--fp)', fontSize:10, color: unlocked ? (rc?.col ?? '#ffd700') : '#2a3a54' }}>{ach.title}</span>
             {rc && (
-              <span style={{ fontFamily:'var(--fp)', fontSize:4, color:rc.col, padding:'1px 5px', border:`1px solid ${rc.col}33`, marginLeft:'auto', flexShrink:0 }}>{rc.label}</span>
+              <span style={{ fontFamily:'var(--fp)', fontSize:10, color:rc.col, padding:'1px 5px', border:`1px solid ${rc.col}33`, marginLeft:'auto', flexShrink:0 }}>{rc.label}</span>
             )}
           </div>
           <div style={{ fontFamily:'var(--fm)', fontSize:11, color:'#3a5070', marginBottom:8, lineHeight:1.5 }}>{ach.description}</div>
           <div style={{ display:'flex', gap:8, alignItems:'center' }}>
-            {ach.xpReward > 0 && <span style={{ fontFamily:'var(--fp)', fontSize:5, color:'#ffd700' }}>+{ach.xpReward} XP</span>}
-            {ach.rewardAmount > 0 && <span style={{ fontFamily:'var(--fp)', fontSize:5, color:'#00e5ff' }}>+{ach.rewardAmount} {ach.rewardType}</span>}
-            <span style={{ fontFamily:'var(--fp)', fontSize:4, color:'#1a3050', padding:'1px 5px', border:'1px solid #0d1a28', marginLeft:'auto' }}>
+            {ach.xpReward > 0 && <span style={{ fontFamily:'var(--fp)', fontSize:8, color:'#ffd700' }}>+{ach.xpReward} XP</span>}
+            {ach.rewardAmount > 0 && <span style={{ fontFamily:'var(--fp)', fontSize:8, color:'#00e5ff' }}>+{ach.rewardAmount} {ach.rewardType}</span>}
+            <span style={{ fontFamily:'var(--fp)', fontSize:10, color:'#1a3050', padding:'1px 5px', border:'1px solid #0d1a28', marginLeft:'auto' }}>
               {TYPE_LABEL[ach.type] ?? ach.type}
             </span>
           </div>
           {unlocked && unlockedAt && (
-            <div style={{ fontFamily:'var(--fp)', fontSize:4, color:`${col}88`, marginTop:5 }}>
+            <div style={{ fontFamily:'var(--fp)', fontSize:10, color:`${col}88`, marginTop:5 }}>
               ✓ {new Date(unlockedAt).toLocaleDateString('mn-MN')}
             </div>
           )}
@@ -138,7 +138,7 @@ export default function AchievementsPage() {
           <div style={{ position:'absolute', top:0, left:0, right:0, height:1, background:'linear-gradient(90deg,transparent,#ffd70044,transparent)' }}/>
 
           <div style={{ padding:'16px 28px', borderRight:'1px solid #0d1a28', flexShrink:0, display:'flex', flexDirection:'column', justifyContent:'center', gap:6 }}>
-            <div style={{ fontFamily:'var(--fp)', fontSize:5, color:'#1a3050', letterSpacing:4 }}>ARENAHUB</div>
+            <div style={{ fontFamily:'var(--fp)', fontSize:8, color:'#1a3050', letterSpacing:4 }}>ARENAHUB</div>
             <div style={{ fontFamily:'var(--fp)', fontSize:10, color:'#ffd700', letterSpacing:3, textShadow:'0 0 12px rgba(255,215,0,.4)' }}>GAMIFY</div>
           </div>
 
@@ -148,11 +148,11 @@ export default function AchievementsPage() {
               <span style={{ fontFamily:'var(--fp)', fontSize:10, color:'#ffd700', letterSpacing:3, textShadow:'0 0 10px rgba(255,215,0,.3)' }}>{t('ach_title')}</span>
             </div>
             <div style={{ width:1, height:24, background:'rgba(13,20,38,.65)', backdropFilter:'blur(16px)' }}/>
-            <span style={{ fontFamily:'var(--fp)', fontSize:6, color:'#2a3a54', letterSpacing:2 }}>{earned}/{total} ОЛГОСОН</span>
+            <span style={{ fontFamily:'var(--fp)', fontSize:9, color:'#2a3a54', letterSpacing:2 }}>{earned}/{total} ОЛГОСОН</span>
           </div>
 
           <div style={{ padding:'16px 28px', borderLeft:'1px solid #0d1a28', display:'flex', alignItems:'center', flexShrink:0 }}>
-            <span style={{ fontFamily:'var(--fp)', fontSize:7, color:'#3a5070' }}>🏆 +{xpTotal} XP</span>
+            <span style={{ fontFamily:'var(--fp)', fontSize:10, color:'#3a5070' }}>🏆 +{xpTotal} XP</span>
           </div>
         </div>
 
@@ -166,7 +166,7 @@ export default function AchievementsPage() {
           ].map((s, i) => (
             <div key={s.k} style={{ padding:'18px 24px', borderRight: i < 3 ? '1px solid #0d1a28' : 'none', position:'relative' }}>
               <div style={{ position:'absolute', top:0, left:0, right:0, height:2, background:`linear-gradient(90deg,transparent,${s.col}44,transparent)` }}/>
-              <div style={{ fontFamily:'var(--fp)', fontSize:5, color:'#1a3050', letterSpacing:3, marginBottom:8 }}>{s.k}</div>
+              <div style={{ fontFamily:'var(--fp)', fontSize:8, color:'#1a3050', letterSpacing:3, marginBottom:8 }}>{s.k}</div>
               <div style={{ fontFamily:'var(--fp)', fontSize:14, color:s.col, textShadow:`0 0 10px ${s.col}55`, marginBottom:8 }}>{s.v}</div>
               <div style={{ height:2, background:'rgba(12,18,34,.62)',  backdropFilter:'blur(16px)' }}>
                 <div style={{ height:'100%', width:`${s.bar*100}%`, background:s.col, boxShadow:`0 0 6px ${s.col}66`, transition:'width .5s' }}/>
@@ -181,7 +181,7 @@ export default function AchievementsPage() {
           {/* Filters */}
           <div style={{ display:'flex', gap:8, marginBottom:20, flexWrap:'wrap', alignItems:'center' }}>
             {([['ALL','ach_all'],['UNLOCKED','ach_unlocked'],['LOCKED','ach_locked']] as const).map(([f, tk]) => (
-              <button key={f} onClick={() => setFilter(f)} style={{ fontFamily:'var(--fp)', fontSize:6, padding:'7px 16px', cursor:'pointer', background: filter===f ? 'rgba(255,215,0,.1)' : 'transparent', color: filter===f ? '#ffd700' : '#2a3a54', border:`1px solid ${filter===f ? '#ffd70066' : '#0d1a28'}`, letterSpacing:1, transition:'all .15s' }}>{t(tk)}</button>
+              <button key={f} onClick={() => setFilter(f)} style={{ fontFamily:'var(--fp)', fontSize:9, padding:'7px 16px', cursor:'pointer', background: filter===f ? 'rgba(255,215,0,.1)' : 'transparent', color: filter===f ? '#ffd700' : '#2a3a54', border:`1px solid ${filter===f ? '#ffd70066' : '#0d1a28'}`, letterSpacing:1, transition:'all .15s' }}>{t(tk)}</button>
             ))}
             <div style={{ width:1, height:20, background:'rgba(13,20,38,.65)', backdropFilter:'blur(16px)', margin:'0 2px' }}/>
             {['ALL','EPIC','RARE','COMMON'].map(r => {
@@ -189,7 +189,7 @@ export default function AchievementsPage() {
               const col = rc?.col ?? '#2a3a54'
               const active = rarFilter === r
               return (
-                <button key={r} onClick={() => setRarFilter(r)} style={{ fontFamily:'var(--fp)', fontSize:6, padding:'7px 14px', cursor:'pointer', background: active ? `${col}12` : 'transparent', color: active ? col : '#2a3a54', border:`1px solid ${active ? col + '55' : '#0d1a28'}`, letterSpacing:1, transition:'all .15s' }}>{r}</button>
+                <button key={r} onClick={() => setRarFilter(r)} style={{ fontFamily:'var(--fp)', fontSize:9, padding:'7px 14px', cursor:'pointer', background: active ? `${col}12` : 'transparent', color: active ? col : '#2a3a54', border:`1px solid ${active ? col + '55' : '#0d1a28'}`, letterSpacing:1, transition:'all .15s' }}>{r}</button>
               )
             })}
           </div>
