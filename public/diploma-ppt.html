@@ -115,6 +115,23 @@ tr:nth-child(even) td{background:rgba(0,212,255,.02);}
 #_fs:hover{color:var(--cyan);}
 #_keys{position:fixed;bottom:18px;right:16px;font-family:var(--fp);font-size:5px;color:rgba(0,212,255,.18);z-index:9999;line-height:2;text-align:right;}
 
+/* ── PRINT MODE — Ctrl+P → PDF ── */
+@media print{
+  *{-webkit-print-color-adjust:exact !important;print-color-adjust:exact !important;}
+  body{overflow:visible !important;width:297mm;height:auto;}
+  .slide{
+    position:relative !important;
+    width:297mm !important;
+    height:210mm !important;
+    opacity:1 !important;
+    pointer-events:all !important;
+    page-break-after:always;
+    display:flex !important;
+  }
+  .slide:last-child{page-break-after:avoid;}
+  #_prog,#_nav,#_tb,#_fs,#_keys{display:none !important;}
+}
+@page{size:A4 landscape;margin:0;}
 </style>
 </head>
 <body>
