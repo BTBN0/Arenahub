@@ -1,5 +1,5 @@
 'use client'
-import { useEffect, useState, useCallback } from 'react'
+import { useEffect, useState, useCallback, useRef } from 'react'
 import { adminFetch } from '@/lib/admin-fetch'
 
 const fp = { fontFamily: 'var(--fp)' } as const
@@ -8,8 +8,31 @@ const fm = { fontFamily: 'var(--fm)' } as const
 type Course  = { id:string; title:string; description:string; category:string; difficulty:string; isActive:boolean; xpReward:number; orderIndex:number; _count:{ lessons:number; enrollments:number } }
 type Lesson  = { id:string; title:string; content:string; xpReward:number; orderIndex:number; _count:{ tasks:number } }
 type Task    = { id:string; title:string; titleEn:string; description:string; descriptionEn:string; taskType:string; xpReward:number; options:unknown; answer:number|null; orderIndex:number; _count:{ submissions:number } }
+type GameInfo= { id:string; name:string; slug:string; gameType:string; description:string|null; hpMax:number; xpReward:number; isActive:boolean; _count:{ gameTasks:number; lessonGames:number } }
+type LessonGameEntry = { lessonGameId:string; orderIndex:number; game:GameInfo }
 
 const DIFFICULTIES = ['BEGINNER','INTERMEDIATE','ADVANCED']
+
+// 16 canvas-registered game types — source of truth
+const GAME_META: Record<string,{icon:string;label:string;col:string}> = {
+  evolution:          {icon:'🌱',label:'EVOLUTION',       col:'#00ff88'},
+  jump:               {icon:'🏃',label:'JUMP QUEST',      col:'#00ff41'},
+  enemy:              {icon:'👾',label:'ENEMY RAID',      col:'#ff3333'},
+  city:               {icon:'🏙',label:'CITY BUILD',      col:'#ffe600'},
+  island:             {icon:'🏝',label:'ISLAND',          col:'#00e5ff'},
+  castle:             {icon:'🏰',label:'SERVER CASTLE',   col:'#aa44ff'},
+  kingdom:            {icon:'👑',label:'DATA KINGDOM',    col:'#4488ff'},
+  timemachine:        {icon:'⏱',label:'TIME MACHINE',    col:'#ffe600'},
+  megacity:           {icon:'🌆',label:'MEGA CITY',       col:'#00ff41'},
+  cssplatform:        {icon:'🎨',label:'CSS PLATFORM',    col:'#ff00dd'},
+  codequestbattle:    {icon:'⚔',label:'CODE QUEST',      col:'#ff6b35'},
+  autocoderunner:     {icon:'🤖',label:'AUTO RUNNER',     col:'#00e5ff'},
+  onlinecodefactory:  {icon:'🏭',label:'ONLINE FACTORY',  col:'#ffe600'},
+  taskbattlesurvival: {icon:'🛡',label:'BATTLE SURVIVAL', col:'#ff4444'},
+  multiplayerarena:   {icon:'🏟',label:'MULTIPLAYER',     col:'#aa44ff'},
+  codefactory:        {icon:'⚙',label:'CODE FACTORY',    col:'#aaaaff'},
+}
+const gm = (t:string) => GAME_META[t] ?? {icon:'🎮',label:t.toUpperCase(),col:'var(--dim2)'}
 
 /* ── Small reusable components ─────────────── */
 function Flash({ msg, col='var(--cyan)' }: { msg:string; col?:string }) {
@@ -92,7 +115,17 @@ export default function AdminCoursesPage() {
   const [taskLesson,  setTaskLesson] = useState<string>('')
   const [savingT,     setSavingT]    = useState(false)
 
+  // Game management
+  const [lessonGames,   setLessonGames]   = useState<Record<string, LessonGameEntry[]>>({})
+  const [gameMgrLesson, setGameMgrLesson] = useState<{id:string;title:string}|null>(null)
+
   const notify = (msg:string, col='var(--cyan)') => { setFlash(msg); setFlashCol(col); setTimeout(()=>setFlash(''),3500) }
+
+  const loadLessonGames = useCallback(async (lessonId:string) => {
+    const r = await adminFetch(`/api/admin/lessons/${lessonId}/games`)
+    const d = await r.json()
+    setLessonGames(prev => ({...prev, [lessonId]: d.games ?? []}))
+  }, [])
 
   /* ── Load courses ── */
   const load = useCallback(async () => {
@@ -139,6 +172,7 @@ export default function AdminCoursesPage() {
     if (expandedLes===id) { setExpandedLes(null); return }
     setExpandedLes(id)
     await loadTasks(id)
+    loadLessonGames(id)
   }
 
   /* ── Course CRUD ── */
@@ -307,9 +341,11 @@ export default function AdminCoursesPage() {
                       </button>
                       <span style={{ ...fp, fontSize:6, color:'var(--text)', flex:1 }}>{l.title}</span>
                       <span style={{ ...fp, fontSize:5, color:'var(--dim2)' }}>{l._count?.tasks??0} task</span>
+                      <span style={{ ...fp, fontSize:5, color:'var(--green)' }}>🎮{lessonGames[l.id]?.length ?? '·'}</span>
                       <span style={{ ...fp, fontSize:5, color:'var(--yellow)' }}>+{l.xpReward}XP</span>
                       <Btn label='ЗАСАХ' col='var(--cyan)' onClick={()=>{ setLessonCourse(c.id); setEditLesson(l); setLessonForm({ title:l.title, content:l.content??'', xpReward:String(l.xpReward), orderIndex:String(l.orderIndex) }); setLessonModal('edit') }} />
                       <Btn label='+ TASK' col='var(--purple)' onClick={()=>{ setTaskLesson(l.id); setEditTask(null); setTaskForm(emptyTask()); setTaskModal('create') }} />
+                      <Btn label='🎮 GAME' col='var(--green)' onClick={()=>{ setGameMgrLesson({id:l.id,title:l.title}); if(!lessonGames[l.id]) loadLessonGames(l.id) }} />
                       <Btn label='DEL' col='var(--red)' onClick={()=>deleteLesson(c.id,l)} />
                     </div>
 
@@ -374,6 +410,17 @@ export default function AdminCoursesPage() {
           <Field label='ДАРААЛАЛ'   value={lessonForm.orderIndex} onChange={v=>setLessonForm(f=>({...f,orderIndex:v}))} type='number' />
           <Row><Btn label={savingL?'...':'ХАДГАЛАХ'} col='var(--cyan)' size='md' onClick={saveLesson} disabled={savingL}/><Btn label='БОЛИХ' col='var(--dim2)' size='md' onClick={()=>setLessonModal('none')}/></Row>
         </Modal>
+      )}
+
+      {/* ══ GAME MANAGER MODAL ══ */}
+      {gameMgrLesson && (
+        <GameManagerModal
+          lesson={gameMgrLesson}
+          initialGames={lessonGames[gameMgrLesson.id] ?? []}
+          onClose={()=>setGameMgrLesson(null)}
+          onChanged={()=>loadLessonGames(gameMgrLesson.id)}
+          notify={notify}
+        />
       )}
 
       {/* ══ TASK MODAL ══ */}
@@ -457,6 +504,213 @@ export default function AdminCoursesPage() {
           <Row><Btn label={savingT?'...':'ХАДГАЛАХ'} col='var(--purple)' size='md' onClick={saveTask} disabled={savingT}/><Btn label='БОЛИХ' col='var(--dim2)' size='md' onClick={()=>setTaskModal('none')}/></Row>
         </Modal>
       )}
+    </div>
+  )
+}
+
+/* ── GameManagerModal ──────────────────────────────────────────────── */
+function GameManagerModal({ lesson, initialGames, onClose, onChanged, notify }: {
+  lesson: {id:string;title:string}
+  initialGames: LessonGameEntry[]
+  onClose: ()=>void
+  onChanged: ()=>void
+  notify: (msg:string,col?:string)=>void
+}) {
+  const [assigned,   setAssigned]   = useState<LessonGameEntry[]>(initialGames)
+  const [allGames,   setAllGames]   = useState<GameInfo[]>([])
+  const [loadingAll, setLoadingAll] = useState(true)
+  const [search,     setSearch]     = useState('')
+  const [typeF,      setTypeF]      = useState('')
+  const [assigning,  setAssigning]  = useState<string|null>(null)
+  const [removing,   setRemoving]   = useState<string|null>(null)
+  const [reordering, setReordering] = useState(false)
+  const searchRef = useRef<HTMLInputElement>(null)
+
+  // Load current lesson games + all available games
+  useEffect(()=>{
+    adminFetch(`/api/admin/lessons/${lesson.id}/games`).then(r=>r.json()).then(d=>{
+      setAssigned(d.games ?? [])
+    })
+    adminFetch('/api/admin/games?active=true').then(r=>r.json()).then(d=>{
+      setAllGames(d.games ?? [])
+      setLoadingAll(false)
+    })
+    setTimeout(()=>searchRef.current?.focus(), 80)
+  },[lesson.id])
+
+  const assignedIds = new Set(assigned.map(a=>a.game.id))
+
+  const filtered = allGames.filter(g=>{
+    const matchS = !search || g.name.toLowerCase().includes(search.toLowerCase())
+    const matchT = !typeF  || g.gameType===typeF
+    return matchS && matchT
+  })
+
+  // Assign game to lesson
+  const handleAssign = async (game:GameInfo) => {
+    if (assigning) return
+    setAssigning(game.id)
+    const r = await adminFetch(`/api/admin/lessons/${lesson.id}/games`,{method:'POST',body:JSON.stringify({gameId:game.id})})
+    setAssigning(null)
+    if (!r.ok) { const d=await r.json(); notify(d.error??'Алдаа','var(--red)'); return }
+    const newEntry:LessonGameEntry = { lessonGameId:'', orderIndex:assigned.length, game }
+    setAssigned(prev=>[...prev,newEntry])
+    onChanged()
+    notify('Тоглоом нэмэгдлээ','var(--green)')
+  }
+
+  // Detach game from lesson
+  const handleRemove = async (gameId:string) => {
+    setRemoving(gameId)
+    const r = await adminFetch(`/api/admin/lessons/${lesson.id}/games/${gameId}`,{method:'DELETE'})
+    setRemoving(null)
+    if (!r.ok) { notify('Алдаа','var(--red)'); return }
+    setAssigned(prev=>prev.filter(a=>a.game.id!==gameId))
+    onChanged()
+    notify('Хасагдлаа','var(--yellow)')
+  }
+
+  // Reorder
+  const move = async (idx:number, dir:-1|1) => {
+    const next = [...assigned]
+    const swap = idx+dir
+    if (swap<0||swap>=next.length) return;
+    [next[idx],next[swap]]=[next[swap],next[idx]]
+    setAssigned(next)
+    setReordering(true)
+    const order = next.map((e,i)=>({gameId:e.game.id, orderIndex:i}))
+    await adminFetch(`/api/admin/lessons/${lesson.id}/games`,{method:'PATCH',body:JSON.stringify({order})})
+    setReordering(false)
+    onChanged()
+  }
+
+  const allTypes = Array.from(new Set(allGames.map(g=>g.gameType)))
+
+  return (
+    <div style={{position:'fixed',inset:0,background:'rgba(0,0,0,.85)',display:'flex',alignItems:'center',justifyContent:'center',zIndex:300,padding:20}}
+      onClick={e=>{if(e.target===e.currentTarget)onClose()}}>
+      <div style={{background:'var(--bg)',border:'1px solid var(--green)',width:860,maxHeight:'90vh',display:'flex',flexDirection:'column'}}>
+
+        {/* Header */}
+        <div style={{padding:'14px 20px',borderBottom:'1px solid var(--dim)',display:'flex',alignItems:'center',justifyContent:'space-between',flexShrink:0}}>
+          <div>
+            <div style={{...fp,fontSize:8,color:'var(--green)',letterSpacing:2}}>🎮 GAME MANAGER</div>
+            <div style={{...fm,fontSize:10,color:'var(--dim2)',marginTop:3}}>{lesson.title}</div>
+          </div>
+          <button onClick={onClose} style={{...fp,fontSize:10,color:'var(--dim2)',background:'transparent',border:'none',cursor:'pointer'}}>✕</button>
+        </div>
+
+        <div style={{display:'flex',flex:1,overflow:'hidden'}}>
+
+          {/* LEFT — Assigned games */}
+          <div style={{width:340,borderRight:'1px solid var(--dim)',display:'flex',flexDirection:'column',overflow:'hidden'}}>
+            <div style={{...fp,fontSize:5,color:'var(--green)',letterSpacing:2,padding:'10px 16px 8px',borderBottom:'1px solid var(--dim)',flexShrink:0}}>
+              ОНООГДСОН ТОГЛООМУУД ({assigned.length})
+            </div>
+            <div style={{flex:1,overflowY:'auto',padding:'10px 14px',scrollbarWidth:'none'}}>
+              {assigned.length===0 ? (
+                <div style={{...fp,fontSize:7,color:'var(--dim2)',textAlign:'center',padding:'30px 0'}}>
+                  Тоглоом оноогдоогүй байна
+                  <div style={{...fm,fontSize:9,color:'var(--dim2)',marginTop:8}}>Баруун талаас нэмнэ үү →</div>
+                </div>
+              ) : assigned.map((a,i)=>{
+                const meta=gm(a.game.gameType)
+                return (
+                  <div key={a.game.id} style={{display:'flex',alignItems:'center',gap:8,padding:'8px 10px',background:`${meta.col}08`,border:`1px solid ${meta.col}33`,marginBottom:6,transition:'all .15s',opacity:a.game.isActive?1:0.55}}>
+                    {/* Order controls */}
+                    <div style={{display:'flex',flexDirection:'column',gap:2,flexShrink:0}}>
+                      <button onClick={()=>move(i,-1)} disabled={i===0||reordering}
+                        style={{...fp,fontSize:6,padding:'1px 4px',background:'transparent',border:'1px solid var(--dim)',color:i===0?'var(--dim)':'var(--dim2)',cursor:i===0?'not-allowed':'pointer'}}>▲</button>
+                      <div style={{...fp,fontSize:5,color:meta.col,textAlign:'center'}}>{i+1}</div>
+                      <button onClick={()=>move(i,1)} disabled={i===assigned.length-1||reordering}
+                        style={{...fp,fontSize:6,padding:'1px 4px',background:'transparent',border:'1px solid var(--dim)',color:i===assigned.length-1?'var(--dim)':'var(--dim2)',cursor:i===assigned.length-1?'not-allowed':'pointer'}}>▼</button>
+                    </div>
+                    {/* Icon */}
+                    <div style={{fontSize:20,flexShrink:0}}>{meta.icon}</div>
+                    {/* Info */}
+                    <div style={{flex:1,minWidth:0}}>
+                      <div style={{...fp,fontSize:7,color:meta.col,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{a.game.name}</div>
+                      <div style={{...fp,fontSize:5,color:'var(--dim2)',marginTop:2}}>❤{a.game.hpMax} ⚡{a.game.xpReward} 📋{a.game._count.gameTasks}</div>
+                    </div>
+                    {/* Remove */}
+                    <button onClick={()=>handleRemove(a.game.id)} disabled={removing===a.game.id}
+                      style={{...fp,fontSize:6,padding:'3px 7px',cursor:'pointer',background:'transparent',color:'var(--red)',border:'1px solid var(--red)44',flexShrink:0,opacity:removing===a.game.id?0.5:1}}>
+                      {removing===a.game.id?'...':'✕'}
+                    </button>
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+
+          {/* RIGHT — Game picker */}
+          <div style={{flex:1,display:'flex',flexDirection:'column',overflow:'hidden'}}>
+            {/* Search + filter */}
+            <div style={{padding:'10px 16px',borderBottom:'1px solid var(--dim)',flexShrink:0}}>
+              <input ref={searchRef} value={search} onChange={e=>setSearch(e.target.value)} placeholder="Тоглоом хайх..."
+                style={{...fm,fontSize:11,padding:'7px 10px',background:'var(--bg)',border:'1px solid var(--dim)',color:'var(--text)',outline:'none',width:'100%',boxSizing:'border-box',marginBottom:8}}
+                onFocus={e=>e.currentTarget.style.borderColor='var(--green)'}
+                onBlur={e=>e.currentTarget.style.borderColor='var(--dim)'}/>
+              <div style={{display:'flex',flexWrap:'wrap',gap:4}}>
+                <button onClick={()=>setTypeF('')}
+                  style={{...fp,fontSize:5,padding:'3px 7px',cursor:'pointer',background:!typeF?'var(--dim)22':'transparent',color:!typeF?'var(--text)':'var(--dim2)',border:`1px solid ${!typeF?'var(--dim2)':'var(--dim)'}`}}>ALL</button>
+                {allTypes.map(t=>{const m=gm(t); return (
+                  <button key={t} onClick={()=>setTypeF(typeF===t?'':t)}
+                    style={{...fp,fontSize:5,padding:'3px 7px',cursor:'pointer',background:typeF===t?`${m.col}22`:'transparent',color:typeF===t?m.col:'var(--dim2)',border:`1px solid ${typeF===t?m.col+'66':'var(--dim)'}`}}>
+                    {m.icon} {m.label}
+                  </button>
+                )})}
+              </div>
+            </div>
+
+            {/* Game list */}
+            <div style={{flex:1,overflowY:'auto',padding:'10px 16px',scrollbarWidth:'none'}}>
+              {loadingAll ? (
+                <div style={{...fp,fontSize:8,color:'var(--dim2)',textAlign:'center',padding:30}}>УНШИЖ БАЙНА...</div>
+              ) : filtered.length===0 ? (
+                <div style={{...fp,fontSize:8,color:'var(--dim2)',textAlign:'center',padding:30}}>Тоглоом олдсонгүй</div>
+              ) : filtered.map(game=>{
+                const meta=gm(game.gameType)
+                const already=assignedIds.has(game.id)
+                return (
+                  <div key={game.id} style={{display:'flex',alignItems:'center',gap:10,padding:'8px 10px',background:already?'var(--green)06':'transparent',border:`1px solid ${already?'var(--green)33':'var(--dim)'}`,marginBottom:4,opacity:already?0.65:1,transition:'all .15s'}}>
+                    <div style={{fontSize:20,flexShrink:0}}>{meta.icon}</div>
+                    <div style={{flex:1,minWidth:0}}>
+                      <div style={{display:'flex',alignItems:'center',gap:6,marginBottom:2}}>
+                        <span style={{...fp,fontSize:7,color:meta.col,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{game.name}</span>
+                        <span style={{...fp,fontSize:5,color:meta.col,background:`${meta.col}18`,border:`1px solid ${meta.col}44`,padding:'1px 5px',flexShrink:0}}>{meta.label}</span>
+                      </div>
+                      {game.description && <div style={{...fm,fontSize:9,color:'var(--dim2)',overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{game.description}</div>}
+                    </div>
+                    <span style={{...fp,fontSize:6,color:'var(--dim2)',flexShrink:0}}>❤{game.hpMax} ⚡{game.xpReward} 📋{game._count.gameTasks}</span>
+                    {already ? (
+                      <span style={{...fp,fontSize:6,color:'var(--green)',border:'1px solid var(--green)44',padding:'3px 8px',flexShrink:0}}>✓ ОНООГДСОН</span>
+                    ) : (
+                      <button onClick={()=>handleAssign(game)} disabled={!!assigning}
+                        style={{...fp,fontSize:6,padding:'4px 10px',cursor:assigning?'not-allowed':'pointer',background:'transparent',color:'var(--cyan)',border:'1px solid var(--cyan)55',flexShrink:0,transition:'all .15s',opacity:assigning===game.id?0.5:1}}
+                        onMouseEnter={e=>{if(!assigning){e.currentTarget.style.background='var(--cyan)18';e.currentTarget.style.borderColor='var(--cyan)'}}}
+                        onMouseLeave={e=>{e.currentTarget.style.background='transparent';e.currentTarget.style.borderColor='var(--cyan)55'}}>
+                        {assigning===game.id?'...':'+ ОНООХ'}
+                      </button>
+                    )}
+                  </div>
+                )
+              })}
+            </div>
+
+            {/* Footer */}
+            <div style={{padding:'10px 16px',borderTop:'1px solid var(--dim)',display:'flex',justifyContent:'space-between',alignItems:'center',flexShrink:0}}>
+              <span style={{...fm,fontSize:9,color:'var(--dim2)'}}>
+                {filtered.filter(g=>!assignedIds.has(g.id)).length} тоглоом нэмэх боломжтой
+              </span>
+              <button onClick={onClose}
+                style={{...fp,fontSize:6,padding:'5px 12px',cursor:'pointer',background:'transparent',color:'var(--dim2)',border:'1px solid var(--dim)55'}}>
+                ХААХ
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   )
 }

@@ -32,15 +32,22 @@ type Lesson = {
 
 // ── Constants ──────────────────────────────────────────
 const GAME_META: Record<string, { icon: string; label: string; col: string }> = {
-  city:        { icon: '🏙', label: 'CITY BUILD',   col: '#ffe600' },
-  island:      { icon: '🏝', label: 'ISLAND',       col: '#00e5ff' },
-  castle:      { icon: '🏰', label: 'CASTLE',       col: '#ff6b35' },
-  kingdom:     { icon: '👑', label: 'KINGDOM',      col: '#ffd700' },
-  timemachine: { icon: '⏱', label: 'TIME MACHINE', col: '#00ffff' },
-  megacity:    { icon: '🌆', label: 'MEGA CITY',    col: '#ff00ff' },
-  enemy:       { icon: '👾', label: 'ENEMY RAID',   col: '#ff3333' },
-  quiz:        { icon: '❓', label: 'QUIZ ARENA',   col: '#a855f7' },
-  code:        { icon: '💻', label: 'CODE EDITOR',  col: '#22d3ee' },
+  evolution:          { icon: '🌱', label: 'EVOLUTION',        col: '#00ff88' },
+  jump:               { icon: '🏃', label: 'JUMP QUEST',       col: '#00ff41' },
+  enemy:              { icon: '👾', label: 'ENEMY RAID',       col: '#ff3333' },
+  city:               { icon: '🏙', label: 'CITY BUILD',       col: '#ffe600' },
+  island:             { icon: '🏝', label: 'ISLAND',           col: '#00e5ff' },
+  castle:             { icon: '🏰', label: 'SERVER CASTLE',    col: '#aa44ff' },
+  kingdom:            { icon: '👑', label: 'DATA KINGDOM',     col: '#4488ff' },
+  timemachine:        { icon: '⏱', label: 'TIME MACHINE',     col: '#ffe600' },
+  megacity:           { icon: '🌆', label: 'MEGA CITY',        col: '#00ff41' },
+  cssplatform:        { icon: '🎨', label: 'CSS PLATFORM',     col: '#ff00dd' },
+  codequestbattle:    { icon: '⚔', label: 'CODE QUEST',       col: '#ff6b35' },
+  autocoderunner:     { icon: '🤖', label: 'AUTO RUNNER',      col: '#00e5ff' },
+  onlinecodefactory:  { icon: '🏭', label: 'ONLINE FACTORY',   col: '#ffe600' },
+  taskbattlesurvival: { icon: '🛡', label: 'BATTLE SURVIVAL',  col: '#ff4444' },
+  multiplayerarena:   { icon: '🏟', label: 'MULTIPLAYER',      col: '#aa44ff' },
+  codefactory:        { icon: '⚙', label: 'CODE FACTORY',     col: '#aaaaff' },
 }
 const gm = (t: string) => GAME_META[t] ?? { icon: '🎮', label: t.toUpperCase(), col: 'var(--dim2)' }
 
