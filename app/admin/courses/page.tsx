@@ -51,7 +51,7 @@ function Field({ label, value, onChange, placeholder, type='text', options, rows
 }
 
 /* ── Default forms ─────────────────────────── */
-const emptyCourse  = () => ({ title:'', description:'', category:'', difficulty:'BEGINNER', xpReward:'100' })
+const emptyCourse  = (nextOrder = 0) => ({ title:'', description:'', category:'', difficulty:'BEGINNER', xpReward:'100', orderIndex: String(nextOrder) })
 const emptyLesson  = () => ({ title:'', content:'', xpReward:'50', orderIndex:'0' })
 const emptyTask    = () => ({ title:'', titleEn:'', description:'', descriptionEn:'', taskType:'quiz', xpReward:'20', orderIndex:'0', options:['','','',''], answer:'0', starterCode:'', testCases:'[]' })
 
@@ -145,7 +145,7 @@ export default function AdminCoursesPage() {
   const saveCourse = async () => {
     if (!courseForm.title||!courseForm.category) { notify('Title, category шаардлагатай','var(--red)'); return }
     setSavingC(true)
-    const body = { ...courseForm, xpReward:parseInt(courseForm.xpReward)||100 }
+    const body = { ...courseForm, xpReward:parseInt(courseForm.xpReward)||100, orderIndex:parseInt((courseForm as any).orderIndex||'0') }
     try {
       const r = editCourse
         ? await adminFetch(`/api/courses/${editCourse.id}`, {method:'PUT',body:JSON.stringify(body)})
@@ -242,7 +242,7 @@ export default function AdminCoursesPage() {
           <div style={{ ...fp, fontSize:5, color:'var(--dim2)', letterSpacing:4, marginBottom:5 }}>ADMIN · COURSES</div>
           <h1 style={{ ...fp, fontSize:12, color:'var(--text)', letterSpacing:2, margin:0 }}>COURSE MANAGEMENT <span style={{ fontSize:8, color:'var(--green)' }}>◫</span></h1>
         </div>
-        <Btn label='+ ШИНЭ COURSE' col='var(--green)' size='md' onClick={()=>{ setEditCourse(null); setCourseForm(emptyCourse()); setCourseModal('create') }} />
+        <Btn label='+ ШИНЭ COURSE' col='var(--green)' size='md' onClick={()=>{ setEditCourse(null); setCourseForm(emptyCourse(courses.length)); setCourseModal('create') }} />
       </div>
 
       <Flash msg={flash} col={flashCol}/>
@@ -276,7 +276,7 @@ export default function AdminCoursesPage() {
               <span style={{ ...fp, fontSize:6, color:'var(--dim2)' }}>{c._count.enrollments}</span>
               <span style={{ ...fp, fontSize:5, color:c.isActive?'var(--green)':'var(--dim2)' }}>{c.isActive?'LIVE':'DRAFT'}</span>
               <div style={{ display:'flex', gap:4, flexWrap:'wrap' }}>
-                <Btn label='ЗАСАХ'  col='var(--cyan)'  onClick={()=>{ setEditCourse(c); setCourseForm({ title:c.title, description:c.description??'', category:c.category, difficulty:c.difficulty, xpReward:String(c.xpReward) }); setCourseModal('edit') }} />
+                <Btn label='ЗАСАХ'  col='var(--cyan)'  onClick={()=>{ setEditCourse(c); setCourseForm({ title:c.title, description:c.description??'', category:c.category, difficulty:c.difficulty, xpReward:String(c.xpReward), orderIndex:String(c.orderIndex??0) }); setCourseModal('edit') }} />
                 <Btn label={c.isActive?'DRAFT':'PUB'} col={c.isActive?'var(--dim2)':'var(--green)'} onClick={()=>togglePublish(c)} />
                 <Btn label='DEL'   col='var(--red)'   onClick={()=>deleteCourse(c)} />
               </div>
@@ -347,6 +347,7 @@ export default function AdminCoursesPage() {
           <Field label='DIFFICULTY'  value={courseForm.difficulty}  onChange={v=>setCourseForm(f=>({...f,difficulty:v}))}  type='select' options={DIFFICULTIES} />
           <Field label='DESCRIPTION' value={courseForm.description} onChange={v=>setCourseForm(f=>({...f,description:v}))} type='textarea' placeholder='Тайлбар...' />
           <Field label='XP REWARD'   value={courseForm.xpReward}    onChange={v=>setCourseForm(f=>({...f,xpReward:v}))}    type='number' />
+          <Field label='ДАРААЛАЛ (0=эхэнд, том тоо=сүүлд)' value={(courseForm as any).orderIndex??'0'} onChange={v=>setCourseForm(f=>({...f,orderIndex:v} as any))} type='number' />
           <Row><Btn label={savingC?'...':'ХАДГАЛАХ'} col='var(--green)' size='md' onClick={saveCourse} disabled={savingC}/><Btn label='БОЛИХ' col='var(--dim2)' size='md' onClick={()=>setCourseModal('none')}/></Row>
         </Modal>
       )}
