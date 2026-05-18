@@ -7,27 +7,11 @@
 @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&display=swap');
 :root{--bg:#05080f;--bg2:#0a0f1e;--bg3:#0d1628;--cyan:#00d4ff;--green:#00ff88;--yellow:#ffc832;--purple:#c77dff;--red:#ff3366;--text:#e2eaf8;--dim:#3a5070;--fp:'Press Start 2P',monospace;--fm:'Share Tech Mono',monospace;--orb:'Orbitron',monospace;}
 *{margin:0;padding:0;box-sizing:border-box;}
-body{background:#000;color:var(--text);font-family:var(--fp);overflow:hidden;width:100vw;height:100vh;position:relative;}
+body{background:var(--bg);color:var(--text);font-family:var(--fp);overflow:hidden;width:100vw;height:100vh;}
 
 /* Slide wrapper — fixed 1280x720, scaled to fit screen */
-#_deck{
-  width:1280px;
-  height:720px;
-  position:absolute;
-  transform-origin:top left;
-}
-.slide{
-  width:1280px;
-  height:720px;
-  background:var(--bg);
-  position:absolute;
-  top:0;left:0;
-  overflow:hidden;
-  display:flex;
-  flex-direction:column;
-  opacity:0;
-  pointer-events:none;
-}
+#_deck{width:100vw;height:100vh;position:relative;}
+.slide{width:100vw;height:100vh;background:var(--bg);position:absolute;top:0;left:0;overflow:hidden;display:flex;flex-direction:column;opacity:0;pointer-events:none;}
 .slide.active{opacity:1;pointer-events:all;}
 .slide::before{content:'';position:absolute;inset:0;pointer-events:none;background-image:linear-gradient(rgba(0,212,255,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,212,255,.03) 1px,transparent 1px);background-size:24px 24px;}
 .glow-line{position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent,var(--cyan),transparent);}
@@ -147,7 +131,7 @@ tr:nth-child(even) td{background:rgba(0,212,255,.02);}
     transition:none !important;
   }
   body{overflow:visible !important;width:297mm !important;height:auto !important;background:#05080f !important;display:block !important;}
-  #_deck{width:297mm !important;height:auto !important;transform:none !important;position:static !important;}
+  #_deck{width:297mm !important;height:auto !important;position:static !important;overflow:visible !important;}
   .slide{
     position:relative !important;
     width:297mm !important;
@@ -965,25 +949,6 @@ document.addEventListener('keydown',e=>{
 sl[0].classList.add('active');
 upd();
 
-// ── Responsive scale to fit viewport ──
-function scaleToFit(){
-  const deck = document.getElementById('_deck');
-  if(!deck) return;
-  const sw = window.innerWidth;
-  const sh = window.innerHeight;
-  const navH = 36; // nav bar height reserve
-  const scale = Math.min(sw/1280, (sh-navH)/720);
-  deck.style.transform = 'scale('+scale+')';
-  // Center deck manually
-  const scaledW = 1280*scale;
-  const scaledH = 720*scale;
-  deck.style.position = 'absolute';
-  deck.style.left = Math.round((sw-scaledW)/2)+'px';
-  deck.style.top  = Math.round((sh-scaledH-navH)/2)+'px';
-}
-scaleToFit();
-window.addEventListener('resize', scaleToFit);
-document.addEventListener('fullscreenchange', ()=>{ setTimeout(scaleToFit, 100); });
 })();
 </script>
 </body>
