@@ -59,8 +59,8 @@ const kf = `
 @keyframes tm-rank     { from{opacity:0;transform:scale(.6) translateY(20px)} to{opacity:1;transform:scale(1) translateY(0)} }
 @keyframes tm-hp       { 0%{transform:scale(1)} 50%{transform:scale(1.5);filter:brightness(3)} 100%{transform:scale(0);opacity:0} }
 @keyframes tm-xp       { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
-@keyframes tm-dead     { 0%{opacity:0;transform:scale(.9)} 20%{opacity:1;transform:scale(1.04)} 80%{opacity:1} 100%{opacity:0} }
-@keyframes tm-deadpulse{ 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.7;transform:scale(1.06)} }
+@keyframes tm-dead     { 0%{opacity:0;transform:scale(.9)} 15%{opacity:1;transform:scale(1.02)} 75%{opacity:1;transform:scale(1)} 100%{opacity:0;transform:scale(.97)} }
+@keyframes tm-deadpulse{ 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.65;transform:scale(1.08)} }
 @keyframes tm-countdown{ from{width:100%} to{width:0%} }
 `
 
@@ -193,11 +193,13 @@ export default function TaskModal({ lessonId, onClose, onDone }: Props) {
     Promise.all([lessonsApi.get(lessonId), tasksApi.byLesson(lessonId)])
       .then(([ld, td]) => {
         setLesson(ld.lesson)
-        const list = td.tasks as ExtTask[]
-        setTasks(list)
+        let list = td.tasks as ExtTask[]
 
         if (wasReset) {
-          // fresh session after HP death — clear pass state, start from task 0
+          // shuffle task ORDER so user sees different sequence on re-entry
+          const orderKey = `arenahub_order_${lessonId}`
+          list = [...list].sort(() => Math.random() - 0.5)
+          localStorage.setItem(orderKey, JSON.stringify(list.map(t=>t.id)))
           setPassed({}); setXpMap({})
         } else {
           // restore prior submission state (checkpoint resume)
@@ -208,8 +210,9 @@ export default function TaskModal({ lessonId, onClose, onDone }: Props) {
           })
           setPassed(initPassed); setXpMap(initXp)
         }
+        setTasks(list)
 
-        // build variant map — advance every index by +1 on reset for new question rotation
+        // build variant map — advance all indices on reset
         const vm: Record<string,number> = {}
         list.forEach(t => {
           const raw=t.options; const parsed=raw?(typeof raw==='string'?JSON.parse(raw):raw):null
@@ -220,7 +223,6 @@ export default function TaskModal({ lessonId, onClose, onDone }: Props) {
         localStorage.setItem(variantKey, JSON.stringify(vm))
         setVariantMap(vm)
 
-        // start point: task 0 on fresh session, checkpoint on resume
         const start = wasReset
           ? list[0]
           : (list.find(t => t.submitted?.status !== 'PASSED') ?? list[0])
@@ -246,16 +248,15 @@ export default function TaskModal({ lessonId, onClose, onDone }: Props) {
     if (consoleRef.current) consoleRef.current.scrollTop=consoleRef.current.scrollHeight
   }, [consoleLogs])
 
-  /* ── HP=0 → flash dead screen → close immediately (600ms) ──── */
+  /* ── HP=0 → dead screen 1.8s → auto-close ─────────────────── */
   useEffect(() => {
     if (hp !== 0 || lessonDone) return
     setHpDead(true)
-    // mark session as reset so next open gets fresh tasks + rotated variants
     localStorage.setItem(`arenahub_reset_${lessonId}`, '1')
     autoCloseRef.current = setTimeout(() => {
       setHpDead(false)
       if (onDone) onDone(null); else onClose()
-    }, 600)
+    }, 1800)
     return () => { if (autoCloseRef.current) clearTimeout(autoCloseRef.current) }
   }, [hp]) // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -302,6 +303,33 @@ export default function TaskModal({ lessonId, onClose, onDone }: Props) {
     setConsoleLogs([]); setShowConsole(false); setKeyCount(0); setCodeStart(null); setWpm(0)
     if (t.taskType==='code') setCode('')
   }, [])
+
+  // cycle to next variant of current task; if single-variant, swap with a random non-passed task
+  const handleChangeTask = useCallback(() => {
+    if (!activeTask || activeDone) return
+    const tid = activeTask.id
+    const raw = activeTask.options
+    const parsed = raw ? (typeof raw==='string' ? JSON.parse(raw) : raw) : null
+    const count = Array.isArray(parsed?.[0]) ? (parsed as unknown[][]).length : 1
+    if (count > 1) {
+      // cycle to next variant
+      setVariantMap(vm => {
+        const cur = vm[tid] ?? 0
+        return { ...vm, [tid]: (cur + 1) % count }
+      })
+      setShuffleMap(m => { const n={...m}; delete n[tid]; return n })
+      setPassed(p => { const n={...p}; delete n[tid]; return n })
+      setRunResults(null); setGameState('idle')
+    } else {
+      // no variants — move current task to end, activate next incomplete
+      setTasks(ts => {
+        const rest = ts.filter(t => t.id !== tid)
+        return [...rest, activeTask]
+      })
+      const next = tasks.find(t => t.id !== tid && passed[t.id] !== true)
+      if (next) doActivate(next)
+    }
+  }, [activeTask, activeDone, tasks, passed, doActivate])
 
   const handleRetry = useCallback(() => {
     const vm: Record<string,number>={}
@@ -446,20 +474,22 @@ export default function TaskModal({ lessonId, onClose, onDone }: Props) {
           </div>
         )}
 
-        {/* ══ HP DEAD FLASH ══ */}
+        {/* ══ HP DEAD SCREEN ══ */}
         {hpDead && (
-          <div style={{position:'absolute',inset:0,zIndex:90,display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',background:'rgba(8,0,4,.94)',animation:'tm-dead .6s ease forwards',pointerEvents:'all'}}>
-            <div style={{fontSize:52,marginBottom:12,filter:'drop-shadow(0 0 28px #ff2d55)'}}>💀</div>
-            <div style={{...fp,fontSize:12,color:'#ff2d55',letterSpacing:4,textShadow:'0 0 28px #ff2d55',marginBottom:10}}>HP ДУУССАН!</div>
-            <div style={{...fp,fontSize:7,color:'#ff6b35',letterSpacing:2,marginBottom:20}}>3 УДАА БУРУУ ХАРИУЛТ</div>
-            <div style={{display:'flex',gap:8,marginBottom:20}}>
-              {[0,1,2].map(i=><div key={i} style={{width:20,height:20,background:'#1a0810',border:'1px solid #ff2d5522'}}/>)}
+          <div style={{position:'absolute',inset:0,zIndex:90,display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',background:'rgba(8,0,4,.96)',animation:'tm-dead 1.8s ease forwards',pointerEvents:'all'}}>
+            <div style={{fontSize:64,marginBottom:14,filter:'drop-shadow(0 0 32px #ff2d55)',animation:'tm-deadpulse .7s ease infinite'}}>💀</div>
+            <div style={{...fp,fontSize:14,color:'#ff2d55',letterSpacing:5,textShadow:'0 0 36px #ff2d55,0 0 60px #ff005540',marginBottom:12,animation:'tm-deadpulse .5s ease infinite'}}>HP ДУУССАН!</div>
+            <div style={{...fp,fontSize:7,color:'#ff6b35',letterSpacing:3,marginBottom:24}}>3 УДАА БУРУУ ХАРИУЛТ</div>
+            <div style={{display:'flex',gap:10,marginBottom:24}}>
+              {[0,1,2].map(i=>(
+                <div key={i} style={{width:22,height:22,background:'#1a0810',border:'1px solid #ff2d5533',boxShadow:'inset 0 0 10px #ff2d5522'}}/>
+              ))}
             </div>
-            <div style={{...fp,fontSize:7,color:'#ffe600',letterSpacing:2}}>
+            <div style={{...fp,fontSize:7,color:'#ffe600',letterSpacing:2,marginBottom:16,animation:'tm-pulse .9s ease infinite'}}>
               {isMn?'← ХИЧЭЭЛ РҮҮ БУЦАЖ БАЙНА...':'← RETURNING TO LESSONS...'}
             </div>
-            <div style={{width:160,height:3,background:'#200010',marginTop:14,overflow:'hidden'}}>
-              <div style={{height:'100%',background:'#ff2d55',animation:'tm-countdown .6s linear forwards'}}/>
+            <div style={{width:200,height:4,background:'#200010',overflow:'hidden',borderRadius:2}}>
+              <div style={{height:'100%',background:'linear-gradient(90deg,#ff2d55,#ff6b35)',animation:'tm-countdown 1.8s linear forwards'}}/>
             </div>
           </div>
         )}
@@ -530,6 +560,19 @@ export default function TaskModal({ lessonId, onClose, onDone }: Props) {
           )}
 
           <div style={{flex:1}}/>
+
+          {/* CHANGE TASK */}
+          {!activeDone && !lessonDone && (
+            <div style={{padding:'6px 12px',borderLeft:'1px solid #0d1a28',display:'flex',alignItems:'center'}}>
+              <button onClick={handleChangeTask}
+                title={isMn?'Өөр даалгавар харах':'Change task'}
+                style={{...fp,fontSize:6,padding:'5px 10px',cursor:'pointer',background:'rgba(0,229,255,.06)',border:'1px solid #00e5ff33',color:'#00e5ff',letterSpacing:1,transition:'all .15s'}}
+                onMouseEnter={e=>(e.currentTarget.style.background='rgba(0,229,255,.14)')}
+                onMouseLeave={e=>(e.currentTarget.style.background='rgba(0,229,255,.06)')}>
+                🔄 {isMn?'ӨӨР TASK':'CHANGE'}
+              </button>
+            </div>
+          )}
 
           {/* ACCURACY */}
           <div style={{padding:'10px 14px',borderLeft:'1px solid #0d1a28',display:'flex',flexDirection:'column',justifyContent:'center',gap:4,minWidth:70}}>

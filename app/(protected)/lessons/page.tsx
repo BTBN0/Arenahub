@@ -67,14 +67,10 @@ export default function LessonsPage() {
   const getCourseId = (lessonId: string) =>
     Object.entries(lessons).find(([,ls]) => ls.some(l => l.id === lessonId))?.[0] || ''
 
-  const isEditorCourse = (cat: string) => cat === 'HTML' || cat === 'CSS' || cat === 'JS' || cat === 'JS_ADV' || cat === 'REACT' || cat === 'NODE' || cat === 'FULLSTACK'
-
-  const openLesson = (lesson: Lesson, courseCategory: string) => {
-    if (isEditorCourse(courseCategory)) {
-      router.push(`/tasks?lessonId=${lesson.id}`)
-    } else {
-      setActiveLesson(lesson.id)
-    }
+  const openLesson = (lesson: Lesson) => {
+    // mark lesson for full task refresh so user gets rotated variants on every re-entry
+    localStorage.setItem(`arenahub_reset_${lesson.id}`, '1')
+    setActiveLesson(lesson.id)
   }
 
   if (loading && !user) return null
@@ -233,7 +229,7 @@ export default function LessonsPage() {
                           return (
                             <div
                               key={lesson.id}
-                              onClick={() => unlocked && openLesson(lesson, course.category)}
+                              onClick={() => unlocked && openLesson(lesson)}
                               onMouseEnter={() => setLessonHov(lesson.id)}
                               onMouseLeave={() => setLessonHov(null)}
                               style={{
@@ -282,7 +278,7 @@ export default function LessonsPage() {
                                 <div style={{ padding:'0 20px', flexShrink:0 }}>
                                   {isDone ? (
                                     <button
-                                      onClick={e => { e.stopPropagation(); openLesson(lesson, course.category) }}
+                                      onClick={e => { e.stopPropagation(); openLesson(lesson) }}
                                       style={{
                                         fontFamily:'var(--fp)', fontSize:6, letterSpacing:1,
                                         padding:'8px 16px', cursor:'pointer',
@@ -293,7 +289,7 @@ export default function LessonsPage() {
                                     >↺ {t('ls_continue')}</button>
                                   ) : (
                                     <button
-                                      onClick={e => { e.stopPropagation(); openLesson(lesson, course.category) }}
+                                      onClick={e => { e.stopPropagation(); openLesson(lesson) }}
                                       style={{
                                         fontFamily:'var(--fp)', fontSize:6, letterSpacing:1,
                                         padding:'8px 18px', cursor:'pointer',

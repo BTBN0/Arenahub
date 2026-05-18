@@ -53,7 +53,7 @@ function Field({ label, value, onChange, placeholder, type='text', options, rows
 /* ── Default forms ─────────────────────────── */
 const emptyCourse  = (nextOrder = 0) => ({ title:'', description:'', category:'', difficulty:'BEGINNER', xpReward:'100', orderIndex: String(nextOrder) })
 const emptyLesson  = () => ({ title:'', content:'', xpReward:'50', orderIndex:'0' })
-const emptyTask    = () => ({ title:'', titleEn:'', description:'', descriptionEn:'', taskType:'quiz', xpReward:'20', orderIndex:'0', options:['','','',''], answer:'0', starterCode:'', testCases:'[]' })
+const emptyTask    = () => ({ title:'', titleEn:'', description:'', descriptionEn:'', taskType:'quiz', xpReward:'20', orderIndex:'0', options:['','','',''], answer:'0', options2:['','','',''], answer2:'0', useVariant2:false, starterCode:'', testCases:'[]' })
 
 /* ══ MAIN PAGE ════════════════════════════════ */
 export default function AdminCoursesPage() {
@@ -202,7 +202,10 @@ export default function AdminCoursesPage() {
     setSavingT(true)
     const body: Record<string,unknown> = { lessonId:taskLesson, title:taskForm.title, titleEn:taskForm.titleEn, description:taskForm.description, descriptionEn:taskForm.descriptionEn, taskType:taskForm.taskType, xpReward:parseInt(taskForm.xpReward)||20, orderIndex:parseInt(taskForm.orderIndex)||0 }
     if (taskForm.taskType==='quiz') {
-      body.options = taskForm.options.filter(o=>o.trim())
+      const opts1 = taskForm.options.filter(o=>o.trim())
+      const opts2 = taskForm.options2.filter(o=>o.trim())
+      // if variant 2 is enabled and has options, save as [[...],[...]] multi-variant
+      body.options = taskForm.useVariant2 && opts2.length >= 2 ? [opts1, opts2] : opts1
       body.answer  = parseInt(taskForm.answer)
     } else {
       body.starterCode = taskForm.starterCode
@@ -324,7 +327,16 @@ export default function AdminCoursesPage() {
                             <span style={{ ...fm, fontSize:11, color:'var(--text)', flex:1 }}>{t.title}</span>
                             {t.titleEn && <span style={{ ...fm, fontSize:9, color:'var(--dim2)', fontStyle:'italic' }}>{t.titleEn}</span>}
                             <span style={{ ...fp, fontSize:4, color:'var(--yellow)' }}>+{t.xpReward}XP</span>
-                            <Btn label='ЗАСАХ' col='var(--cyan)' onClick={()=>{ setTaskLesson(l.id); setEditTask(t); setTaskForm({ title:t.title, titleEn:t.titleEn??'', description:t.description, descriptionEn:(t as any).descriptionEn??'', taskType:t.taskType, xpReward:String(t.xpReward), orderIndex:String(t.orderIndex), options:Array.isArray(t.options)?t.options as string[]:['','','',''], answer:String(t.answer??'0'), starterCode:'', testCases:'[]' }); setTaskModal('edit') }} />
+                            <Btn label='ЗАСАХ' col='var(--cyan)' onClick={()=>{
+                              setTaskLesson(l.id); setEditTask(t)
+                              const raw = t.options
+                              const parsed = raw ? (typeof raw==='string'?JSON.parse(raw as string):raw) : null
+                              const isMulti = Array.isArray(parsed?.[0])
+                              const opts1 = isMulti ? (parsed as string[][])[0] : (Array.isArray(parsed)?parsed as string[]:[])
+                              const opts2 = isMulti ? ((parsed as string[][])[1]??['','','','']) : ['','','','']
+                              setTaskForm({ title:t.title, titleEn:t.titleEn??'', description:t.description, descriptionEn:(t as any).descriptionEn??'', taskType:t.taskType, xpReward:String(t.xpReward), orderIndex:String(t.orderIndex), options:[...opts1,'','','',''].slice(0,4) as string[], answer:String(t.answer??'0'), options2:[...opts2,'','','',''].slice(0,4) as string[], answer2:'0', useVariant2:isMulti, starterCode:'', testCases:'[]' })
+                              setTaskModal('edit')
+                            }} />
                             <Btn label='DEL' col='var(--red)' onClick={()=>deleteTask(l.id,t)} />
                           </div>
                         ))}
@@ -399,7 +411,7 @@ export default function AdminCoursesPage() {
           {/* Quiz options */}
           {taskForm.taskType==='quiz' && (
             <div style={{ marginBottom:10 }}>
-              <div style={{ ...fp, fontSize:5, color:'var(--dim2)', marginBottom:8 }}>ХАРИУЛТУУД (зөв хариултыг радиогоор сонгоно)</div>
+              <div style={{ ...fp, fontSize:5, color:'var(--dim2)', marginBottom:8 }}>VARIANT 1 — ХАРИУЛТУУД (зөв хариултыг радиогоор сонгоно)</div>
               {taskForm.options.map((opt,i)=>(
                 <div key={i} style={{ display:'flex', gap:8, marginBottom:7, alignItems:'center' }}>
                   <input type='radio' name='answer' checked={taskForm.answer===String(i)} onChange={()=>setTaskForm(f=>({...f,answer:String(i)}))} style={{ accentColor:'var(--green)' }}/>
@@ -408,6 +420,24 @@ export default function AdminCoursesPage() {
                     style={{ flex:1, padding:'7px 10px', background:'var(--bg)', border:`1px solid ${taskForm.answer===String(i)?'var(--green)':'var(--dim)'}`, color:'var(--text)', ...fm, fontSize:12, outline:'none' }}/>
                 </div>
               ))}
+              {/* Variant 2 toggle */}
+              <div style={{ display:'flex', alignItems:'center', gap:10, margin:'10px 0 8px' }}>
+                <input type='checkbox' id='v2toggle' checked={taskForm.useVariant2} onChange={e=>setTaskForm(f=>({...f,useVariant2:e.target.checked}))} style={{ accentColor:'var(--cyan)' }}/>
+                <label htmlFor='v2toggle' style={{ ...fp, fontSize:5, color:'var(--cyan)', cursor:'pointer' }}>🔄 VARIANT 2 НЭМЭХ (Change Task товч дарахад харагдана)</label>
+              </div>
+              {taskForm.useVariant2 && (
+                <div style={{ borderLeft:'2px solid var(--cyan)22', paddingLeft:12, marginTop:4 }}>
+                  <div style={{ ...fp, fontSize:5, color:'var(--cyan)', marginBottom:8 }}>VARIANT 2 — ӨӨР АСУУЛТ/ХАРИУЛТУУД</div>
+                  {taskForm.options2.map((opt,i)=>(
+                    <div key={i} style={{ display:'flex', gap:8, marginBottom:7, alignItems:'center' }}>
+                      <input type='radio' name='answer2' checked={taskForm.answer2===String(i)} onChange={()=>setTaskForm(f=>({...f,answer2:String(i)}))} style={{ accentColor:'var(--cyan)' }}/>
+                      <input value={opt} onChange={e=>{ const o=[...taskForm.options2]; o[i]=e.target.value; setTaskForm(f=>({...f,options2:o})) }}
+                        placeholder={`V2 сонголт ${i+1}`}
+                        style={{ flex:1, padding:'7px 10px', background:'var(--bg)', border:`1px solid ${taskForm.answer2===String(i)?'var(--cyan)':'var(--dim)'}`, color:'var(--text)', ...fm, fontSize:12, outline:'none' }}/>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           )}
 
