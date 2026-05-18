@@ -2,6 +2,7 @@ import { NextRequest } from 'next/server'
 import prisma from '@/lib/db'
 import { requirePermission } from '@/lib/permissions'
 import { ok, err, handleError } from '@/lib/api-helpers'
+import { invalidateLessonDetailForAll } from '@/lib/services/lesson.service'
 
 type Ctx = { params: Promise<{ id: string; gameId: string }> }
 
@@ -31,6 +32,7 @@ export async function DELETE(req: NextRequest, { params }: Ctx) {
       )
     )
 
+    invalidateLessonDetailForAll(id)
     return ok({ removed: true })
   } catch (e) { return handleError(e) }
 }

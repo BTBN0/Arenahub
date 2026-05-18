@@ -3,6 +3,7 @@ import { z } from 'zod'
 import prisma from '@/lib/db'
 import { requirePermission } from '@/lib/permissions'
 import { ok, err, handleError } from '@/lib/api-helpers'
+import { invalidateLessonDetailForAll } from '@/lib/services/lesson.service'
 
 type Ctx = { params: Promise<{ id: string }> }
 
@@ -61,6 +62,9 @@ export async function POST(req: NextRequest, { params }: Ctx) {
       include: { game: { include: { _count: { select: { gameTasks: true, lessonGames: true } } } } },
     })
 
+    // Bust student-facing cache so next GET returns the updated game list
+    invalidateLessonDetailForAll(id)
+
     return ok({ lessonGame }, 201)
   } catch (e) { return handleError(e) }
 }
@@ -83,6 +87,7 @@ export async function PATCH(req: NextRequest, { params }: Ctx) {
       )
     )
 
+    invalidateLessonDetailForAll(id)
     return ok({ reordered: true })
   } catch (e) { return handleError(e) }
 }
