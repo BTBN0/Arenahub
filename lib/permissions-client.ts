@@ -10,6 +10,7 @@ export type Permission =
   | 'ai.prompt'           | 'ai.tokens'          | 'ai.analytics'
   | 'ai.abuse'
   | 'content.course'      | 'content.lesson'     | 'content.task'
+  | 'content.game'
   | 'content.achievement' | 'content.reward'
   | 'contest.manage'      | 'contest.launch'     | 'contest.prize'
   | 'leaderboard.view'    | 'leaderboard.reset'
@@ -24,7 +25,7 @@ export const ROLE_PERMISSIONS: Record<string, Permission[]> = {
     'analytics.revenue','analytics.users','analytics.ai','analytics.xp','analytics.retention',
     'payment.manage','payment.refund','payment.subscription','payment.discount',
     'ai.prompt','ai.tokens','ai.analytics','ai.abuse',
-    'content.course','content.lesson','content.task','content.achievement','content.reward',
+    'content.course','content.lesson','content.task','content.game','content.achievement','content.reward',
     'contest.manage','contest.launch','contest.prize',
     'leaderboard.view','leaderboard.reset',
     'user.ban','user.warn','user.report','user.xp','user.tokens',
@@ -38,7 +39,7 @@ export const ROLE_PERMISSIONS: Record<string, Permission[]> = {
     'analytics.users',
   ],
   CONTENT_MANAGER: [
-    'content.course','content.lesson','content.task',
+    'content.course','content.lesson','content.task','content.game',
     'content.achievement','content.reward',
     'analytics.users',
   ],
@@ -62,7 +63,7 @@ export const ROLE_PERMISSIONS: Record<string, Permission[]> = {
     'leaderboard.view',
   ],
   INSTRUCTOR: [
-    'content.course','content.lesson','content.task',
+    'content.course','content.lesson','content.task','content.game',
   ],
   STUDENT: [],
 }
@@ -108,6 +109,7 @@ export const ALL_NAV: NavItem[] = [
   { href: '/admin/courses',       icon: '◫', label: 'COURSES',       col: 'var(--green)',  perm: 'content.course'  },
   { href: '/admin/lessons',       icon: '◧', label: 'LESSONS',       col: 'var(--green)',  perm: 'content.lesson'  },
   { href: '/admin/tasks',         icon: '◨', label: 'TASKS',         col: 'var(--green)',  perm: 'content.task'    },
+  { href: '/admin/games',         icon: '◈', label: 'GAMES',         col: '#ff6b35',       perm: 'content.game'    },
   { href: '/admin/ai',            icon: '◈', label: 'AI SYSTEM',     col: 'var(--purple)', perm: 'ai.prompt'       },
   { href: '/admin/leaderboard',   icon: '◆', label: 'LEADERBOARD',   col: 'var(--yellow)', perm: 'leaderboard.view'},
   { href: '/admin/achievements',  icon: '◎', label: 'ACHIEVEMENTS',  col: 'var(--yellow)', perm: 'content.achievement'},

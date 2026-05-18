@@ -10,7 +10,8 @@
     "db:migrate": "prisma migrate dev --name init",
     "db:seed": "tsx prisma/seed.ts",
     "db:studio": "prisma studio",
-    "db:roadmap": "tsx prisma/roadmap-seed.ts"
+    "db:roadmap": "tsx prisma/roadmap-seed.ts",
+    "db:games": "tsx prisma/seed-games.ts"
   },
   "dependencies": {
     "@auth/prisma-adapter": "^2.7.4",
