@@ -111,25 +111,40 @@ tr:nth-child(even) td{background:rgba(0,212,255,.02);}
 #_ctr{font-family:var(--fp);font-size:7px;color:var(--dim);min-width:60px;text-align:center;}
 #_tb{position:fixed;bottom:18px;left:16px;font-family:var(--fp);font-size:6px;color:var(--dim);cursor:pointer;background:rgba(4,8,20,.85);border:1px solid rgba(0,212,255,.1);padding:6px 10px;z-index:9999;letter-spacing:1px;transition:color .15s;}
 #_tb:hover{color:var(--cyan);}
-#_fs{position:fixed;top:12px;right:12px;font-family:var(--fp);font-size:6px;color:var(--dim);cursor:pointer;background:rgba(4,8,20,.7);border:1px solid rgba(0,212,255,.08);padding:5px 10px;z-index:9999;transition:color .15s;}
-#_fs:hover{color:var(--cyan);}
+#_fs{position:fixed;top:12px;right:12px;font-family:var(--fp);font-size:8px;color:var(--cyan);cursor:pointer;background:rgba(0,212,255,.12);border:1px solid rgba(0,212,255,.4);padding:8px 16px;z-index:9999;transition:all .15s;letter-spacing:1px;}
+#_fs:hover{background:rgba(0,212,255,.25);}
+#_fsbar{position:fixed;top:0;left:0;right:0;z-index:9998;background:rgba(4,8,20,.95);padding:12px 20px;display:flex;align-items:center;justify-content:center;gap:16px;border-bottom:1px solid rgba(0,212,255,.2);}
+#_fsbar span{font-family:var(--fp);font-size:7px;color:var(--dim);letter-spacing:2px;}
+#_fsbig{font-family:var(--fp);font-size:9px;color:#05080f;background:var(--cyan);border:none;padding:10px 28px;cursor:pointer;letter-spacing:2px;}
 #_keys{position:fixed;bottom:18px;right:16px;font-family:var(--fp);font-size:5px;color:rgba(0,212,255,.18);z-index:9999;line-height:2;text-align:right;}
 
-/* ── PRINT MODE — Ctrl+P → PDF ── */
+/* ── PRINT MODE ── */
 @media print{
-  *{-webkit-print-color-adjust:exact !important;print-color-adjust:exact !important;}
-  body{overflow:visible !important;width:297mm;height:auto;}
+  *{
+    -webkit-print-color-adjust:exact !important;
+    print-color-adjust:exact !important;
+    animation:none !important;
+    transition:none !important;
+  }
+  body{overflow:visible !important;width:297mm !important;height:auto !important;background:#05080f !important;}
   .slide{
     position:relative !important;
     width:297mm !important;
     height:210mm !important;
     opacity:1 !important;
     pointer-events:all !important;
-    page-break-after:always;
+    page-break-after:always !important;
+    page-break-inside:avoid !important;
     display:flex !important;
+    transform:none !important;
+    filter:none !important;
   }
-  .slide:last-child{page-break-after:avoid;}
-  #_prog,#_nav,#_tb,#_fs,#_keys{display:none !important;}
+  .slide:last-child{page-break-after:avoid !important;}
+  .out-fade,.in-fade,.out-left,.in-left,.out-right,.in-right,
+  .out-zoom,.in-zoom,.out-glitch,.in-glitch{
+    animation:none !important;opacity:1 !important;transform:none !important;
+  }
+  #_prog,#_nav,#_tb,#_fs,#_keys,#_fsbar{display:none !important;}
 }
 @page{size:A4 landscape;margin:0;}
 </style>
@@ -881,8 +896,15 @@ tr:nth-child(even) td{background:rgba(0,212,255,.02);}
   <button id="_n">NEXT ▶</button>
 </div>
 <button id="_tb">✦ FADE</button>
-<button id="_fs">⛶ FULL</button>
+<button id="_fs">⛶ FULLSCREEN</button>
 <div id="_keys">← → NAVIGATE<br/>SPACE NEXT<br/>F FULLSCREEN<br/>T TRANSITION</div>
+
+<!-- Fullscreen prompt shown before entering -->
+<div id="_fsbar">
+  <span>ХАМГИЙН САЙН ХАРАГДАХЫН ТУЛД FULLSCREEN ГОРИМД АЖИЛЛУУЛНА УУ</span>
+  <button id="_fsbig" onclick="document.getElementById('_fsbar').style.display='none';document.documentElement.requestFullscreen()">▶ FULLSCREEN НЭЭХ</button>
+  <button onclick="document.getElementById('_fsbar').style.display='none'" style="font-family:var(--fp);font-size:7px;color:var(--dim);background:transparent;border:1px solid var(--dim);padding:8px 16px;cursor:pointer;">ХААХ ✕</button>
+</div>
 <script>
 (function(){
 const sl=document.querySelectorAll('.slide');
