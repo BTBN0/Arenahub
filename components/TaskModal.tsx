@@ -537,7 +537,7 @@ export default function TaskModal({ lessonId, onClose, onDone }: Props) {
                   <div style={{flex:1,overflowY:'auto',padding:'12px'}}>
                     {activeTask&&<>
                       <div style={{...fp,fontSize:8,color:'#ffe600',marginBottom:10,lineHeight:1.6}}>{activeIdx+1}/{tasks.length} — {activeTitle}</div>
-                      <div style={{...fm,fontSize:8,color:'#7a8aba',lineHeight:2,marginBottom:12,background:'#010508',border:'1px solid #0d1a28',padding:'10px 12px',borderLeft:'3px solid #00e5ff22',whiteSpace:'pre-wrap'}}>
+                      <div style={{...fm,fontSize:11,color:'#7a8aba',lineHeight:2,marginBottom:12,background:'#010508',border:'1px solid #0d1a28',padding:'10px 12px',borderLeft:'3px solid #00e5ff22',whiteSpace:'pre-wrap'}}>
                         {(activeDesc||activeTask.description).replace(/^function solution\([^)]*\) нь /,'')}
                       </div>
                       {tcs.length>0&&(
@@ -550,17 +550,17 @@ export default function TaskModal({ lessonId, onClose, onDone }: Props) {
                               <div key={i} style={{marginBottom:8,padding:'8px 10px',background:'#010407',border:`1px solid ${res?(res.passed?'#00ff4133':'#ff004033'):'#0d1a28'}`,borderLeft:`3px solid ${res?(res.passed?'#00ff41':'#ff0040'):'#1a3a5a'}`}}>
                                 <div style={{...fp,fontSize:3,color:'#2a4a6a',marginBottom:3,letterSpacing:2}}>#{i+1} — {tc.label||'TEST'}</div>
                                 {tc.input!==undefined&&tc.input!==''&&tc.input!==null&&(
-                                  <div style={{...fm,fontSize:7,color:'#5a8aba',marginBottom:6,wordBreak:'break-all'}}>input: {fv(tc.input)}</div>
+                                  <div style={{...fm,fontSize:9,color:'#5a8aba',marginBottom:6,wordBreak:'break-all'}}>input: {fv(tc.input)}</div>
                                 )}
                                 {/* Prominent expected output */}
                                 <div style={{background:'rgba(0,255,65,.06)',border:'1px solid #00ff4133',padding:'6px 8px',borderRadius:0}}>
-                                  <div style={{...fp,fontSize:3,color:'#00ff4188',marginBottom:3,letterSpacing:2}}>{tx.expected}</div>
-                                  <div style={{...fm,fontSize:9,color:'#00ff41',fontWeight:'bold',wordBreak:'break-all'}}>{fv(tc.expected)}</div>
+                                  <div style={{...fp,fontSize:7,color:'#00ff4188',marginBottom:3,letterSpacing:2}}>{tx.expected}</div>
+                                  <div style={{...fm,fontSize:13,color:'#00ff41',fontWeight:'bold',wordBreak:'break-all'}}>{fv(tc.expected)}</div>
                                   {i===0&&!res&&(
-                                    <div style={{...fp,fontSize:3,color:'#00ff4155',marginTop:4,letterSpacing:1}}>{tx.targetOutput} {fv(tc.expected)}</div>
+                                    <div style={{...fp,fontSize:6,color:'#00ff4155',marginTop:4,letterSpacing:1}}>{tx.targetOutput} {fv(tc.expected)}</div>
                                   )}
                                 </div>
-                                {res&&!res.passed&&<div style={{...fp,fontSize:3,color:'#ff0040',marginTop:4}}>got: {JSON.stringify(res.actual)?.slice(0,30)}</div>}
+                                {res&&!res.passed&&<div style={{...fp,fontSize:6,color:'#ff0040',marginTop:4}}>got: {JSON.stringify(res.actual)?.slice(0,30)}</div>}
                               </div>
                             )
                           })}
@@ -586,7 +586,7 @@ export default function TaskModal({ lessonId, onClose, onDone }: Props) {
                   <div style={{flex:1,overflow:'hidden',minHeight:0}}>
                     <MonacoEditor height="100%" language={codeLanguage} theme="vs-dark" value={code}
                       onChange={v=>{setCode(v??'');if(!codeStart)setCodeStart(Date.now());setKeyCount(k=>k+1)}}
-                      options={{fontSize:9,minimap:{enabled:false},scrollBeyondLastLine:false,readOnly:activeDone,fontFamily:"'Share Tech Mono','Courier New',monospace",lineNumbers:'on',tabSize:2,wordWrap:'on',quickSuggestions:true,cursorStyle:'block',cursorBlinking:'phase'}}/>
+                      options={{fontSize:14,minimap:{enabled:false},scrollBeyondLastLine:false,readOnly:activeDone,fontFamily:"'Share Tech Mono','Courier New',monospace",lineNumbers:'on',tabSize:2,wordWrap:'on',quickSuggestions:true,cursorStyle:'block',cursorBlinking:'phase'}}/>
                   </div>
                   {/* buttons */}
                   <div style={{display:'flex',gap:8,padding:'8px 12px',background:'#010508',borderTop:'1px solid #0d1a28',flexShrink:0}}>
@@ -619,7 +619,7 @@ export default function TaskModal({ lessonId, onClose, onDone }: Props) {
                     <div ref={consoleRef} style={{maxHeight:150,overflowY:'auto',background:'#010407',borderTop:'1px solid #0d1a28',padding:'8px 12px',flexShrink:0}}>
                       <div style={{...fp,fontSize:9,color:'#2a4a6a',letterSpacing:2,marginBottom:6}}>{tx.termOutput}</div>
                       {consoleLogs.map((line,i)=>(
-                        <div key={i} style={{...fm,fontSize:7,color:line.col,marginBottom:3,animation:'tm-log .18s ease',letterSpacing:.5}}>{line.text}</div>
+                        <div key={i} style={{...fm,fontSize:10,color:line.col,marginBottom:3,animation:'tm-log .18s ease',letterSpacing:.5}}>{line.text}</div>
                       ))}
                       {(running||submitting)&&consoleLogs.length>0&&(
                         <div style={{...fp,fontSize:8,color:'#ffe600',animation:'tm-pulse .5s ease infinite'}}>_</div>
