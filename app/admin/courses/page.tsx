@@ -107,6 +107,10 @@ export default function AdminCoursesPage() {
   const [lessonForm,  setLessonForm] = useState(emptyLesson())
   const [lessonCourse,setLessonCourse]=useState<string>('')
   const [savingL,     setSavingL]    = useState(false)
+  // game selection in lesson modal
+  const [availGames,  setAvailGames]  = useState<GameInfo[]>([])
+  const [gamesLoading,setGamesLoading]= useState(false)
+  const [selectedGameId, setSelectedGameId] = useState<string>('')
 
   // Task modal
   const [taskModal,   setTaskModal]  = useState<'none'|'create'|'edit'>('none')
@@ -126,6 +130,16 @@ export default function AdminCoursesPage() {
     const d = await r.json()
     setLessonGames(prev => ({...prev, [lessonId]: d.games ?? []}))
   }, [])
+
+  const loadAvailGames = useCallback(async () => {
+    if (availGames.length > 0) return
+    setGamesLoading(true)
+    try {
+      const r = await adminFetch('/api/admin/games?active=true')
+      const d = await r.json()
+      setAvailGames(d.games ?? [])
+    } finally { setGamesLoading(false) }
+  }, [availGames.length])
 
   /* ── Load courses ── */
   const load = useCallback(async () => {
@@ -211,9 +225,19 @@ export default function AdminCoursesPage() {
         ? await adminFetch(`/api/lessons/${editLesson.id}`, {method:'PUT',body:JSON.stringify(body)})
         : await adminFetch('/api/lessons', {method:'POST',body:JSON.stringify(body)})
       if (r.ok) {
+        const ld = await r.json()
+        const lessonId = editLesson ? editLesson.id : ld.lesson?.id
+        // auto-attach selected game if new lesson + game chosen
+        if (!editLesson && selectedGameId && lessonId) {
+          await adminFetch(`/api/admin/lessons/${lessonId}/games`, {
+            method: 'POST', body: JSON.stringify({ gameId: selectedGameId })
+          })
+          loadLessonGames(lessonId)
+        }
         notify(editLesson?'Шинэчлэгдлээ':'Хичээл үүсгэгдлээ')
         setLessonModal('none')
-        await fetchLessons(lessonCourse) // force reload → real-time
+        setSelectedGameId('')
+        await fetchLessons(lessonCourse)
       } else { const d=await r.json(); notify(d.error??'Алдаа','var(--red)') }
     } finally { setSavingL(false) }
   }
@@ -325,7 +349,7 @@ export default function AdminCoursesPage() {
                 {/* Lesson header */}
                 <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', padding:'8px 20px 6px 36px', borderBottom:'1px solid rgba(255,255,255,.04)' }}>
                   <span style={{ ...fp, fontSize:5, color:'var(--cyan)', letterSpacing:3 }}>ХИЧЭЭЛҮҮД</span>
-                  <Btn label='+ ХИЧЭЭЛ НЭМЭХ' col='var(--cyan)' onClick={()=>{ setLessonCourse(c.id); setEditLesson(null); setLessonForm(emptyLesson()); setLessonModal('create') }} />
+                  <Btn label='+ ХИЧЭЭЛ НЭМЭХ' col='var(--cyan)' onClick={()=>{ setLessonCourse(c.id); setEditLesson(null); setLessonForm(emptyLesson()); setSelectedGameId(''); setLessonModal('create'); loadAvailGames() }} />
                 </div>
 
                 {loadingLes && !lessons[c.id] ? (
@@ -343,7 +367,7 @@ export default function AdminCoursesPage() {
                       <span style={{ ...fp, fontSize:5, color:'var(--dim2)' }}>{l._count?.tasks??0} task</span>
                       <span style={{ ...fp, fontSize:5, color:'var(--green)' }}>🎮{lessonGames[l.id]?.length ?? '·'}</span>
                       <span style={{ ...fp, fontSize:5, color:'var(--yellow)' }}>+{l.xpReward}XP</span>
-                      <Btn label='ЗАСАХ' col='var(--cyan)' onClick={()=>{ setLessonCourse(c.id); setEditLesson(l); setLessonForm({ title:l.title, content:l.content??'', xpReward:String(l.xpReward), orderIndex:String(l.orderIndex) }); setLessonModal('edit') }} />
+                      <Btn label='ЗАСАХ' col='var(--cyan)' onClick={()=>{ setLessonCourse(c.id); setEditLesson(l); setLessonForm({ title:l.title, content:l.content??'', xpReward:String(l.xpReward), orderIndex:String(l.orderIndex) }); setSelectedGameId(''); setLessonModal('edit'); loadAvailGames() }} />
                       <Btn label='+ TASK' col='var(--purple)' onClick={()=>{ setTaskLesson(l.id); setEditTask(null); setTaskForm(emptyTask()); setTaskModal('create') }} />
                       <Btn label='🎮 GAME' col='var(--green)' onClick={()=>{ setGameMgrLesson({id:l.id,title:l.title}); if(!lessonGames[l.id]) loadLessonGames(l.id) }} />
                       <Btn label='DEL' col='var(--red)' onClick={()=>deleteLesson(c.id,l)} />
@@ -402,13 +426,48 @@ export default function AdminCoursesPage() {
 
       {/* ══ LESSON MODAL ══ */}
       {lessonModal!=='none' && (
-        <Modal onClose={()=>setLessonModal('none')}>
+        <Modal onClose={()=>{setLessonModal('none');setSelectedGameId('')}}>
           <div style={{ ...fp, fontSize:8, color:'var(--cyan)', marginBottom:16 }}>{lessonModal==='edit'?'ХИЧЭЭЛ ЗАСАХ':'ШИНЭ ХИЧЭЭЛ'}</div>
           <Field label='ГАРЧИГ'     value={lessonForm.title}      onChange={v=>setLessonForm(f=>({...f,title:v}))}      placeholder='Хичээлийн нэр' />
           <Field label='АГУУЛГА'    value={lessonForm.content}    onChange={v=>setLessonForm(f=>({...f,content:v}))}    type='textarea' placeholder='Хичээлийн агуулга...' rows={4} />
           <Field label='XP REWARD'  value={lessonForm.xpReward}   onChange={v=>setLessonForm(f=>({...f,xpReward:v}))}   type='number' />
           <Field label='ДАРААЛАЛ'   value={lessonForm.orderIndex} onChange={v=>setLessonForm(f=>({...f,orderIndex:v}))} type='number' />
-          <Row><Btn label={savingL?'...':'ХАДГАЛАХ'} col='var(--cyan)' size='md' onClick={saveLesson} disabled={savingL}/><Btn label='БОЛИХ' col='var(--dim2)' size='md' onClick={()=>setLessonModal('none')}/></Row>
+
+          {/* ── Game selection ── */}
+          {lessonModal==='create' && (
+            <div style={{ marginBottom:12 }}>
+              <div style={{ ...fp, fontSize:5, color:'var(--green)', marginBottom:6, letterSpacing:1 }}>🎮 ТОГЛООМ ОНООХ (OPTIONAL)</div>
+              {gamesLoading ? (
+                <div style={{ ...fp, fontSize:6, color:'var(--dim2)' }}>Уншиж байна...</div>
+              ) : (
+                <div style={{ display:'flex', flexWrap:'wrap', gap:5 }}>
+                  <button onClick={()=>setSelectedGameId('')}
+                    style={{ ...fp, fontSize:5, padding:'5px 9px', cursor:'pointer', background:!selectedGameId?'var(--dim)22':'transparent', color:!selectedGameId?'var(--text)':'var(--dim2)', border:`1px solid ${!selectedGameId?'var(--dim2)':'var(--dim)'}` }}>
+                    БАЙХГҮЙ
+                  </button>
+                  {availGames.map(g=>{
+                    const m = gm(g.gameType)
+                    const sel = selectedGameId===g.id
+                    return (
+                      <button key={g.id} onClick={()=>setSelectedGameId(sel?'':g.id)}
+                        style={{ ...fp, fontSize:5, padding:'5px 9px', cursor:'pointer', background:sel?`${m.col}22`:'transparent', color:sel?m.col:'var(--dim2)', border:`1px solid ${sel?m.col+'66':'var(--dim)'}`, display:'flex', alignItems:'center', gap:4 }}>
+                        <span>{m.icon}</span>
+                        <span>{g.name}</span>
+                        {sel && <span style={{ color:m.col }}>✓</span>}
+                      </button>
+                    )
+                  })}
+                </div>
+              )}
+              {selectedGameId && (
+                <div style={{ ...fm, fontSize:10, color:'var(--green)', marginTop:6 }}>
+                  ✓ {availGames.find(g=>g.id===selectedGameId)?.name} хичээлд оноогдоно
+                </div>
+              )}
+            </div>
+          )}
+
+          <Row><Btn label={savingL?'...':'ХАДГАЛАХ'} col='var(--cyan)' size='md' onClick={saveLesson} disabled={savingL}/><Btn label='БОЛИХ' col='var(--dim2)' size='md' onClick={()=>{setLessonModal('none');setSelectedGameId('')}}/></Row>
         </Modal>
       )}
 

@@ -27,6 +27,9 @@ const GAME_TYPES: Record<string, { icon: string; label: string; col: string }> =
   taskbattlesurvival: { icon: '🛡', label: 'BATTLE SURVIVAL',  col: '#ff4444' },
   multiplayerarena:   { icon: '🏟', label: 'MULTIPLAYER',      col: '#aa44ff' },
   codefactory:        { icon: '⚙', label: 'CODE FACTORY',     col: '#aaaaff' },
+  // legacy seeded types
+  quiz:               { icon: '❓', label: 'QUIZ ARENA',       col: '#a855f7' },
+  code:               { icon: '💻', label: 'CODE EDITOR',      col: '#22d3ee' },
 }
 const getGT = (t: string) => GAME_TYPES[t] ?? { icon: '🎮', label: t.toUpperCase(), col: 'var(--dim2)' }
 
@@ -127,14 +130,19 @@ export default function GameStudioPage() {
   // ── Load game list ──────────────────────────────────────────────────────
   const loadList = useCallback(async () => {
     setListLoading(true)
-    const params = new URLSearchParams()
-    if (search)                     params.set('search', search)
-    if (typeFilter)                 params.set('gameType', typeFilter)
-    if (activeFilter !== 'all')     params.set('active', activeFilter === 'active' ? 'true' : 'false')
-    const r = await aGet(`/api/admin/games?${params}`)
-    const d = await r.json()
-    setGames(d.games ?? [])
-    setListLoading(false)
+    try {
+      const params = new URLSearchParams()
+      if (search)                 params.set('search', search)
+      if (typeFilter)             params.set('gameType', typeFilter)
+      if (activeFilter !== 'all') params.set('active', activeFilter === 'active' ? 'true' : 'false')
+      const r = await aGet(`/api/admin/games?${params}`)
+      const d = await r.json()
+      setGames(d.games ?? [])
+    } catch (e) {
+      console.error('loadList error:', e)
+    } finally {
+      setListLoading(false)
+    }
   }, [search, typeFilter, activeFilter])
 
   useEffect(() => { loadList() }, [loadList])
