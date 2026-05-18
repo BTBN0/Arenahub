@@ -548,14 +548,14 @@ export default function TaskModal({ lessonId, onClose, onDone }: Props) {
                             const res=runResults?.[i]
                             return(
                               <div key={i} style={{marginBottom:8,padding:'8px 10px',background:'#010407',border:`1px solid ${res?(res.passed?'#00ff4133':'#ff004033'):'#0d1a28'}`,borderLeft:`3px solid ${res?(res.passed?'#00ff41':'#ff0040'):'#1a3a5a'}`}}>
-                                <div style={{...fp,fontSize:3,color:'#2a4a6a',marginBottom:3,letterSpacing:2}}>#{i+1} — {tc.label||'TEST'}</div>
+                                <div style={{...fp,fontSize:8,color:'#2a4a6a',marginBottom:6,letterSpacing:2}}>#{i+1} — {tc.label||'TEST'}</div>
                                 {tc.input!==undefined&&tc.input!==''&&tc.input!==null&&(
                                   <div style={{...fm,fontSize:9,color:'#5a8aba',marginBottom:6,wordBreak:'break-all'}}>input: {fv(tc.input)}</div>
                                 )}
                                 {/* Prominent expected output */}
                                 <div style={{background:'rgba(0,255,65,.06)',border:'1px solid #00ff4133',padding:'6px 8px',borderRadius:0}}>
                                   <div style={{...fp,fontSize:7,color:'#00ff4188',marginBottom:3,letterSpacing:2}}>{tx.expected}</div>
-                                  <div style={{...fm,fontSize:13,color:'#00ff41',fontWeight:'bold',wordBreak:'break-all'}}>{fv(tc.expected)}</div>
+                                  <div style={{...fm,fontSize:11,color:'#00ff41',fontWeight:'bold',wordBreak:'break-all'}}>{fv(tc.expected)}</div>
                                   {i===0&&!res&&(
                                     <div style={{...fp,fontSize:6,color:'#00ff4155',marginTop:4,letterSpacing:1}}>{tx.targetOutput} {fv(tc.expected)}</div>
                                   )}
@@ -565,7 +565,7 @@ export default function TaskModal({ lessonId, onClose, onDone }: Props) {
                             )
                           })}
                           {!activeDone&&tcs.length>0&&(
-                            <div style={{...fp,fontSize:3,color:'#1a4a6a',letterSpacing:1,marginTop:4,textAlign:'center'}}>{tx.enterBelow}</div>
+                            <div style={{...fp,fontSize:8,color:'#1a4a6a',letterSpacing:1,marginTop:8,textAlign:'center'}}>{tx.enterBelow}</div>
                           )}
                         </div>
                       )}
