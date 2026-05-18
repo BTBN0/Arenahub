@@ -29,11 +29,12 @@ export async function middleware(req: NextRequest) {
   // CSP — Content Security Policy
   res.headers.set('Content-Security-Policy', [
     "default-src 'self'",
-    "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
-    "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
-    "font-src 'self' https://fonts.gstatic.com",
+    "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net",
+    "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net",
+    "font-src 'self' https://fonts.gstatic.com https://cdn.jsdelivr.net",
+    "worker-src 'self' blob: https://cdn.jsdelivr.net",
     "img-src 'self' data: blob: https://lh3.googleusercontent.com https://avatars.githubusercontent.com https://res.cloudinary.com",
-    "connect-src 'self' https://api.groq.com",
+    "connect-src 'self' https://api.groq.com https://cdn.jsdelivr.net",
     "frame-ancestors 'none'",
     "base-uri 'self'",
     "form-action 'self'",

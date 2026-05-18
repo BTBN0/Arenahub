@@ -30,6 +30,17 @@ const nextConfig: NextConfig = {
   // ── Bundle size: exclude heavy server-only modules ──
   serverExternalPackages: ['bcryptjs', 'nodemailer'],
 
+  // ── Monaco Editor: use CDN, don't bundle ──
+  webpack: (config, { isServer }) => {
+    if (!isServer) {
+      config.resolve.alias = {
+        ...config.resolve.alias,
+        'monaco-editor': false,
+      }
+    }
+    return config
+  },
+
   // ── HTTP response headers ────────────────────────────
   async headers() {
     return [

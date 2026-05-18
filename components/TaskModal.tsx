@@ -9,12 +9,19 @@ import { useLang } from '@/context/LanguageContext'
 import { tasksApi, lessonsApi, Task, Lesson } from '@/lib/api-client'
 import PixelIcon from '@/components/ui/PixelIcon'
 
+// Use CDN loader for faster Monaco loading
+import { loader } from '@monaco-editor/react'
+loader.config({
+  paths: { vs: 'https://cdn.jsdelivr.net/npm/monaco-editor@0.52.0/min/vs' },
+  'vs/nls': { availableLanguages: {} },
+})
+
 const MonacoEditor = dynamic(
   () => import('@monaco-editor/react').then(m => m.default),
   { ssr: false, loading: () => (
     <div style={{flex:1,background:'#0d1117',display:'flex',alignItems:'center',justifyContent:'center',
       fontFamily:"'Press Start 2P',monospace",fontSize:8,color:'#2a4060',letterSpacing:2}}>
-      LOADING EDITOR...
+      ⚡ EDITOR АЧААЛЛАЖ БАЙНА...
     </div>
   )}
 )
