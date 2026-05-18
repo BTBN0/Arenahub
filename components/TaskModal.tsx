@@ -59,6 +59,8 @@ const kf = `
 @keyframes tm-rank     { from{opacity:0;transform:scale(.6) translateY(20px)} to{opacity:1;transform:scale(1) translateY(0)} }
 @keyframes tm-hp       { 0%{transform:scale(1)} 50%{transform:scale(1.5);filter:brightness(3)} 100%{transform:scale(0);opacity:0} }
 @keyframes tm-xp       { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+@keyframes tm-hpout    { 0%{opacity:0;transform:scale(.8)} 15%{opacity:1;transform:scale(1.08)} 80%{opacity:1;transform:scale(1)} 100%{opacity:0;transform:scale(.9)} }
+@keyframes tm-hppulse  { 0%,100%{opacity:1;text-shadow:0 0 20px #ff2d55} 50%{opacity:.6;text-shadow:0 0 40px #ff0040} }
 `
 
 export default function TaskModal({ lessonId, onClose, onDone }: Props) {
@@ -130,12 +132,14 @@ export default function TaskModal({ lessonId, onClose, onDone }: Props) {
   const [critHit,    setCritHit]    = useState(false)
   const [critXP,     setCritXP]     = useState(0)
   const [glitching,  setGlitching]  = useState(false)
+  const [hpAutoSkip, setHpAutoSkip] = useState(false)
   const [wpm,        setWpm]        = useState(0)
   const [keyCount,   setKeyCount]   = useState(0)
   const [codeStart,  setCodeStart]  = useState<number|null>(null)
   const [consoleLogs,setConsoleLogs]= useState<ConsoleLine[]>([])
   const [showConsole,setShowConsole]= useState(false)
-  const consoleRef = useRef<HTMLDivElement>(null)
+  const consoleRef    = useRef<HTMLDivElement>(null)
+  const autoSwitchRef = useRef<ReturnType<typeof setTimeout>|null>(null)
 
   /* ── Derived ─────────────────────────────────────────────── */
   const lt3 = (lesson?.title||'').toLowerCase()
@@ -212,6 +216,19 @@ export default function TaskModal({ lessonId, onClose, onDone }: Props) {
     if (consoleRef.current) consoleRef.current.scrollTop=consoleRef.current.scrollHeight
   }, [consoleLogs])
 
+  /* ── HP auto-switch: 3 wrong on same task → skip to next ── */
+  useEffect(() => {
+    if (hp !== 0 || activeDone || lessonDone) return
+    setHpAutoSkip(true)
+    autoSwitchRef.current = setTimeout(() => {
+      setHpAutoSkip(false)
+      const idx = tasks.findIndex(t => t.id === activeId)
+      const next = tasks[idx + 1] as ExtTask | undefined
+      if (next) doActivate(next)
+    }, 1800)
+    return () => { if (autoSwitchRef.current) clearTimeout(autoSwitchRef.current) }
+  }, [hp]) // eslint-disable-line react-hooks/exhaustive-deps
+
   /* ── Game mechanics ──────────────────────────────────────── */
   const triggerGlitch = useCallback(() => {
     setGlitching(true); setTimeout(()=>setGlitching(false), 680)
@@ -249,8 +266,11 @@ export default function TaskModal({ lessonId, onClose, onDone }: Props) {
 
   /* ── Actions ─────────────────────────────────────────────── */
   const doActivate = useCallback((t: ExtTask) => {
+    if (autoSwitchRef.current) { clearTimeout(autoSwitchRef.current); autoSwitchRef.current=null }
+    setHpAutoSkip(false)
     setActiveId(t.id); setRunResults(null); setGameState('idle')
     setConsoleLogs([]); setShowConsole(false); setKeyCount(0); setCodeStart(null); setWpm(0)
+    setHp(3); setCombo(0)
     if (t.taskType==='code') setCode('')
   }, [])
 
@@ -394,6 +414,20 @@ export default function TaskModal({ lessonId, onClose, onDone }: Props) {
           <div style={{position:'absolute',top:'18%',left:'50%',transform:'translateX(-50%)',zIndex:60,pointerEvents:'none',textAlign:'center',animation:'tm-critical 1.5s ease forwards'}}>
             <div style={{...fp,fontSize:9,color:'#ff6b35',textShadow:'0 0 24px #ff6b35',letterSpacing:2}}>CRITICAL HIT!</div>
             <div style={{...fp,fontSize:8,color:'#ffd700',marginTop:6}}>+{critXP} BONUS XP</div>
+          </div>
+        )}
+
+        {/* HP OUT → auto-switch overlay */}
+        {hpAutoSkip && (
+          <div style={{position:'absolute',inset:0,zIndex:80,pointerEvents:'none',display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',background:'rgba(0,0,0,.72)',animation:'tm-hpout 1.8s ease forwards'}}>
+            <div style={{...fp,fontSize:11,color:'#ff2d55',letterSpacing:3,animation:'tm-hppulse .6s ease infinite',marginBottom:12}}>HP ДУУССАН!</div>
+            <div style={{...fp,fontSize:8,color:'#ff6b35',letterSpacing:2,marginBottom:20}}>3 БУРУУ ХАРИУЛТ</div>
+            <div style={{display:'flex',gap:6,marginBottom:24}}>
+              {[0,1,2].map(i=><div key={i} style={{width:18,height:18,background:'#1a2840',border:'1px solid #ff2d5522'}}/>)}
+            </div>
+            <div style={{...fp,fontSize:7,color:'#ffe600',letterSpacing:2,animation:'tm-pulse .8s ease infinite'}}>
+              {tasks[tasks.findIndex(t=>t.id===activeId)+1] ? '→ ДАРААГИЙН ДААЛГАВАР...' : '✓ ХИЧЭЭЛ ДУУСЛАА'}
+            </div>
           </div>
         )}
 
