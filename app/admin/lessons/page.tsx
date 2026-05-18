@@ -1,5 +1,6 @@
 'use client'
 import { useEffect, useState, useCallback } from 'react'
+import { useRouter } from 'next/navigation'
 
 const fp = { fontFamily: 'var(--fp)' } as const
 const fm = { fontFamily: 'var(--fm)' } as const
@@ -49,6 +50,7 @@ function Field({ label, value, onChange, placeholder, type = 'text' }:
 const emptyLesson = () => ({ title: '', content: '', videoUrl: '', xpReward: '50', orderIndex: '0' })
 
 export default function AdminLessonsPage() {
+  const router = useRouter()
   const [courses, setCourses]       = useState<Course[]>([])
   const [courseId, setCourseId]     = useState('')
   const [lessons, setLessons]       = useState<Lesson[]>([])
@@ -161,8 +163,9 @@ export default function AdminLessonsPage() {
               <span style={{ ...fp, fontSize: 6, color: 'var(--dim2)' }}>{l._count.tasks}</span>
               <span style={{ ...fp, fontSize: 6, color: 'var(--yellow)' }}>{l.xpReward}</span>
               <div style={{ display: 'flex', gap: 4 }}>
-                <Btn label='ЗАСАХ'  col='var(--cyan)' onClick={() => openEdit(l)} />
-                <Btn label='DELETE' col='var(--red)'  onClick={() => deleteLesson(l)} />
+                <Btn label='MANAGE' col='var(--green)' onClick={() => router.push(`/admin/lessons/${l.id}`)} />
+                <Btn label='ЗАСАХ'  col='var(--cyan)'  onClick={() => openEdit(l)} />
+                <Btn label='DELETE' col='var(--red)'   onClick={() => deleteLesson(l)} />
               </div>
             </div>
           ))}
