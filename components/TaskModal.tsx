@@ -565,18 +565,6 @@ export default function TaskModal({ lessonId, onClose, onDone }: Props) {
 
           <div style={{flex:1}}/>
 
-          {/* CHANGE TASK */}
-          {!activeDone && !lessonDone && (
-            <div style={{padding:'6px 12px',borderLeft:'1px solid #0d1a28',display:'flex',alignItems:'center'}}>
-              <button onClick={handleChangeTask}
-                title={isMn?'Өөр даалгавар харах':'Change task'}
-                style={{...fp,fontSize:6,padding:'5px 10px',cursor:'pointer',background:'rgba(0,229,255,.06)',border:'1px solid #00e5ff33',color:'#00e5ff',letterSpacing:1,transition:'all .15s'}}
-                onMouseEnter={e=>(e.currentTarget.style.background='rgba(0,229,255,.14)')}
-                onMouseLeave={e=>(e.currentTarget.style.background='rgba(0,229,255,.06)')}>
-                🔄 {isMn?'ӨӨР TASK':'CHANGE'}
-              </button>
-            </div>
-          )}
 
           {/* ACCURACY */}
           <div style={{padding:'10px 14px',borderLeft:'1px solid #0d1a28',display:'flex',flexDirection:'column',justifyContent:'center',gap:4,minWidth:70}}>
