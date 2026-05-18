@@ -59,8 +59,9 @@ const kf = `
 @keyframes tm-rank     { from{opacity:0;transform:scale(.6) translateY(20px)} to{opacity:1;transform:scale(1) translateY(0)} }
 @keyframes tm-hp       { 0%{transform:scale(1)} 50%{transform:scale(1.5);filter:brightness(3)} 100%{transform:scale(0);opacity:0} }
 @keyframes tm-xp       { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
-@keyframes tm-hpout    { 0%{opacity:0;transform:scale(.8)} 15%{opacity:1;transform:scale(1.08)} 80%{opacity:1;transform:scale(1)} 100%{opacity:0;transform:scale(.9)} }
-@keyframes tm-hppulse  { 0%,100%{opacity:1;text-shadow:0 0 20px #ff2d55} 50%{opacity:.6;text-shadow:0 0 40px #ff0040} }
+@keyframes tm-dead     { 0%{opacity:0;transform:scale(.92)} 12%{opacity:1;transform:scale(1.03)} 85%{opacity:1;transform:scale(1)} 100%{opacity:0;transform:scale(.96)} }
+@keyframes tm-deadpulse{ 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.7;transform:scale(1.06)} }
+@keyframes tm-countdown{ from{width:100%} to{width:0%} }
 `
 
 export default function TaskModal({ lessonId, onClose, onDone }: Props) {
@@ -132,14 +133,14 @@ export default function TaskModal({ lessonId, onClose, onDone }: Props) {
   const [critHit,    setCritHit]    = useState(false)
   const [critXP,     setCritXP]     = useState(0)
   const [glitching,  setGlitching]  = useState(false)
-  const [hpAutoSkip, setHpAutoSkip] = useState(false)
+  const [hpDead,     setHpDead]     = useState(false)
   const [wpm,        setWpm]        = useState(0)
   const [keyCount,   setKeyCount]   = useState(0)
   const [codeStart,  setCodeStart]  = useState<number|null>(null)
   const [consoleLogs,setConsoleLogs]= useState<ConsoleLine[]>([])
   const [showConsole,setShowConsole]= useState(false)
-  const consoleRef    = useRef<HTMLDivElement>(null)
-  const autoSwitchRef = useRef<ReturnType<typeof setTimeout>|null>(null)
+  const consoleRef   = useRef<HTMLDivElement>(null)
+  const autoCloseRef = useRef<ReturnType<typeof setTimeout>|null>(null)
 
   /* ── Derived ─────────────────────────────────────────────── */
   const lt3 = (lesson?.title||'').toLowerCase()
@@ -185,7 +186,14 @@ export default function TaskModal({ lessonId, onClose, onDone }: Props) {
       .then(([ld, td]) => {
         setLesson(ld.lesson)
         const list = td.tasks as ExtTask[]
-        setTasks(list); setPassed({})
+        setTasks(list)
+        // restore prior submission state so checkpoint works on re-open
+        const initPassed: Record<string,boolean|null> = {}
+        const initXp: Record<string,number> = {}
+        list.forEach(t => {
+          if (t.submitted?.status === 'PASSED') { initPassed[t.id] = true; initXp[t.id] = t.submitted.xpEarned ?? 0 }
+        })
+        setPassed(initPassed); setXpMap(initXp)
         const vm: Record<string,number> = {}
         list.forEach(t => {
           const raw=t.options; const parsed=raw?(typeof raw==='string'?JSON.parse(raw):raw):null
@@ -193,8 +201,9 @@ export default function TaskModal({ lessonId, onClose, onDone }: Props) {
           vm[t.id]=Math.floor(Math.random()*count)
         })
         setVariantMap(vm)
-        const first=list[0]
-        if (first) { setActiveId(first.id); if(first.taskType==='code') setCode('') }
+        // start from first incomplete task (checkpoint)
+        const checkpoint = list.find(t => t.submitted?.status !== 'PASSED') ?? list[0]
+        if (checkpoint) { setActiveId(checkpoint.id); if(checkpoint.taskType==='code') setCode('') }
       }).finally(() => setFetching(false))
   }, [lessonId])
 
@@ -216,17 +225,15 @@ export default function TaskModal({ lessonId, onClose, onDone }: Props) {
     if (consoleRef.current) consoleRef.current.scrollTop=consoleRef.current.scrollHeight
   }, [consoleLogs])
 
-  /* ── HP auto-switch: 3 wrong on same task → skip to next ── */
+  /* ── HP=0 → show dead screen → auto-close after 2.4s ──────── */
   useEffect(() => {
-    if (hp !== 0 || activeDone || lessonDone) return
-    setHpAutoSkip(true)
-    autoSwitchRef.current = setTimeout(() => {
-      setHpAutoSkip(false)
-      const idx = tasks.findIndex(t => t.id === activeId)
-      const next = tasks[idx + 1] as ExtTask | undefined
-      if (next) doActivate(next)
-    }, 1800)
-    return () => { if (autoSwitchRef.current) clearTimeout(autoSwitchRef.current) }
+    if (hp !== 0 || lessonDone) return
+    setHpDead(true)
+    autoCloseRef.current = setTimeout(() => {
+      setHpDead(false)
+      if (onDone) onDone(null); else onClose()
+    }, 2400)
+    return () => { if (autoCloseRef.current) clearTimeout(autoCloseRef.current) }
   }, [hp]) // eslint-disable-line react-hooks/exhaustive-deps
 
   /* ── Game mechanics ──────────────────────────────────────── */
@@ -266,11 +273,10 @@ export default function TaskModal({ lessonId, onClose, onDone }: Props) {
 
   /* ── Actions ─────────────────────────────────────────────── */
   const doActivate = useCallback((t: ExtTask) => {
-    if (autoSwitchRef.current) { clearTimeout(autoSwitchRef.current); autoSwitchRef.current=null }
-    setHpAutoSkip(false)
+    if (autoCloseRef.current) { clearTimeout(autoCloseRef.current); autoCloseRef.current = null }
+    setHpDead(false); setHp(3); setCombo(0)
     setActiveId(t.id); setRunResults(null); setGameState('idle')
     setConsoleLogs([]); setShowConsole(false); setKeyCount(0); setCodeStart(null); setWpm(0)
-    setHp(3); setCombo(0)
     if (t.taskType==='code') setCode('')
   }, [])
 
@@ -417,16 +423,25 @@ export default function TaskModal({ lessonId, onClose, onDone }: Props) {
           </div>
         )}
 
-        {/* HP OUT → auto-switch overlay */}
-        {hpAutoSkip && (
-          <div style={{position:'absolute',inset:0,zIndex:80,pointerEvents:'none',display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',background:'rgba(0,0,0,.72)',animation:'tm-hpout 1.8s ease forwards'}}>
-            <div style={{...fp,fontSize:11,color:'#ff2d55',letterSpacing:3,animation:'tm-hppulse .6s ease infinite',marginBottom:12}}>HP ДУУССАН!</div>
-            <div style={{...fp,fontSize:8,color:'#ff6b35',letterSpacing:2,marginBottom:20}}>3 БУРУУ ХАРИУЛТ</div>
-            <div style={{display:'flex',gap:6,marginBottom:24}}>
-              {[0,1,2].map(i=><div key={i} style={{width:18,height:18,background:'#1a2840',border:'1px solid #ff2d5522'}}/>)}
+        {/* ══ HP DEAD OVERLAY ══ */}
+        {hpDead && (
+          <div style={{position:'absolute',inset:0,zIndex:90,display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',background:'rgba(0,0,0,.88)',animation:'tm-dead 2.4s ease forwards',pointerEvents:'all'}}>
+            {/* skull icon */}
+            <div style={{fontSize:56,marginBottom:16,animation:'tm-deadpulse .9s ease infinite',filter:'drop-shadow(0 0 24px #ff2d55)'}}>💀</div>
+            <div style={{...fp,fontSize:13,color:'#ff2d55',letterSpacing:4,marginBottom:8,textShadow:'0 0 32px #ff2d55',animation:'tm-deadpulse .6s ease infinite'}}>HP ДУУССАН!</div>
+            <div style={{...fp,fontSize:7,color:'#ff6b35',letterSpacing:2,marginBottom:28}}>3 УДАА БУРУУ ХАРИУЛТ</div>
+            {/* empty HP hearts */}
+            <div style={{display:'flex',gap:8,marginBottom:28}}>
+              {[0,1,2].map(i=>(
+                <div key={i} style={{width:22,height:22,background:'#1a0810',border:'1px solid #ff2d5533',boxShadow:'inset 0 0 8px rgba(255,45,85,.2)'}}/>
+              ))}
             </div>
-            <div style={{...fp,fontSize:7,color:'#ffe600',letterSpacing:2,animation:'tm-pulse .8s ease infinite'}}>
-              {tasks[tasks.findIndex(t=>t.id===activeId)+1] ? '→ ДАРААГИЙН ДААЛГАВАР...' : '✓ ХИЧЭЭЛ ДУУСЛАА'}
+            <div style={{...fp,fontSize:7,color:'#ffe600',letterSpacing:2,marginBottom:16,animation:'tm-pulse .8s ease infinite'}}>
+              {isMn ? '← ХИЧЭЭЛ РҮҮ БУЦАЖ БАЙНА...' : '← RETURNING TO LESSONS...'}
+            </div>
+            {/* countdown bar */}
+            <div style={{width:180,height:3,background:'#1a1a2a',overflow:'hidden'}}>
+              <div style={{height:'100%',background:'#ff2d55',animation:'tm-countdown 2.4s linear forwards'}}/>
             </div>
           </div>
         )}
@@ -461,10 +476,17 @@ export default function TaskModal({ lessonId, onClose, onDone }: Props) {
 
           {/* HP */}
           <div style={{padding:'10px 16px',borderRight:'1px solid #0d1a28',display:'flex',flexDirection:'column',justifyContent:'center',gap:5}}>
-            <div style={{...fp,fontSize:9,color:'#2a3a54',letterSpacing:2}}>HP</div>
+            <div style={{...fp,fontSize:9,color:hp===0?'#ff2d55':'#2a3a54',letterSpacing:2,transition:'color .3s'}}>HP</div>
             <div style={{display:'flex',gap:5}}>
               {[0,1,2].map(i=>(
-                <div key={i} style={{width:16,height:16,background:i<hp?'#ff2d55':'#1a2840',border:`1px solid ${i<hp?'#ff2d5555':'#0d1a28'}`,boxShadow:i<hp?'0 0 10px rgba(255,45,85,.6)':'none',transition:'all .35s'}}/>
+                <div key={i} style={{
+                  width:16,height:16,
+                  background:i<hp?'#ff2d55':'#1a0810',
+                  border:`1px solid ${i<hp?'#ff2d5566':'#ff2d5511'}`,
+                  boxShadow:i<hp?'0 0 10px rgba(255,45,85,.6)':'inset 0 0 6px rgba(255,45,85,.15)',
+                  transition:'all .35s',
+                  animation:hp===1&&i===0?'tm-deadpulse .5s ease infinite':'none',
+                }}/>
               ))}
             </div>
           </div>
