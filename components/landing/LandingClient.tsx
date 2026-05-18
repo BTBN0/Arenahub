@@ -590,7 +590,7 @@ export default function LandingClient({ initialLb }: { initialLb: LbEntry[] }) {
         </div>
         <div style={{ fontFamily:'var(--fp)', fontSize:'clamp(18px,3vw,32px)',
           lineHeight:1.5, marginBottom:16, letterSpacing:2 }}>
-          {isMn ? <>'КОДЫН УР ЧАДВАРАА'<br/>'LEVEL UP ХИИХ БОД НЭГД'</> : <>'LEVEL UP YOUR CODING'<br/>'SKILLS — JOIN NOW'</>}
+          {isMn ? <>КОДЫН УР ЧАДВАРАА<br/>LEVEL UP ХИИХ БОД НЭГД</> : <>LEVEL UP YOUR CODING<br/>SKILLS — JOIN NOW</>}
         </div>
         <div style={{ fontFamily:'var(--fm)', fontSize:13, color:'#5a6a8a', marginBottom:40 }}>
           {isMn ? 'Бүртгэлгүй нэвтэрч 2 курс үнэгүй эхлүүлнэ.' : 'Sign in and start 2 courses for free — no credit card required.'}

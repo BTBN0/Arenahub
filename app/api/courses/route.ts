@@ -1,10 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
+import { getToken } from 'next-auth/jwt'
 import prisma from '@/lib/db'
-import { requireAdmin } from '@/lib/auth'
+import { requireAdmin, getUser } from '@/lib/auth'
 import { requirePermission } from '@/lib/permissions'
 import { ok, handleError } from '@/lib/api-helpers'
 import { cacheGet, cacheSet, cacheClear } from '@/lib/cache'
+
+const FREE_COURSE_LIMIT = 2 // FREE plan-д зөвшөөрөгдөх course-ийн тоо
 
 export const dynamic = 'force-dynamic'
 
@@ -57,7 +60,34 @@ export async function GET(req: NextRequest) {
       prisma.course.count({ where }),
     ])
 
-    const payload = { ok: true, courses, pagination: { page, limit, total, pages: Math.ceil(total/limit) } }
+    // Determine user's plan to mark locked courses
+    let isPaidUser = isAdmin
+    if (!isPaidUser) {
+      try {
+        const secret = process.env.NEXTAUTH_SECRET || process.env.JWT_SECRET
+        const na = secret ? await getToken({ req, secret }) : null
+        let userId: string | undefined
+        if (na?.id) userId = na.id as string
+        else if (na?.email) {
+          const u = await prisma.user.findUnique({ where: { email: na.email as string }, select: { id: true } })
+          userId = u?.id
+        }
+        if (!userId) { const u = getUser(req); userId = u?.id }
+        if (userId) {
+          const sub = await prisma.subscription.findUnique({ where: { userId }, select: { plan: true } })
+          const dbUser = await prisma.user.findUnique({ where: { id: userId }, select: { role: true } })
+          isPaidUser = (sub?.plan === 'PRO' || sub?.plan === 'VIP') || dbUser?.role === 'ADMIN'
+        }
+      } catch {}
+    }
+
+    // Mark courses beyond FREE limit as locked
+    const coursesWithLock = courses.map((c, idx) => ({
+      ...c,
+      locked: !isPaidUser && idx >= FREE_COURSE_LIMIT,
+    }))
+
+    const payload = { ok: true, courses: coursesWithLock, pagination: { page, limit, total, pages: Math.ceil(total/limit) } }
 
     if (cacheKey) {
       cacheSet(cacheKey, payload, 60_000) // 60s

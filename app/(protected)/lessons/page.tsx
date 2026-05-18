@@ -158,19 +158,32 @@ export default function LessonsPage() {
                 const dCol    = DIFF_COLOR[course.difficulty] || '#00e5ff'
                 const meta    = COURSE_META[ci+1] || { px:'??', col:'#00e5ff', game:'GAME' }
                 const pct     = cls.length > 0 ? done / cls.length : 0
+                const isLocked = (course as any).locked === true
 
                 return (
-                  <div key={course.id} style={{ animation:`ls-in .3s ease ${ci * 0.05}s both` }}>
+                  <div key={course.id} style={{ animation:`ls-in .3s ease ${ci * 0.05}s both`, position:'relative' }}>
+
+                    {/* ── LOCK OVERLAY for paid courses ── */}
+                    {isLocked && (
+                      <div style={{ position:'absolute', inset:0, zIndex:10, background:'rgba(4,8,14,.85)', display:'flex', alignItems:'center', justifyContent:'center', gap:16, backdropFilter:'blur(2px)', cursor:'default' }}
+                        onClick={e => e.stopPropagation()}>
+                        <div style={{ fontFamily:'var(--fp)', fontSize:8, color:'#ffd700', letterSpacing:2 }}>🔒 PRO / VIP</div>
+                        <a href="/pricing" style={{ fontFamily:'var(--fp)', fontSize:7, color:'#060e1a', background:'#ffd700', padding:'6px 16px', textDecoration:'none', letterSpacing:1 }}>
+                          UPGRADE →
+                        </a>
+                      </div>
+                    )}
 
                     {/* ── COURSE ROW ── */}
                     <div
-                      onClick={() => toggleCourse(course.id)}
+                      onClick={() => !isLocked && toggleCourse(course.id)}
                       style={{
                         display:'flex', alignItems:'center', gap:0,
-                        cursor:'pointer', overflow:'hidden',
-                        background: isOpen ? `${meta.col}0c` : 'rgba(8,12,22,.96)',
-                        border:`1px solid ${isOpen ? meta.col+'44' : '#0d1a28'}`,
-                        borderBottom: isOpen ? 'none' : `1px solid ${isOpen ? meta.col+'44' : '#0d1a28'}`,
+                        cursor: isLocked ? 'default' : 'pointer', overflow:'hidden',
+                        background: isLocked ? 'rgba(8,12,22,.5)' : isOpen ? `${meta.col}0c` : 'rgba(8,12,22,.96)',
+                        border:`1px solid ${isLocked ? '#0d1a28' : isOpen ? meta.col+'44' : '#0d1a28'}`,
+                        borderBottom: isOpen ? 'none' : `1px solid ${isLocked ? '#0d1a28' : isOpen ? meta.col+'44' : '#0d1a28'}`,
+                        opacity: isLocked ? 0.65 : 1,
                         transition:'all .2s',
                       }}
                     >
