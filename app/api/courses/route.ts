@@ -17,6 +17,7 @@ const courseSchema = z.object({
   category:    z.string().min(2),
   difficulty:  z.enum(['BEGINNER','INTERMEDIATE','ADVANCED']),
   xpReward:    z.number().int().min(0).optional(),
+  orderIndex:  z.number().int().min(0).optional(),
 })
 
 export async function GET(req: NextRequest) {
