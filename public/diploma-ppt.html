@@ -7,8 +7,28 @@
 @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&display=swap');
 :root{--bg:#05080f;--bg2:#0a0f1e;--bg3:#0d1628;--cyan:#00d4ff;--green:#00ff88;--yellow:#ffc832;--purple:#c77dff;--red:#ff3366;--text:#e2eaf8;--dim:#3a5070;--fp:'Press Start 2P',monospace;--fm:'Share Tech Mono',monospace;--orb:'Orbitron',monospace;}
 *{margin:0;padding:0;box-sizing:border-box;}
-body{background:var(--bg);color:var(--text);font-family:var(--fp);overflow:hidden;width:100vw;height:100vh;}
-.slide{width:100vw;height:100vh;background:var(--bg);position:absolute;top:0;left:0;overflow:hidden;display:flex;flex-direction:column;opacity:0;pointer-events:none;}
+body{background:#000;color:var(--text);font-family:var(--fp);overflow:hidden;width:100vw;height:100vh;display:flex;align-items:center;justify-content:center;}
+
+/* Slide wrapper — fixed 1280x720, scaled to fit screen */
+#_deck{
+  width:1280px;
+  height:720px;
+  position:relative;
+  flex-shrink:0;
+  transform-origin:center center;
+}
+.slide{
+  width:1280px;
+  height:720px;
+  background:var(--bg);
+  position:absolute;
+  top:0;left:0;
+  overflow:hidden;
+  display:flex;
+  flex-direction:column;
+  opacity:0;
+  pointer-events:none;
+}
 .slide.active{opacity:1;pointer-events:all;}
 .slide::before{content:'';position:absolute;inset:0;pointer-events:none;background-image:linear-gradient(rgba(0,212,255,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,212,255,.03) 1px,transparent 1px);background-size:24px 24px;}
 .glow-line{position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent,var(--cyan),transparent);}
@@ -126,7 +146,8 @@ tr:nth-child(even) td{background:rgba(0,212,255,.02);}
     animation:none !important;
     transition:none !important;
   }
-  body{overflow:visible !important;width:297mm !important;height:auto !important;background:#05080f !important;}
+  body{overflow:visible !important;width:297mm !important;height:auto !important;background:#05080f !important;display:block !important;}
+  #_deck{width:297mm !important;height:auto !important;transform:none !important;position:static !important;}
   .slide{
     position:relative !important;
     width:297mm !important;
@@ -150,7 +171,7 @@ tr:nth-child(even) td{background:rgba(0,212,255,.02);}
 </style>
 </head>
 <body>
-
+<div id="_deck">
 <!-- LOGO SVG reusable -->
 <svg id="logo-tmpl" style="display:none">
   <symbol id="ah-logo" viewBox="0 0 32 32">
@@ -888,6 +909,7 @@ tr:nth-child(even) td{background:rgba(0,212,255,.02);}
   <div class="slide-num">16 / 16</div>
 </div>
 
+</div><!-- /#_deck -->
 
 <div id="_prog" style="width:0"></div>
 <div id="_nav">
@@ -950,6 +972,19 @@ document.addEventListener('keydown',e=>{
 });
 sl[0].classList.add('active');
 upd();
+
+// ── Responsive scale to fit viewport ──
+function scaleToFit(){
+  const deck = document.getElementById('_deck');
+  if(!deck) return;
+  const sw = window.innerWidth;
+  const sh = window.innerHeight;
+  const scale = Math.min(sw/1280, sh/720);
+  deck.style.transform = 'scale('+scale+')';
+}
+scaleToFit();
+window.addEventListener('resize', scaleToFit);
+document.addEventListener('fullscreenchange', ()=>{ setTimeout(scaleToFit, 100); });
 })();
 </script>
 </body>
