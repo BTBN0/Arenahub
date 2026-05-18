@@ -474,37 +474,45 @@ tr:nth-child(even) td{background:rgba(0,212,255,.02);}
     <div class="stitle" style="font-size:18px;">Authentication System</div><div class="bar"></div>
     <div class="g2" style="gap:14px;">
       <div>
-        <div style="font-family:var(--fp);font-size:9px;color:var(--cyan);margin-bottom:8px;letter-spacing:2px;">DUAL AUTH SYSTEM</div>
-        <div class="card" style="margin-bottom:8px;border-color:rgba(0,212,255,.3);">
-          <div style="font-family:var(--fp);font-size:9px;color:var(--cyan);margin-bottom:8px;">1. NEXTAUTH.JS — OAUTH</div>
-          <div style="display:flex;gap:6px;flex-wrap:wrap;">
-            <span class="badge bc">Google OAuth 2.0</span>
-            <span class="badge bg">GitHub OAuth</span>
+        <div style="font-family:var(--fp);font-size:9px;color:var(--cyan);margin-bottom:10px;letter-spacing:2px;">OAUTH НЭВТРЭЛТ</div>
+        <div class="card" style="margin-bottom:10px;border-color:rgba(0,212,255,.4);">
+          <div style="font-family:var(--fp);font-size:9px;color:var(--cyan);margin-bottom:10px;">🔵 GOOGLE OAUTH 2.0</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;">
+            <span class="badge bc">Google Account</span>
             <span class="badge bp">Session Cookie</span>
+            <span class="badge bg">JWT Token</span>
           </div>
-          <div style="font-size:8px;color:var(--dim);margin-top:6px;">User-friendly social login, cookie-based session</div>
+          <div style="font-size:8px;color:var(--dim);line-height:1.8;">Google-ийн аюулгүй OAuth 2.0 protocol ашиглана.<br/>Хэрэглэгч Google-ийн сервер дээр нэвтэрнэ.<br/>Манай систем email, name, avatar авна.</div>
         </div>
-        <div class="card" style="border-color:rgba(0,255,136,.3);">
-          <div style="font-family:var(--fp);font-size:9px;color:var(--green);margin-bottom:8px;">2. CUSTOM JWT — EMAIL/PASSWORD</div>
-          <div style="display:flex;gap:6px;flex-wrap:wrap;">
-            <span class="badge bg">Access Token (15m)</span>
-            <span class="badge by">Refresh Token (7d)</span>
+        <div class="card" style="border-color:rgba(199,125,255,.3);">
+          <div style="font-family:var(--fp);font-size:9px;color:var(--purple);margin-bottom:10px;">⚫ GITHUB OAUTH</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;">
+            <span class="badge bp">GitHub Account</span>
+            <span class="badge bc">Developer Login</span>
           </div>
-          <div style="font-size:8px;color:var(--dim);margin-top:6px;">API/Mobile flexibility, Bearer token</div>
+          <div style="font-size:8px;color:var(--dim);line-height:1.8;">GitHub-аар нэвтэрч developer experience нэмнэ.</div>
         </div>
       </div>
       <div>
-        <div style="font-family:var(--fp);font-size:9px;color:var(--red);margin-bottom:8px;letter-spacing:2px;">SECURITY FEATURES</div>
-        <div class="ci"><div class="ci-dot" style="background:var(--red)"></div><div class="ci-txt"><span class="ci-bold">bcrypt (12 rounds)</span>Password хэш — brute force-аас хамгаалалт</div></div>
-        <div class="ci"><div class="ci-dot" style="background:var(--yellow)"></div><div class="ci-txt"><span class="ci-bold">JWT 15m expiry</span>Богино хугацааны access token</div></div>
-        <div class="ci"><div class="ci-dot" style="background:var(--cyan)"></div><div class="ci-txt"><span class="ci-bold">Rate limiting</span>IP болон user тутамд хязгаарлалт</div></div>
-        <div class="ci"><div class="ci-dot" style="background:var(--green)"></div><div class="ci-txt"><span class="ci-bold">CSP + HSTS</span>XSS, clickjacking хамгаалалт</div></div>
-        <div class="ci"><div class="ci-dot" style="background:var(--purple)"></div><div class="ci-txt"><span class="ci-bold">Zod validation</span>Бүх API input-д schema check</div></div>
-        <div style="margin-top:10px;" class="flow">
-          <div class="fs" style="font-size:9px;">User Login</div><div class="fa">→</div>
-          <div class="fs" style="font-size:9px;">JWT Create</div><div class="fa">→</div>
-          <div class="fs" style="font-size:9px;">localStorage</div><div class="fa">→</div>
-          <div class="fs" style="font-size:9px;">API Auth</div>
+        <div style="font-family:var(--fp);font-size:9px;color:var(--green);margin-bottom:10px;letter-spacing:2px;">AUTH FLOW</div>
+        <div class="flow" style="flex-direction:column;padding:0;border:none;gap:0;">
+          <div style="text-align:center;padding:10px;background:rgba(0,212,255,.06);border:1px solid rgba(0,212,255,.2);margin-bottom:4px;">
+            <div style="font-family:var(--fp);font-size:7px;color:var(--cyan);">1. Google Login</div>
+            <div style="font-size:7px;color:var(--dim);margin-top:3px;">Google → verify → redirect</div>
+          </div>
+          <div style="text-align:center;font-size:12px;color:rgba(0,212,255,.4);">↓</div>
+          <div style="text-align:center;padding:10px;background:rgba(0,255,136,.06);border:1px solid rgba(0,255,136,.2);margin-bottom:4px;">
+            <div style="font-family:var(--fp);font-size:7px;color:var(--green);">2. NextAuth Session</div>
+            <div style="font-size:7px;color:var(--dim);margin-top:3px;">JWT token → HttpOnly cookie</div>
+          </div>
+          <div style="text-align:center;font-size:12px;color:rgba(0,212,255,.4);">↓</div>
+          <div style="text-align:center;padding:10px;background:rgba(255,200,50,.06);border:1px solid rgba(255,200,50,.2);">
+            <div style="font-family:var(--fp);font-size:7px;color:var(--yellow);">3. Dashboard Access</div>
+            <div style="font-size:7px;color:var(--dim);margin-top:3px;">Protected routes → user data</div>
+          </div>
+        </div>
+        <div style="margin-top:10px;font-family:var(--fp);font-size:7px;color:var(--green);text-align:center;padding:6px;border:1px solid rgba(0,255,136,.2);background:rgba(0,255,136,.04);">
+          ✓ Password хэрэггүй · ✓ Аюулгүй · ✓ Хялбар
         </div>
       </div>
     </div>
