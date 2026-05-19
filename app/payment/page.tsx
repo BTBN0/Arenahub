@@ -55,12 +55,14 @@ function PaymentContent() {
   const [progress,       setProgress]      = useState(0)   // 0-100
   const [error,          setError]         = useState('')
   const [paymentLoading, setPaymentLoading] = useState(false)
+  const [currency,       setCurrency]      = useState<'mnt' | 'usd'>('mnt')
   const timerRef = useRef<ReturnType<typeof setInterval>|null>(null)
 
   const MNT_TO_USD = 3400
-  const currency = 'usd'
-  const displayAmount = Math.round(item.amount / MNT_TO_USD)
-  const currencySymbol = '$'
+  const displayAmount = currency === 'usd'
+    ? Math.round(item.amount / MNT_TO_USD)
+    : item.amount.toLocaleString()
+  const currencySymbol = currency === 'usd' ? '$' : '₮'
 
   useEffect(() => { if (!loading && !isAuthenticated) router.replace('/login') }, [loading, isAuthenticated])
   if (loading || !user) return null
@@ -169,6 +171,24 @@ function PaymentContent() {
         {/* ── IDLE: Show QR + button ── */}
         {phase === 'idle' && (
           <div>
+            {/* Currency selection */}
+            <div style={{ background:'rgba(8,12,22,.96)', border:'1px solid #3a4560',
+              padding:'16px', marginBottom:20, display:'flex', gap:10 }}>
+              <button onClick={() => setCurrency('mnt')}
+                style={{ flex:1, padding:'12px', ...S.fp(9,'#070d1a',1),
+                  background: currency === 'mnt' ? '#00ff41' : 'rgba(0,255,65,0.1)',
+                  border: `1px solid ${currency === 'mnt' ? '#00ff41' : '#3a4560'}`,
+                  cursor: 'pointer', transition:'all .2s' }}>
+                ₮ Tugrug (MNT)
+              </button>
+              <button onClick={() => setCurrency('usd')}
+                style={{ flex:1, padding:'12px', ...S.fp(9,'#070d1a',1),
+                  background: currency === 'usd' ? '#00e5ff' : 'rgba(0,229,255,0.1)',
+                  border: `1px solid ${currency === 'usd' ? '#00e5ff' : '#3a4560'}`,
+                  cursor: 'pointer', transition:'all .2s' }}>
+                $ Dollar (USD)
+              </button>
+            </div>
 
             {/* QR panel */}
             <div style={{ background:'rgba(8,12,22,.96)', border:'1px solid #3a4560',
@@ -206,16 +226,23 @@ function PaymentContent() {
             )}
 
             <div style={{ display:'flex', flexDirection:'column', gap:10 }}>
-              <button onClick={startStripePayment}
-                disabled={paymentLoading}
-                style={{ padding:'16px', ...S.fp(10,'#fff',2),
-                  background: '#635bff', border:'none', cursor: paymentLoading ? 'not-allowed' : 'pointer',
-                  transition:'all .2s', opacity: paymentLoading ? 0.6 : 1, width:'100%',
-                  boxShadow: '0 2px 8px rgba(99,91,255,0.3)' }}
-                onMouseEnter={e => !paymentLoading && (e.currentTarget.style.opacity='0.9')}
-                onMouseLeave={e => !paymentLoading && (e.currentTarget.style.opacity='1')}>
-                💳 Pay with VISA {paymentLoading ? '...' : ''}
-              </button>
+              <div>
+                <button onClick={startStripePayment}
+                  disabled={paymentLoading}
+                  style={{ padding:'16px', ...S.fp(10,'#fff',2),
+                    background: '#635bff', border:'none', cursor: paymentLoading ? 'not-allowed' : 'pointer',
+                    transition:'all .2s', opacity: paymentLoading ? 0.6 : 1, width:'100%',
+                    boxShadow: '0 2px 8px rgba(99,91,255,0.3)' }}
+                  onMouseEnter={e => !paymentLoading && (e.currentTarget.style.opacity='0.9')}
+                  onMouseLeave={e => !paymentLoading && (e.currentTarget.style.opacity='1')}>
+                  💳 Pay with VISA {paymentLoading ? '...' : ''}
+                </button>
+                {currency === 'mnt' && (
+                  <div style={{ ...S.fm(10,'#ffd700'), marginTop:8, padding:'8px', background:'rgba(255,215,0,.1)', border:'1px solid rgba(255,215,0,.3)', textAlign:'center' }}>
+                    💱 Dollar oor Visa-аар төлнө
+                  </div>
+                )}
+              </div>
               <button onClick={startPayment}
                 disabled={paymentLoading}
                 style={{ padding:'16px', ...S.fp(10,'#070d1a',2),
