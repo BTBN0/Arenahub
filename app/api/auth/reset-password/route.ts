@@ -1,7 +1,7 @@
 import { NextRequest } from 'next/server'
 import { z } from 'zod'
 import prisma from '@/lib/db'
-import bcrypt from 'bcryptjs'
+import { hashPassword } from '@/lib/auth'
 import { ok, err, handleError } from '@/lib/api-helpers'
 
 export async function POST(req: NextRequest) {
@@ -15,7 +15,7 @@ export async function POST(req: NextRequest) {
     if (!pr || pr.used || pr.expiresAt < new Date())
       return err('Token хүчингүй эсвэл хугацаа дууссан', 400)
 
-    const hash = await bcrypt.hash(password, 12)
+    const hash = await hashPassword(password)
     await prisma.user.update({ where: { id: pr.userId }, data: { passwordHash: hash } })
     await prisma.passwordReset.update({ where: { token }, data: { used: true } })
     // Revoke all sessions

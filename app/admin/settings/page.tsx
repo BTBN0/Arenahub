@@ -67,7 +67,7 @@ export default function AdminSettingsPage() {
     { group: 'AUTHENTICATION', col: 'var(--green)', items: [
       { label: 'JWT expires',    value: '15 минут',              note: 'JWT_EXPIRES_IN env' },
       { label: 'Refresh token',  value: '7 хоног',               note: 'auth.ts' },
-      { label: 'Password hash',  value: 'bcrypt rounds: 12',     note: 'auth.ts' },
+      { label: 'Password hash',  value: 'crypto.scrypt (Node built-in)',     note: 'auth.ts' },
     ]},
     { group: 'XP & LEVEL',      col: 'var(--yellow)', items: [
       { label: 'XP per level',   value: '200 XP',                note: 'game.service.ts' },

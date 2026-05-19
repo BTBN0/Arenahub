@@ -1,10 +1,17 @@
+/// <reference types="node" />
 import { PrismaClient } from '@prisma/client'
-import bcrypt from 'bcryptjs'
+import { scrypt, randomBytes } from 'crypto'
+import { promisify } from 'util'
 
-const prisma = new PrismaClient()
+const prisma    = new PrismaClient()
+const scryptAsync = promisify(scrypt)
 
 async function main() {
-  const hash = (pw: string) => bcrypt.hash(pw, 12)
+  const hash = async (pw: string) => {
+    const salt = randomBytes(16).toString('hex')
+    const buf  = (await scryptAsync(pw, salt, 64)) as Buffer
+    return `${buf.toString('hex')}.${salt}`
+  }
 
   // ── Users ──────────────────────────────────────────────────
   await prisma.user.upsert({

@@ -28,7 +28,7 @@ const nextConfig: NextConfig = {
   },
 
   // ── Bundle size: exclude heavy server-only modules ──
-  serverExternalPackages: ['bcryptjs', 'nodemailer'],
+  serverExternalPackages: ['nodemailer'],
 
   // ── Monaco Editor: use CDN, don't bundle ──
   webpack: (config, { isServer }) => {
