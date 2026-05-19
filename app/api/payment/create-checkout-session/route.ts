@@ -86,6 +86,8 @@ export async function POST(req: NextRequest) {
       customer_email: userEmail,
       line_items: lineItems,
       mode: 'payment',
+      locale: 'en',
+      payment_method_types: ['card'],
       success_url: `${process.env.NEXTAUTH_URL}/payment?success=true&item=${item}`,
       cancel_url: `${process.env.NEXTAUTH_URL}/payment?item=${item}&canceled=true`,
       metadata: {
