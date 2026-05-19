@@ -6,9 +6,7 @@ import prisma from '@/lib/db'
 
 const SECRET = process.env.NEXTAUTH_SECRET || process.env.JWT_SECRET
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2024-12-15',
-})
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!)
 
 const PRODUCTS = {
   pro_monthly:  { name: 'PRO — Сарын', productId: process.env.STRIPE_PRODUCT_PRO_MONTH, price: 1700 },

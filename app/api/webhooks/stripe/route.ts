@@ -2,9 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import Stripe from 'stripe'
 import prisma from '@/lib/db'
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2024-12-15',
-})
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!)
 
 const ITEM_CONFIG: Record<string, { type: string; plan?: string; tokens?: number }> = {
   pro_monthly:  { type: 'subscription', plan: 'PRO', tokens: 100 },
