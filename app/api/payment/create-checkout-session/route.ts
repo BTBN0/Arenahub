@@ -61,8 +61,8 @@ export async function POST(req: NextRequest) {
       )
     }
 
-    // Currency conversion: MNT to USD (1 USD ≈ 3100 MNT)
-    const MNT_TO_USD = 3100
+    // Currency conversion: MNT to USD (1 USD ≈ 3400 MNT)
+    const MNT_TO_USD = 3400
     const amount = currency === 'usd'
       ? Math.round((product.price / MNT_TO_USD) * 100)
       : product.price

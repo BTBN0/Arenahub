@@ -58,7 +58,7 @@ function PaymentContent() {
   const [currency,       setCurrency]      = useState<'mnt' | 'usd'>('mnt')
   const timerRef = useRef<ReturnType<typeof setInterval>|null>(null)
 
-  const MNT_TO_USD = 3100
+  const MNT_TO_USD = 3400
   const displayAmount = currency === 'usd'
     ? Math.round(item.amount / MNT_TO_USD)
     : item.amount.toLocaleString()
