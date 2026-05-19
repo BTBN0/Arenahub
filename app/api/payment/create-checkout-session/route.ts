@@ -47,7 +47,9 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    const { item, currency = 'mnt' } = await req.json()
+    const { item } = await req.json()
+    // Stripe only supports USD for this integration
+    const currency = 'usd'
     const product = PRODUCTS[item as keyof typeof PRODUCTS]
 
     if (!product) {
