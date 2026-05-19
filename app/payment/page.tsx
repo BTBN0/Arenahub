@@ -51,10 +51,10 @@ function PaymentContent() {
   const fromPath = params.get('from') || '/pricing'
   const item     = ITEMS[itemKey] || ITEMS.pro_monthly
 
-  const [phase,    setPhase]    = useState<Phase>('idle')
-  const [progress, setProgress] = useState(0)   // 0-100
-  const [error,    setError]    = useState('')
-  const [loading,  setLoading]  = useState(false)
+  const [phase,          setPhase]         = useState<Phase>('idle')
+  const [progress,       setProgress]      = useState(0)   // 0-100
+  const [error,          setError]         = useState('')
+  const [paymentLoading, setPaymentLoading] = useState(false)
   const timerRef = useRef<ReturnType<typeof setInterval>|null>(null)
 
   useEffect(() => { if (!loading && !isAuthenticated) router.replace('/login') }, [loading, isAuthenticated])
@@ -102,7 +102,7 @@ function PaymentContent() {
   }
 
   const startStripePayment = async () => {
-    setLoading(true)
+    setPaymentLoading(true)
     setError('')
     try {
       const bearer = typeof window !== 'undefined' ? localStorage.getItem('arenahub_token') : null
@@ -123,7 +123,7 @@ function PaymentContent() {
     } catch {
       setError('Холболтын алдаа')
     } finally {
-      setLoading(false)
+      setPaymentLoading(false)
     }
   }
 
@@ -207,22 +207,22 @@ function PaymentContent() {
 
             <div style={{ display:'flex', gap:10 }}>
               <button onClick={startPayment}
-                disabled={loading}
+                disabled={paymentLoading}
                 style={{ flex:1, padding:'16px', ...S.fp(10,'#070d1a',2),
-                  background: item.col, border:'none', cursor: loading ? 'not-allowed' : 'pointer',
-                  transition:'all .2s', opacity: loading ? 0.6 : 1 }}
-                onMouseEnter={e => !loading && (e.currentTarget.style.opacity='0.85')}
-                onMouseLeave={e => !loading && (e.currentTarget.style.opacity='1')}>
+                  background: item.col, border:'none', cursor: paymentLoading ? 'not-allowed' : 'pointer',
+                  transition:'all .2s', opacity: paymentLoading ? 0.6 : 1 }}
+                onMouseEnter={e => !paymentLoading && (e.currentTarget.style.opacity='0.85')}
+                onMouseLeave={e => !paymentLoading && (e.currentTarget.style.opacity='1')}>
                 {t('pay_simulate')}
               </button>
               <button onClick={startStripePayment}
-                disabled={loading}
+                disabled={paymentLoading}
                 style={{ flex:1, padding:'16px', ...S.fp(10,'#070d1a',2),
-                  background: '#635bff', border:'none', cursor: loading ? 'not-allowed' : 'pointer',
-                  transition:'all .2s', opacity: loading ? 0.6 : 1 }}
-                onMouseEnter={e => !loading && (e.currentTarget.style.opacity='0.85')}
-                onMouseLeave={e => !loading && (e.currentTarget.style.opacity='1')}>
-                Stripe {loading ? '...' : ''}
+                  background: '#635bff', border:'none', cursor: paymentLoading ? 'not-allowed' : 'pointer',
+                  transition:'all .2s', opacity: paymentLoading ? 0.6 : 1 }}
+                onMouseEnter={e => !paymentLoading && (e.currentTarget.style.opacity='0.85')}
+                onMouseLeave={e => !paymentLoading && (e.currentTarget.style.opacity='1')}>
+                Stripe {paymentLoading ? '...' : ''}
               </button>
             </div>
             <div style={{ ...S.fm(11,'#3a4560'), textAlign:'center', marginTop:10 }}>
