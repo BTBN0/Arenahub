@@ -70,13 +70,13 @@ li{margin-bottom:3pt;font-size:11pt;line-height:1.5;}
   <div class="cover-sep"></div>
   <div class="cover-label">ДИПЛОМЫН АЖЛЫН ТАЙЛАН</div>
   <div class="cover-title">ARENAHUB</div>
-  <div class="cover-subtitle">Gamified AI-Powered Coding Learning Platform</div>
+  <div class="cover-subtitle">AI-Powered Gamified Coding Learning Platform</div>
   <div class="cover-type">Full-Stack Web Application</div>
   <div class="cover-sep"></div>
   <table class="cover-table">
     <tr><td>Оюутны нэр:</td><td>Б.Батбаясгалан</td></tr>
     <tr><td>Анги:</td><td>SW25-01</td></tr>
-    <tr><td>Мэргэжил:</td><td>Fullstack Developer</td></tr>
+    <tr><td>Мэргэжил:</td><td>Full-Stack Developer</td></tr>
     <tr><td>Удирдагч багш:</td><td>Чинхүслэн</td></tr>
   </table>
   <div class="cover-city">Улаанбаатар — 2026</div>
@@ -89,20 +89,21 @@ li{margin-bottom:3pt;font-size:11pt;line-height:1.5;}
   <h1>Хураангуй</h1>
   <div class="abstract-box">
     <div class="abstract-lang">Монгол хэл</div>
-    <p class="no-indent">ArenaHub нь AI болон gamification технологид суурилсан full-stack coding learning platform юм. Хэрэглэгчид програмчлалын хичээл судлах, coding даалгавар бодох, AI assistant-аас тусламж авах, achievement болон leaderboard системээр дамжуулан идэвхээ нэмэгдүүлэх боломжтой. Систем нь 23 database table, 30+ API endpoint, 280+ coding task бүхий production-level architecture ашиглан бүтээгдсэн.</p>
+    <p class="no-indent">ArenaHub нь хиймэл оюун ухаан (AI) болон gamification технологид суурилсан full-stack coding learning platform юм. Хэрэглэгчид програмчлалын хичээл судлах, coding даалгавар бодох, AI assistant-аас тусламж авах, achievement болон leaderboard системээр дамжуулан суралцах идэвхээ нэмэгдүүлэх боломжтой. Систем нь 30 database model, 55 API route, ~350+ coding task бүхий production-level serverless architecture ашиглан бүтээгдсэн бөгөөд 446 translation key бүхий Монгол-Англи localization дэмждэг.</p>
     <p class="no-indent" style="margin-bottom:0"><strong>Түлхүүр үг:</strong> gamification, AI tutor, coding learning platform, Next.js, PostgreSQL, JWT</p>
   </div>
   <div class="abstract-box">
     <div class="abstract-lang">English</div>
-    <p class="no-indent">ArenaHub is a full-stack coding learning platform built on AI and gamification technologies. Users can study programming courses, solve coding tasks, receive AI assistant help, and increase engagement through achievement and leaderboard systems. The system was built with 23 database tables, 30+ API endpoints, and 280+ coding tasks.</p>
+    <p class="no-indent">ArenaHub is a full-stack coding learning platform built using AI and gamification technologies. The platform enables users to study programming lessons, solve coding challenges, receive AI-powered assistance, and increase engagement through achievement and leaderboard systems. The system was developed using modern technologies including Next.js 15, React 19, TypeScript, Prisma ORM, PostgreSQL, and Groq AI with a production-level serverless architecture implementing 30 database models, 55 API routes, ~350+ coding tasks, and 446 translation keys.</p>
     <p class="no-indent" style="margin-bottom:0"><strong>Keywords:</strong> gamification, AI tutor, coding learning platform, Next.js, PostgreSQL, JWT</p>
   </div>
   <div class="stat-row">
     <div class="stat-cell"><div class="stat-num">8</div><div class="stat-lbl">Courses</div></div>
-    <div class="stat-cell"><div class="stat-num">280+</div><div class="stat-lbl">Tasks</div></div>
+    <div class="stat-cell"><div class="stat-num">350+</div><div class="stat-lbl">Tasks</div></div>
     <div class="stat-cell"><div class="stat-num">56</div><div class="stat-lbl">Lessons</div></div>
-    <div class="stat-cell"><div class="stat-num">23</div><div class="stat-lbl">DB Tables</div></div>
-    <div class="stat-cell"><div class="stat-num">30+</div><div class="stat-lbl">API Routes</div></div>
+    <div class="stat-cell"><div class="stat-num">30</div><div class="stat-lbl">DB Models</div></div>
+    <div class="stat-cell"><div class="stat-num">55</div><div class="stat-lbl">API Routes</div></div>
+    <div class="stat-cell"><div class="stat-num">446</div><div class="stat-lbl">i18n Keys</div></div>
   </div>
 </div>
 <div class="page-num">i</div>
@@ -191,7 +192,7 @@ li{margin-bottom:3pt;font-size:11pt;line-height:1.5;}
     <li>XP, level, combo, HP, achievement, leaderboard gamification хэрэгжүүлэх.</li>
     <li>OAuth болон JWT dual authentication system хийх.</li>
     <li>Vercel + Neon.tech дээр production deployment хийх.</li>
-    <li>Монгол болон Англи 300+ translation key нэмэх.</li>
+    <li>Монгол болон Англи 446 translation key бүхий localization систем хийх.</li>
   </ol>
 
   <h1>4. Системийн Шинжилгээ</h1>
@@ -211,7 +212,7 @@ li{margin-bottom:3pt;font-size:11pt;line-height:1.5;}
     <tr><th>Шаардлага</th><th>Тайлбар</th><th>Хэрэгжилт</th></tr>
     <tr><td>Responsive UI</td><td>Mobile, tablet, desktop дэмжих</td><td>CSS Media Query</td></tr>
     <tr><td>Performance</td><td>API &lt;200ms хариу</td><td>Server-side cache</td></tr>
-    <tr><td>Security</td><td>Production-level хамгаалалт</td><td>CSP + JWT + bcrypt</td></tr>
+    <tr><td>Security</td><td>Production-level хамгаалалт</td><td>CSP + JWT + crypto.scrypt</td></tr>
     <tr><td>Scalability</td><td>Serverless auto-scale</td><td>Vercel</td></tr>
     <tr><td>Availability</td><td>99.9% uptime</td><td>Neon + Vercel</td></tr>
   </table>
@@ -240,12 +241,12 @@ li{margin-bottom:3pt;font-size:11pt;line-height:1.5;}
   <table>
     <tr><th>Технологи</th><th>Зориулалт</th></tr>
     <tr><td>Node.js 24</td><td>JavaScript runtime environment</td></tr>
-    <tr><td>Next.js API Routes</td><td>REST API (30+ serverless endpoint)</td></tr>
+    <tr><td>Next.js API Routes</td><td>REST API (55 serverless endpoint)</td></tr>
     <tr><td>JWT (jsonwebtoken)</td><td>Access token (15min) + Refresh token (7d)</td></tr>
-    <tr><td>bcryptjs</td><td>Password хэш (12 rounds)</td></tr>
+    <tr><td>crypto.scrypt (Node built-in)</td><td>Password хэш — гадаад хамаарал шаардлагагүй</td></tr>
     <tr><td>Zod</td><td>Input validation, schema parsing</td></tr>
     <tr><td>Prisma ORM v6</td><td>Type-safe database client, migrations</td></tr>
-    <tr><td>PostgreSQL 16</td><td>Relational database (23 table)</td></tr>
+    <tr><td>PostgreSQL 16</td><td>Relational database (30 model)</td></tr>
     <tr><td>Neon.tech</td><td>Serverless PostgreSQL cloud hosting</td></tr>
     <tr><td>Groq API</td><td>AI inference — llama-3.3-70b-versatile</td></tr>
     <tr><td>NextAuth.js v4</td><td>OAuth authentication (Google, GitHub)</td></tr>
@@ -263,7 +264,7 @@ li{margin-bottom:3pt;font-size:11pt;line-height:1.5;}
   <h2>6.1 Frontend Хөгжүүлэлт</h2>
   <p>Frontend хэсгийг Next.js 15 App Router architecture ашиглан боловсруулсан. Pixel-art dark cyberpunk aesthetic бүхий UI дизайн, responsive layout хэрэгжүүлсэн. State management-д React Context API ашигласан: <strong>AuthContext</strong> нь хэрэглэгчийн session удирдана, <strong>LanguageContext</strong> нь МН/EN хэлний солилтыг удирдана.</p>
   <h2>6.2 Backend Хөгжүүлэлт</h2>
-  <p>Backend нь Next.js API Routes дээр суурилсан serverless architecture ашиглан 30 гаруй REST endpoint хэрэгжүүлсэн. Бүх request дээр Zod schema validation ашигласан. 5xx алдааг client-д нуух замаар мэдээлэл алдагдахаас хамгаалдаг.</p>
+  <p>Backend нь Next.js API Routes дээр суурилсан serverless architecture ашиглан нийт 55 REST endpoint хэрэгжүүлсэн. Бүх request дээр Zod schema validation ашигласан. 5xx алдааг client-д нуух замаар мэдээлэл алдагдахаас хамгаалдаг.</p>
   <h2>6.3 Authentication Систем</h2>
   <p>Систем нь <strong>dual authentication architecture</strong> ашигладаг: NextAuth.js v4 ашиглан Google болон GitHub OAuth нэвтрэлт, custom JWT токен (15 минутын access + 7 хоногийн refresh) ашиглан email/password нэвтрэлт.</p>
   <p class="tbl-caption no-indent"><em>Зураг 6.1 — Authentication Flow Diagram</em></p>
@@ -279,8 +280,8 @@ li{margin-bottom:3pt;font-size:11pt;line-height:1.5;}
 <div class="content">
   <div class="running-header"><span>ArenaHub — Дипломын Тайлан</span><span>2026</span></div>
   <h2>6.4 Database Бүтэц</h2>
-  <p>Систем нь PostgreSQL database болон Prisma ORM v6 ашиглан нийт 23 table-тай бүтээгдсэн. Neon.tech serverless cloud дээр deploy хийгдсэн.</p>
-  <p class="tbl-caption no-indent"><em>Хүснэгт 6.1 — Гол Database Table-уудын Жагсаалт</em></p>
+  <p>Систем нь PostgreSQL database болон Prisma ORM v6 ашиглан нийт 30 database model-тай бүтээгдсэн. Neon.tech serverless cloud дээр deploy хийгдсэн.</p>
+  <p class="tbl-caption no-indent"><em>Хүснэгт 6.1 — Гол Database Model-уудын Жагсаалт</em></p>
   <table>
     <tr><th>Table</th><th>Зориулалт</th><th>Гол талбарууд</th></tr>
     <tr><td>User</td><td>Хэрэглэгч, profile</td><td>id, username, email, role, xp, level</td></tr>
@@ -292,8 +293,8 @@ li{margin-bottom:3pt;font-size:11pt;line-height:1.5;}
     <tr><td>TokenBalance</td><td>AI token</td><td>userId, balance, totalUsed</td></tr>
   </table>
   <div class="stat-row">
-    <div class="stat-cell"><div class="stat-num">23</div><div class="stat-lbl">Tables</div></div>
-    <div class="stat-cell"><div class="stat-num">280+</div><div class="stat-lbl">Tasks</div></div>
+    <div class="stat-cell"><div class="stat-num">30</div><div class="stat-lbl">DB Models</div></div>
+    <div class="stat-cell"><div class="stat-num">350+</div><div class="stat-lbl">Tasks</div></div>
     <div class="stat-cell"><div class="stat-num">56</div><div class="stat-lbl">Lessons</div></div>
     <div class="stat-cell"><div class="stat-num">8</div><div class="stat-lbl">Courses</div></div>
   </div>
@@ -336,7 +337,7 @@ li{margin-bottom:3pt;font-size:11pt;line-height:1.5;}
     <tr><td>CSP Headers</td><td>XSS халдлагаас хамгаалах HTTP header</td></tr>
     <tr><td>HSTS (1 жил)</td><td>HTTPS protocol-ийг заавал мөрдүүлнэ</td></tr>
     <tr><td>X-Frame-Options: DENY</td><td>Clickjacking халдлагаас хамгаалалт</td></tr>
-    <tr><td>bcrypt (12 rounds)</td><td>Нууц үгийг hash хийж хадгална</td></tr>
+    <tr><td>crypto.scrypt (Node built-in)</td><td>Нууц үгийг hash хийж хадгална — гадаад хамаарал шаардлагагүй</td></tr>
     <tr><td>JWT 15 минутын хугацаа</td><td>Богино хугацааны access token</td></tr>
     <tr><td>Zod validation</td><td>Бүх API input-д schema баталгаажуулалт</td></tr>
     <tr><td>Rate limiting</td><td>IP болон user тутамд хүсэлтийн хязгаар</td></tr>
@@ -369,19 +370,21 @@ li{margin-bottom:3pt;font-size:11pt;line-height:1.5;}
   <table>
     <tr><th>Туршилтын төрөл</th><th>Тайлбар</th><th>Үр дүн</th></tr>
     <tr><td>Authentication</td><td>Google/GitHub/Email нэвтрэлт</td><td>✓ Амжилттай</td></tr>
-    <tr><td>API endpoints</td><td>30+ endpoint туршсан</td><td>✓ Амжилттай</td></tr>
+    <tr><td>API endpoints</td><td>55 endpoint туршсан</td><td>✓ Амжилттай</td></tr>
     <tr><td>Code execution</td><td>JS/HTML/CSS/SQL sandbox</td><td>✓ Амжилттай</td></tr>
     <tr><td>Responsive UI</td><td>Mobile/Tablet/Desktop</td><td>✓ Амжилттай</td></tr>
-    <tr><td>i18n (МН/EN)</td><td>300+ translation key</td><td>✓ Амжилттай</td></tr>
+    <tr><td>i18n (МН/EN)</td><td>446 translation key</td><td>✓ Амжилттай</td></tr>
     <tr><td>Security</td><td>CSP/JWT/Rate limiting</td><td>✓ Амжилттай</td></tr>
   </table>
   <h2>8.2 Хэрэгжилтийн Статистик</h2>
   <div class="stat-row">
     <div class="stat-cell"><div class="stat-num">8</div><div class="stat-lbl">Courses</div></div>
     <div class="stat-cell"><div class="stat-num">56</div><div class="stat-lbl">Lessons</div></div>
-    <div class="stat-cell"><div class="stat-num">280+</div><div class="stat-lbl">Tasks</div></div>
-    <div class="stat-cell"><div class="stat-num">30+</div><div class="stat-lbl">API Routes</div></div>
-    <div class="stat-cell"><div class="stat-num">23</div><div class="stat-lbl">DB Tables</div></div>
+    <div class="stat-cell"><div class="stat-num">350+</div><div class="stat-lbl">Tasks</div></div>
+    <div class="stat-cell"><div class="stat-num">55</div><div class="stat-lbl">API Routes</div></div>
+    <div class="stat-cell"><div class="stat-num">30</div><div class="stat-lbl">DB Models</div></div>
+    <div class="stat-cell"><div class="stat-num">446</div><div class="stat-lbl">i18n Keys</div></div>
+    <div class="stat-cell"><div class="stat-num">19</div><div class="stat-lbl">Admin Pages</div></div>
   </div>
 </div>
 <div class="page-num">7</div>
