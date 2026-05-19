@@ -1,5 +1,4 @@
 import prisma from '../db'
-import { hashPassword } from '../auth'
 
 /* ══ createUser ═════════════════════════ */
 export const createUser = (data: { username:string; email:string; passwordHash:string; role?:string }) =>
