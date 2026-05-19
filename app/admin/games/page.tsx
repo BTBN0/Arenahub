@@ -1,5 +1,5 @@
 'use client'
-import { useEffect, useState, useCallback, useRef } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import dynamic from 'next/dynamic'
 import { aGet, aPost, aPut, aDel } from '@/lib/admin-fetch'
 import type { GameState } from '@/components/game/GameCanvas'
@@ -9,7 +9,7 @@ const GamePreview = dynamic(() => import('@/components/game/GameCanvas'), { ssr:
 const fp = { fontFamily: 'var(--fp)' } as const
 const fm = { fontFamily: 'var(--fm)' } as const
 
-// ── Canvas-registered game types (STEP 4 — source of truth) ───────────────
+// ── Canvas-registered game types ───────────────────────────────────────────
 const GAME_TYPES: Record<string, { icon: string; label: string; col: string }> = {
   evolution:          { icon: '🌱', label: 'EVOLUTION',        col: '#00ff88' },
   jump:               { icon: '🏃', label: 'JUMP QUEST',       col: '#00ff41' },
@@ -27,7 +27,6 @@ const GAME_TYPES: Record<string, { icon: string; label: string; col: string }> =
   taskbattlesurvival: { icon: '🛡', label: 'BATTLE SURVIVAL',  col: '#ff4444' },
   multiplayerarena:   { icon: '🏟', label: 'MULTIPLAYER',      col: '#aa44ff' },
   codefactory:        { icon: '⚙', label: 'CODE FACTORY',     col: '#aaaaff' },
-  // legacy seeded types
   quiz:               { icon: '❓', label: 'QUIZ ARENA',       col: '#a855f7' },
   code:               { icon: '💻', label: 'CODE EDITOR',      col: '#22d3ee' },
 }
@@ -40,13 +39,11 @@ type Game = {
   hpMax: number; xpReward: number; isActive: boolean; createdAt: string
   _count: { gameTasks: number; lessonGames: number }
 }
-type TaskEntry = {
-  id: string; title: string; titleEn: string | null; taskType: string
-  xpReward: number; orderIndex: number; gameTaskId?: string
-  lesson?: { id: string; title: string; course?: { id: string; title: string } }
+type LessonEntry = {
+  lessonGameId: string
+  lesson: { id: string; title: string; courseId: string; course?: { title: string } }
 }
-type LessonEntry = { lessonGameId: string; lesson: { id: string; title: string; courseId: string } }
-type GameDetail = Game & { gameTasks?: { orderIndex: number; task: TaskEntry }[]; lessonGames?: LessonEntry[] }
+type GameDetail = Game & { lessonGames?: LessonEntry[] }
 
 // ── Mini components ────────────────────────────────────────────────────────
 function Flash({ msg, col = 'var(--cyan)' }: { msg: string; col?: string }) {
@@ -82,16 +79,16 @@ function SectionHead({ label, col = 'var(--dim2)' }: { label: string; col?: stri
 // ── Main page ──────────────────────────────────────────────────────────────
 export default function GameStudioPage() {
   // ── List state ──
-  const [games,        setGames]       = useState<Game[]>([])
-  const [listLoading,  setListLoading] = useState(true)
-  const [search,       setSearch]      = useState('')
-  const [typeFilter,   setTypeFilter]  = useState('')
-  const [activeFilter, setActiveFilter]= useState<'all'|'active'|'archived'>('active')
+  const [games,        setGames]        = useState<Game[]>([])
+  const [listLoading,  setListLoading]  = useState(true)
+  const [search,       setSearch]       = useState('')
+  const [typeFilter,   setTypeFilter]   = useState('')
+  const [activeFilter, setActiveFilter] = useState<'all'|'active'|'archived'>('active')
 
   // ── Selection ──
-  const [selectedId,   setSelectedId]  = useState<string|null>(null)
-  const [detail,       setDetail]      = useState<GameDetail|null>(null)
-  const [detailLoad,   setDetailLoad]  = useState(false)
+  const [selectedId, setSelectedId] = useState<string|null>(null)
+  const [detail,     setDetail]     = useState<GameDetail|null>(null)
+  const [detailLoad, setDetailLoad] = useState(false)
 
   // ── Form state ──
   const [fName,   setFName]   = useState('')
@@ -115,17 +112,6 @@ export default function GameStudioPage() {
   const [previewState,  setPreviewState]  = useState<GameState>('idle')
   const [previewPassed, setPreviewPassed] = useState(0)
   const [previewTotal,  setPreviewTotal]  = useState(5)
-
-  // ── Task pool state ──
-  const [taskSearch,  setTaskSearch]  = useState('')
-  const [taskResults, setTaskResults] = useState<TaskEntry[]>([])
-  const [taskLoading, setTaskLoading] = useState(false)
-  const [addingTask,  setAddingTask]  = useState(false)
-  const searchRef = useRef<ReturnType<typeof setTimeout>|null>(null)
-
-  // ── Attach lesson state ──
-  const [lessonInput,   setLessonInput]   = useState('')
-  const [attachingLesson, setAttachingLesson] = useState(false)
 
   // ── Load game list ──────────────────────────────────────────────────────
   const loadList = useCallback(async () => {
@@ -168,7 +154,7 @@ export default function GameStudioPage() {
     setFDesc(detail.description ?? '')
     setFActive(detail.isActive)
     try { setFCfg(JSON.stringify((detail as GameDetail & { config?: unknown }).config ?? {}, null, 2)) } catch { setFCfg('{}') }
-    setPreviewTotal(Math.max(1, detail._count?.gameTasks || 5))
+    setPreviewTotal(5)
     setPreviewPassed(0)
   }, [detail, selectedId])
 
@@ -178,22 +164,17 @@ export default function GameStudioPage() {
     setFSlug(fName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 40))
   }, [fName, selectedId])
 
-  // ── Select game ─────────────────────────────────────────────────────────
+  // ── Select / New ────────────────────────────────────────────────────────
   const selectGame = (id: string) => {
     setSelectedId(id)
-    setTaskSearch(''); setTaskResults([])
-    setLessonInput('')
     if (id !== '__new__') loadDetail(id)
   }
 
-  // New game
   const handleNew = () => {
     setSelectedId('__new__')
     setDetail(null)
     setFName(''); setFSlug(''); setFType('evolution')
     setFHp(3); setFXp(50); setFDesc(''); setFActive(true); setFCfg('{}')
-    setTaskSearch(''); setTaskResults([])
-    setLessonInput('')
     setPreviewPassed(0); setPreviewTotal(5); setPreviewState('idle')
   }
 
@@ -233,6 +214,7 @@ export default function GameStudioPage() {
     if (r.ok) { showFlash('Архивлагдлаа'); setFActive(false); loadList() }
     else       showFlash('Алдаа гарлаа', 'var(--red)')
   }
+
   const handleRestore = async () => {
     if (!selectedId || selectedId === '__new__') return
     const r = await aPut(`/api/admin/games/${selectedId}`, { isActive: true })
@@ -250,55 +232,7 @@ export default function GameStudioPage() {
     else       showFlash('Алдаа гарлаа', 'var(--red)')
   }
 
-  // ── Task pool ───────────────────────────────────────────────────────────
-  const searchTasks = useCallback(async (q: string) => {
-    if (!q.trim()) { setTaskResults([]); return }
-    setTaskLoading(true)
-    const r = await aGet(`/api/admin/tasks?search=${encodeURIComponent(q)}&limit=20`)
-    const d = await r.json()
-    setTaskResults(d.tasks ?? [])
-    setTaskLoading(false)
-  }, [])
-
-  const onTaskSearchChange = (v: string) => {
-    setTaskSearch(v)
-    if (searchRef.current) clearTimeout(searchRef.current)
-    searchRef.current = setTimeout(() => searchTasks(v), 350)
-  }
-
-  const handleAddTask = async (taskId: string) => {
-    if (!selectedId || selectedId === '__new__') return
-    setAddingTask(true)
-    const r = await aPost(`/api/admin/games/${selectedId}/tasks`, { taskId })
-    setAddingTask(false)
-    if (!r.ok) { const d = await r.json(); return showFlash(d.error ?? 'Алдаа', 'var(--red)') }
-    showFlash('Task нэмэгдлээ', 'var(--cyan)')
-    loadDetail(selectedId)
-    setPreviewTotal(t => t + 1)
-  }
-
-  const handleRemoveTask = async (taskId: string) => {
-    if (!selectedId || selectedId === '__new__') return
-    const r = await aDel(`/api/admin/games/${selectedId}/tasks/${taskId}`)
-    if (!r.ok) return showFlash('Алдаа гарлаа', 'var(--red)')
-    showFlash('Task хасагдлаа', 'var(--yellow)')
-    loadDetail(selectedId)
-    setPreviewTotal(t => Math.max(1, t - 1))
-  }
-
-  // ── Attach to lesson ────────────────────────────────────────────────────
-  const handleAttachLesson = async () => {
-    if (!selectedId || selectedId === '__new__' || !lessonInput.trim()) return
-    setAttachingLesson(true)
-    const r = await aPost(`/api/admin/lessons/${lessonInput.trim()}/games`, { gameId: selectedId })
-    setAttachingLesson(false)
-    if (!r.ok) { const d = await r.json(); return showFlash(d.error ?? 'Алдаа гарлаа', 'var(--red)') }
-    showFlash('Хичээлд оноогдлоо', 'var(--green)')
-    setLessonInput('')
-    loadDetail(selectedId)
-    loadList()
-  }
-
+  // ── Detach lesson ───────────────────────────────────────────────────────
   const handleDetachLesson = async (lessonId: string) => {
     if (!selectedId || selectedId === '__new__') return
     const r = await aDel(`/api/admin/lessons/${lessonId}/games/${selectedId}`)
@@ -308,8 +242,7 @@ export default function GameStudioPage() {
     loadList()
   }
 
-  const gameTasks: TaskEntry[] = (detail?.gameTasks ?? []).map(gt => ({ ...gt.task, orderIndex: gt.orderIndex }))
-  const lessonGames: LessonEntry[] = (detail?.lessonGames ?? [])
+  const lessonGames: LessonEntry[] = detail?.lessonGames ?? []
   const gt = getGT(fType)
 
   // ── RENDER ──────────────────────────────────────────────────────────────
@@ -318,18 +251,14 @@ export default function GameStudioPage() {
 
       {/* ══ LEFT PANEL — Game list ══════════════════════════════════════ */}
       <div style={{ width: 240, minWidth: 240, borderRight: '1px solid var(--dim)', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-        {/* Header */}
         <div style={{ padding: '14px 14px 10px', borderBottom: '1px solid var(--dim)', flexShrink: 0 }}>
           <div style={{ ...fp, fontSize: 9, color: '#ff6b35', letterSpacing: 2, marginBottom: 8 }}>🎮 GAME STUDIO</div>
           <input
-            value={search}
-            onChange={e => setSearch(e.target.value)}
-            placeholder="Хайх..."
+            value={search} onChange={e => setSearch(e.target.value)} placeholder="Хайх..."
             style={{ ...fm, fontSize: 10, padding: '6px 10px', background: 'var(--bg)', border: '1px solid var(--dim)', color: 'var(--text)', outline: 'none', width: '100%', boxSizing: 'border-box' }}
             onFocus={e => e.currentTarget.style.borderColor = '#ff6b35'}
             onBlur={e => e.currentTarget.style.borderColor = 'var(--dim)'}
           />
-          {/* Active filter */}
           <div style={{ display: 'flex', gap: 4, marginTop: 8 }}>
             {(['active', 'all', 'archived'] as const).map(f => (
               <button key={f} onClick={() => setActiveFilter(f)}
@@ -338,7 +267,6 @@ export default function GameStudioPage() {
               </button>
             ))}
           </div>
-          {/* Type filter */}
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 3, marginTop: 8 }}>
             <button onClick={() => setTypeFilter('')}
               style={{ ...fp, fontSize: 5, padding: '3px 6px', cursor: 'pointer', background: !typeFilter ? 'var(--dim)22' : 'transparent', color: !typeFilter ? 'var(--text)' : 'var(--dim2)', border: `1px solid ${!typeFilter ? 'var(--dim2)' : 'var(--dim)'}` }}>
@@ -353,7 +281,6 @@ export default function GameStudioPage() {
           </div>
         </div>
 
-        {/* Game list */}
         <div style={{ flex: 1, overflowY: 'auto', scrollbarWidth: 'none' }}>
           {listLoading ? (
             <div style={{ ...fp, fontSize: 7, color: 'var(--dim2)', padding: 20, textAlign: 'center' }}>УНШИЖ БАЙНА...</div>
@@ -375,7 +302,7 @@ export default function GameStudioPage() {
                       <div style={{ display: 'flex', gap: 6, marginTop: 3 }}>
                         <span style={{ ...fp, fontSize: 5, color: 'var(--dim2)' }}>❤ {game.hpMax}</span>
                         <span style={{ ...fp, fontSize: 5, color: 'var(--dim2)' }}>⚡ {game.xpReward}</span>
-                        <span style={{ ...fp, fontSize: 5, color: 'var(--dim2)' }}>📋 {game._count?.gameTasks ?? 0}</span>
+                        <span style={{ ...fp, fontSize: 5, color: 'var(--dim2)' }}>📚 {game._count?.lessonGames ?? 0}</span>
                       </div>
                     </div>
                     {!game.isActive && <span style={{ ...fp, fontSize: 5, color: 'var(--red)' }}>OFF</span>}
@@ -386,7 +313,6 @@ export default function GameStudioPage() {
           )}
         </div>
 
-        {/* New game button */}
         <div style={{ padding: 12, borderTop: '1px solid var(--dim)', flexShrink: 0 }}>
           <button onClick={handleNew}
             style={{ ...fp, fontSize: 7, width: '100%', padding: '8px', cursor: 'pointer', background: selectedId === '__new__' ? '#ff6b3522' : 'transparent', color: '#ff6b35', border: `1px solid ${selectedId === '__new__' ? '#ff6b35' : '#ff6b3555'}`, transition: 'all .15s' }}
@@ -431,7 +357,6 @@ export default function GameStudioPage() {
             <>
               {/* ── Form ─────────────────────────────────────────── */}
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
-                {/* Name */}
                 <div style={{ gridColumn: '1 / 2' }}>
                   <label style={{ ...fp, fontSize: 5, color: 'var(--dim2)', letterSpacing: 1, display: 'block', marginBottom: 5 }}>GAME NAME</label>
                   <input value={fName} onChange={e => setFName(e.target.value)} placeholder="My Game"
@@ -440,7 +365,6 @@ export default function GameStudioPage() {
                     onBlur={e => e.currentTarget.style.borderColor = 'var(--dim)'}
                   />
                 </div>
-                {/* Slug */}
                 <div>
                   <label style={{ ...fp, fontSize: 5, color: 'var(--dim2)', letterSpacing: 1, display: 'block', marginBottom: 5 }}>SLUG</label>
                   <input value={fSlug} onChange={e => setFSlug(e.target.value)} placeholder="my-game"
@@ -449,7 +373,6 @@ export default function GameStudioPage() {
                     onBlur={e => e.currentTarget.style.borderColor = 'var(--dim)'}
                   />
                 </div>
-                {/* GameType */}
                 <div>
                   <label style={{ ...fp, fontSize: 5, color: 'var(--dim2)', letterSpacing: 1, display: 'block', marginBottom: 5 }}>GAME TYPE</label>
                   <select value={fType} onChange={e => setFType(e.target.value)}
@@ -461,7 +384,6 @@ export default function GameStudioPage() {
                     ))}
                   </select>
                 </div>
-                {/* HP + XP */}
                 <div style={{ display: 'flex', gap: 10 }}>
                   <div style={{ flex: 1 }}>
                     <label style={{ ...fp, fontSize: 5, color: 'var(--dim2)', letterSpacing: 1, display: 'block', marginBottom: 5 }}>HP MAX</label>
@@ -474,7 +396,6 @@ export default function GameStudioPage() {
                       style={{ ...fm, fontSize: 11, padding: '7px 10px', background: 'var(--bg)', border: '1px solid var(--dim)', color: 'var(--yellow)', outline: 'none', width: '100%', boxSizing: 'border-box' }} />
                   </div>
                 </div>
-                {/* Description */}
                 <div style={{ gridColumn: '1 / -1' }}>
                   <label style={{ ...fp, fontSize: 5, color: 'var(--dim2)', letterSpacing: 1, display: 'block', marginBottom: 5 }}>DESCRIPTION (OPTIONAL)</label>
                   <textarea value={fDesc} onChange={e => setFDesc(e.target.value)} rows={2} placeholder="Тоглоомын тайлбар..."
@@ -483,7 +404,6 @@ export default function GameStudioPage() {
                     onBlur={e => e.currentTarget.style.borderColor = 'var(--dim)'}
                   />
                 </div>
-                {/* Config JSON */}
                 <div style={{ gridColumn: '1 / -1' }}>
                   <label style={{ ...fp, fontSize: 5, color: 'var(--dim2)', letterSpacing: 1, display: 'block', marginBottom: 5 }}>CONFIG JSON</label>
                   <textarea value={fCfg} onChange={e => setFCfg(e.target.value)} rows={3}
@@ -492,7 +412,6 @@ export default function GameStudioPage() {
                     onBlur={e => e.currentTarget.style.borderColor = 'var(--dim)'}
                   />
                 </div>
-                {/* isActive toggle */}
                 <div style={{ gridColumn: '1 / -1', display: 'flex', alignItems: 'center', gap: 10 }}>
                   <div onClick={() => setFActive(v => !v)}
                     style={{ width: 36, height: 18, background: fActive ? 'var(--green)' : 'var(--dim)', cursor: 'pointer', position: 'relative', transition: 'background .2s', boxShadow: fActive ? '0 0 8px var(--green)66' : 'none' }}>
@@ -516,62 +435,28 @@ export default function GameStudioPage() {
                 </>}
               </div>
 
-              {/* ── Task Pool ──────────────────────────────────── */}
+              {/* ── Assigned Lessons ───────────────────────────── */}
               {selectedId !== '__new__' && (
                 <div>
-                  <SectionHead label={`TASK POOL — ${gameTasks.length} TASK`} col="var(--cyan)" />
-
-                  {/* Current tasks */}
-                  {gameTasks.length === 0 ? (
-                    <div style={{ ...fp, fontSize: 7, color: 'var(--dim2)', padding: '10px 0' }}>Task байхгүй байна</div>
+                  <SectionHead label={`ОНООГДСОН ХИЧЭЭЛҮҮД — ${lessonGames.length}`} col="var(--green)" />
+                  {lessonGames.length === 0 ? (
+                    <div style={{ ...fp, fontSize: 7, color: 'var(--dim2)', padding: '10px 0' }}>Хичээлд оноогдоогүй байна</div>
                   ) : (
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: 4, marginBottom: 12 }}>
-                      {gameTasks.map(t => (
-                        <div key={t.id} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '6px 10px', background: 'var(--dim)11', border: '1px solid var(--dim)' }}>
-                          <span style={{ ...fp, fontSize: 6, color: t.taskType === 'CODE' ? 'var(--cyan)' : 'var(--yellow)', background: t.taskType === 'CODE' ? 'var(--cyan)18' : 'var(--yellow)18', padding: '1px 5px', flexShrink: 0 }}>{t.taskType}</span>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+                      {lessonGames.map(lg => (
+                        <div key={lg.lessonGameId} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '7px 10px', background: 'var(--green)08', border: '1px solid var(--green)22' }}>
+                          <span style={{ fontSize: 14, flexShrink: 0 }}>📚</span>
                           <div style={{ flex: 1, minWidth: 0 }}>
-                            <div style={{ ...fm, fontSize: 9, color: 'var(--text)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{t.title}</div>
-                            {t.lesson && (
-                              <div style={{ ...fp, fontSize: 5, color: 'var(--dim2)', marginTop: 2 }}>{t.lesson.course?.title} › {t.lesson.title}</div>
+                            <div style={{ ...fm, fontSize: 9, color: 'var(--text)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{lg.lesson.title}</div>
+                            {lg.lesson.course && (
+                              <div style={{ ...fp, fontSize: 5, color: 'var(--dim2)', marginTop: 2 }}>{lg.lesson.course.title}</div>
                             )}
                           </div>
-                          <span style={{ ...fp, fontSize: 6, color: 'var(--yellow)', flexShrink: 0 }}>⚡{t.xpReward}</span>
-                          <Btn label="✕" col="var(--red)" onClick={() => handleRemoveTask(t.id)} />
+                          <Btn label="✕" col="var(--red)" onClick={() => handleDetachLesson(lg.lesson.id)} />
                         </div>
                       ))}
                     </div>
                   )}
-
-                  {/* Add task search */}
-                  <div style={{ marginTop: 8 }}>
-                    <input value={taskSearch} onChange={e => onTaskSearchChange(e.target.value)}
-                      placeholder="Task хайх (нэр)..."
-                      style={{ ...fm, fontSize: 10, padding: '7px 10px', background: 'var(--bg)', border: '1px solid var(--dim)', color: 'var(--text)', outline: 'none', width: '100%', boxSizing: 'border-box' }}
-                      onFocus={e => e.currentTarget.style.borderColor = 'var(--cyan)'}
-                      onBlur={e => e.currentTarget.style.borderColor = 'var(--dim)'}
-                    />
-                    {taskLoading && (
-                      <div style={{ ...fp, fontSize: 6, color: 'var(--dim2)', padding: '6px 0' }}>ХАЙЖ БАЙНА...</div>
-                    )}
-                    {taskResults.length > 0 && (
-                      <div style={{ border: '1px solid var(--dim)', borderTop: 'none', maxHeight: 200, overflowY: 'auto' }}>
-                        {taskResults.map(t => {
-                          const alreadyAdded = gameTasks.some(gt => gt.id === t.id)
-                          return (
-                            <div key={t.id}
-                              style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '6px 10px', borderBottom: '1px solid var(--dim)22', opacity: alreadyAdded ? 0.5 : 1 }}>
-                              <span style={{ ...fp, fontSize: 5, color: t.taskType === 'CODE' ? 'var(--cyan)' : 'var(--yellow)', flexShrink: 0 }}>{t.taskType}</span>
-                              <div style={{ flex: 1, minWidth: 0 }}>
-                                <div style={{ ...fm, fontSize: 9, color: 'var(--text)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{t.title}</div>
-                                {t.lesson && <div style={{ ...fp, fontSize: 5, color: 'var(--dim2)' }}>{t.lesson.title}</div>}
-                              </div>
-                              <Btn label={alreadyAdded ? '✓' : '+'} col={alreadyAdded ? 'var(--dim)' : 'var(--cyan)'} disabled={alreadyAdded || addingTask} onClick={() => handleAddTask(t.id)} />
-                            </div>
-                          )
-                        })}
-                      </div>
-                    )}
-                  </div>
                 </div>
               )}
             </>
@@ -604,7 +489,6 @@ export default function GameStudioPage() {
                 </div>
               )}
             </div>
-            {/* gameType badge */}
             <div style={{ position: 'absolute', top: 6, left: 6, ...fp, fontSize: 5, color: gt.col, background: `${gt.col}22`, border: `1px solid ${gt.col}44`, padding: '2px 6px' }}>
               {gt.icon} {gt.label}
             </div>
@@ -640,7 +524,7 @@ export default function GameStudioPage() {
             </div>
           </div>
 
-          {/* HP / XP preview */}
+          {/* Stats */}
           <div>
             <SectionHead label="STATS" />
             <div style={{ display: 'flex', gap: 12 }}>
@@ -652,51 +536,13 @@ export default function GameStudioPage() {
                 <div style={{ ...fp, fontSize: 14, color: 'var(--yellow)' }}>{fXp}</div>
                 <div style={{ ...fp, fontSize: 5, color: 'var(--dim2)', marginTop: 3 }}>XP</div>
               </div>
-              <div style={{ flex: 1, textAlign: 'center', padding: '8px', border: '1px solid var(--cyan)44', background: 'var(--cyan)11' }}>
-                <div style={{ ...fp, fontSize: 14, color: 'var(--cyan)' }}>{gameTasks.length}</div>
-                <div style={{ ...fp, fontSize: 5, color: 'var(--dim2)', marginTop: 3 }}>TASKS</div>
+              <div style={{ flex: 1, textAlign: 'center', padding: '8px', border: '1px solid var(--green)44', background: 'var(--green)11' }}>
+                <div style={{ ...fp, fontSize: 14, color: 'var(--green)' }}>{lessonGames.length}</div>
+                <div style={{ ...fp, fontSize: 5, color: 'var(--dim2)', marginTop: 3 }}>LESSONS</div>
               </div>
             </div>
           </div>
 
-          {/* Attach to Lesson */}
-          {selectedId && selectedId !== '__new__' && (
-            <div>
-              <SectionHead label="ATTACH TO LESSON" col="var(--green)" />
-
-              {/* Current lessons */}
-              {lessonGames.length > 0 && (
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 4, marginBottom: 10 }}>
-                  {lessonGames.map(lg => (
-                    <div key={lg.lessonGameId} style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '5px 8px', background: 'var(--green)11', border: '1px solid var(--green)33' }}>
-                      <span style={{ fontSize: 12 }}>📚</span>
-                      <div style={{ flex: 1, minWidth: 0 }}>
-                        <div style={{ ...fp, fontSize: 6, color: 'var(--green)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{lg.lesson.title}</div>
-                        <div style={{ ...fm, fontSize: 8, color: 'var(--dim2)' }}>{lg.lesson.id.slice(0, 8)}…</div>
-                      </div>
-                      <button onClick={() => handleDetachLesson(lg.lesson.id)}
-                        style={{ ...fp, fontSize: 6, padding: '2px 6px', cursor: 'pointer', background: 'transparent', color: 'var(--red)', border: '1px solid var(--red)44' }}>✕</button>
-                    </div>
-                  ))}
-                </div>
-              )}
-
-              {/* Attach form */}
-              <div style={{ display: 'flex', gap: 6 }}>
-                <input value={lessonInput} onChange={e => setLessonInput(e.target.value)}
-                  placeholder="Lesson ID..."
-                  style={{ ...fm, fontSize: 9, flex: 1, padding: '6px 8px', background: 'var(--bg)', border: '1px solid var(--dim)', color: 'var(--text)', outline: 'none' }}
-                  onFocus={e => e.currentTarget.style.borderColor = 'var(--green)'}
-                  onBlur={e => e.currentTarget.style.borderColor = 'var(--dim)'}
-                  onKeyDown={e => e.key === 'Enter' && handleAttachLesson()}
-                />
-                <Btn label={attachingLesson ? '...' : '+'} col="var(--green)" disabled={!lessonInput.trim() || attachingLesson} onClick={handleAttachLesson} />
-              </div>
-              <div style={{ ...fp, fontSize: 5, color: 'var(--dim2)', marginTop: 5 }}>
-                Хичээлийн ID оруулан Enter эсвэл + дар
-              </div>
-            </div>
-          )}
         </div>
       </div>
     </div>

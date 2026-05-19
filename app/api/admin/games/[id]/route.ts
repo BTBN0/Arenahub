@@ -40,7 +40,8 @@ export async function GET(req: NextRequest, { params }: Ctx) {
           },
         },
         lessonGames: {
-          include: { lesson: { select: { id: true, title: true, courseId: true } } },
+          orderBy: { orderIndex: 'asc' },
+          include: { lesson: { select: { id: true, title: true, courseId: true, course: { select: { title: true } } } } },
         },
         _count: { select: { gameTasks: true, lessonGames: true } },
       },
