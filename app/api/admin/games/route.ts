@@ -69,6 +69,7 @@ export async function POST(req: NextRequest) {
         xpReward:    body.xpReward    ?? 50,
         isActive:    body.isActive    ?? true,
       },
+      include: { _count: { select: { gameTasks: true, lessonGames: true } } },
     })
 
     return ok({ game }, 201)

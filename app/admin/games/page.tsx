@@ -168,7 +168,7 @@ export default function GameStudioPage() {
     setFDesc(detail.description ?? '')
     setFActive(detail.isActive)
     try { setFCfg(JSON.stringify((detail as GameDetail & { config?: unknown }).config ?? {}, null, 2)) } catch { setFCfg('{}') }
-    setPreviewTotal(Math.max(1, detail._count.gameTasks || 5))
+    setPreviewTotal(Math.max(1, detail._count?.gameTasks || 5))
     setPreviewPassed(0)
   }, [detail, selectedId])
 
@@ -375,7 +375,7 @@ export default function GameStudioPage() {
                       <div style={{ display: 'flex', gap: 6, marginTop: 3 }}>
                         <span style={{ ...fp, fontSize: 5, color: 'var(--dim2)' }}>❤ {game.hpMax}</span>
                         <span style={{ ...fp, fontSize: 5, color: 'var(--dim2)' }}>⚡ {game.xpReward}</span>
-                        <span style={{ ...fp, fontSize: 5, color: 'var(--dim2)' }}>📋 {game._count.gameTasks}</span>
+                        <span style={{ ...fp, fontSize: 5, color: 'var(--dim2)' }}>📋 {game._count?.gameTasks ?? 0}</span>
                       </div>
                     </div>
                     {!game.isActive && <span style={{ ...fp, fontSize: 5, color: 'var(--red)' }}>OFF</span>}

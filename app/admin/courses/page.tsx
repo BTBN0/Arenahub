@@ -689,7 +689,7 @@ function GameManagerModal({ lesson, initialGames, onClose, onChanged, notify }: 
                     {/* Info */}
                     <div style={{flex:1,minWidth:0}}>
                       <div style={{...fp,fontSize:7,color:meta.col,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{a.game.name}</div>
-                      <div style={{...fp,fontSize:5,color:'var(--dim2)',marginTop:2}}>❤{a.game.hpMax} ⚡{a.game.xpReward} 📋{a.game._count.gameTasks}</div>
+                      <div style={{...fp,fontSize:5,color:'var(--dim2)',marginTop:2}}>❤{a.game.hpMax} ⚡{a.game.xpReward} 📋{a.game._count?.gameTasks ?? 0}</div>
                     </div>
                     {/* Remove */}
                     <button onClick={()=>handleRemove(a.game.id)} disabled={removing===a.game.id}
@@ -741,7 +741,7 @@ function GameManagerModal({ lesson, initialGames, onClose, onChanged, notify }: 
                       </div>
                       {game.description && <div style={{...fm,fontSize:9,color:'var(--dim2)',overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{game.description}</div>}
                     </div>
-                    <span style={{...fp,fontSize:6,color:'var(--dim2)',flexShrink:0}}>❤{game.hpMax} ⚡{game.xpReward} 📋{game._count.gameTasks}</span>
+                    <span style={{...fp,fontSize:6,color:'var(--dim2)',flexShrink:0}}>❤{game.hpMax} ⚡{game.xpReward} 📋{game._count?.gameTasks ?? 0}</span>
                     {already ? (
                       <span style={{...fp,fontSize:6,color:'var(--green)',border:'1px solid var(--green)44',padding:'3px 8px',flexShrink:0}}>✓ ОНООГДСОН</span>
                     ) : (

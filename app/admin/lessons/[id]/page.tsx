@@ -155,7 +155,7 @@ function GameAssignmentCard({ ag, idx, total, onUp, onDown, onRemove }: {
         {[
           { v: `❤️ ${ag.game.hpMax}`,               label: 'HP'     },
           { v: `⚡ ${ag.game.xpReward}`,             label: 'XP'     },
-          { v: `📋 ${ag.game._count.gameTasks}`,     label: 'TASKS'  },
+          { v: `📋 ${ag.game._count?.gameTasks ?? 0}`,  label: 'TASKS'  },
         ].map(s => (
           <div key={s.label} style={{ textAlign: 'center' }}>
             <div style={{ ...fp, fontSize: 8, color: 'var(--text)' }}>{s.v}</div>
@@ -338,7 +338,7 @@ function PickerGameRow({ game, assigned, assigning, onAssign }: {
       </div>
 
       <div style={{ display: 'flex', gap: 10, alignItems: 'center', flexShrink: 0 }}>
-        <span style={{ ...fp, fontSize: 7, color: 'var(--dim2)' }}>❤️{game.hpMax} ⚡{game.xpReward} 📋{game._count.gameTasks}</span>
+        <span style={{ ...fp, fontSize: 7, color: 'var(--dim2)' }}>❤️{game.hpMax} ⚡{game.xpReward} 📋{game._count?.gameTasks ?? 0}</span>
         {assigned ? (
           <span style={{ ...fp, fontSize: 6, color: 'var(--green)', border: '1px solid var(--green)44', padding: '3px 8px' }}>✓ ОНООГДСОН</span>
         ) : (
@@ -511,7 +511,7 @@ function AssignedGamesList({ lessonId, initial, onPicker }: {
               ⚡ Нийт XP: {list.reduce((s, ag) => s + ag.game.xpReward, 0)}
             </div>
             <div style={{ ...fp, fontSize: 8, color: 'var(--cyan)' }}>
-              📋 Нийт task: {list.reduce((s, ag) => s + ag.game._count.gameTasks, 0)}
+              📋 Нийт task: {list.reduce((s, ag) => s + (ag.game._count?.gameTasks ?? 0), 0)}
             </div>
           </div>
         </div>
