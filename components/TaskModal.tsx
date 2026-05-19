@@ -192,11 +192,11 @@ export default function TaskModal({ lessonId, onClose, onDone }: Props) {
     lessonsApi.get(lessonId)
       .then((detail) => {
         setLesson(detail.lesson as unknown as Lesson)
-        const firstGame = detail.games[0]
-        setGameType(firstGame?.gameType ?? 'evolution')
-        const hm = firstGame?.hpMax ?? 3
+        const game = detail.game
+        setGameType(game?.gameType ?? 'evolution')
+        const hm = game?.hpMax ?? 3
         setHpMax(hm); setHp(hm)
-        const rawTasks = detail.meta.hasGames && firstGame ? firstGame.tasks : detail.tasks
+        const rawTasks = detail.tasks
         let list = rawTasks as unknown as ExtTask[]
 
         if (wasReset) {

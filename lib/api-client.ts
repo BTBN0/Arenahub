@@ -93,12 +93,12 @@ export interface CodeTask extends Task {
 
 export interface TaskSubmission { status:string; selected:number|null; xpEarned:number; submittedAt:string }
 export interface TaskDetailResponse { id:string; title:string; titleEn:string|null; description:string; descriptionEn:string|null; taskType:string; options:unknown; optionsEn:unknown; starterCode:string|null; testCases:unknown; xpReward:number; orderIndex:number; submitted:TaskSubmission|null }
-export interface GameDetailResponse { id:string; name:string; slug:string; gameType:string; thumbnail:string|null; config:Record<string,unknown>; hpMax:number; xpReward:number; orderIndex:number; tasks:TaskDetailResponse[] }
+export interface GameDetailResponse { id:string; name:string; slug:string; gameType:string; thumbnail:string|null; config:Record<string,unknown>; hpMax:number; xpReward:number; orderIndex:number }
 export interface LessonDetailData {
   lesson: { id:string; courseId:string; title:string; content:string|null; gameType:string|null; xpReward:number; orderIndex:number; course:{id:string;title:string}; completed:boolean; completedAt:string|null }
-  games: GameDetailResponse[]
+  game: GameDetailResponse | null
   tasks: TaskDetailResponse[]
-  meta: { hasGames:boolean; totalGameTasks:number; totalDirectTasks:number }
+  meta: { hasGame:boolean }
 }
 
 export const notificationsApi = {

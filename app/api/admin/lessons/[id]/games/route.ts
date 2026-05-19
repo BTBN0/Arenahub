@@ -46,19 +46,11 @@ export async function POST(req: NextRequest, { params }: Ctx) {
     const game = await prisma.game.findUnique({ where: { id: gameId } })
     if (!game) return err('Тоглоом олдсонгүй', 404)
 
-    const exists = await prisma.lessonGame.findUnique({
-      where: { lessonId_gameId: { lessonId: id, gameId } },
-    })
-    if (exists) return err('Тоглоом аль хэдийн оноогдсон байна', 409)
-
-    const maxOrder = await prisma.lessonGame.aggregate({
-      where: { lessonId: id },
-      _max:  { orderIndex: true },
-    })
-    const nextOrder = (maxOrder._max.orderIndex ?? -1) + 1
+    // 1 Lesson = 1 Game — replace any existing assignment
+    await prisma.lessonGame.deleteMany({ where: { lessonId: id } })
 
     const lessonGame = await prisma.lessonGame.create({
-      data:    { lessonId: id, gameId, orderIndex: nextOrder },
+      data:    { lessonId: id, gameId, orderIndex: 0 },
       include: { game: { include: { _count: { select: { gameTasks: true, lessonGames: true } } } } },
     })
 
