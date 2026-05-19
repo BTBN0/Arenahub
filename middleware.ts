@@ -33,7 +33,7 @@ export async function middleware(req: NextRequest) {
     "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net",
     "font-src 'self' https://fonts.gstatic.com https://cdn.jsdelivr.net",
     "worker-src 'self' blob: https://cdn.jsdelivr.net",
-    "img-src 'self' data: blob: https://lh3.googleusercontent.com https://avatars.githubusercontent.com https://res.cloudinary.com",
+    "img-src 'self' data: blob: https://lh3.googleusercontent.com https://avatars.githubusercontent.com https://res.cloudinary.com https://api.qrserver.com",
     "connect-src 'self' https://api.groq.com https://cdn.jsdelivr.net",
     "frame-ancestors 'none'",
     "base-uri 'self'",
