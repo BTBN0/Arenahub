@@ -1,5 +1,5 @@
 'use client'
-import { useEffect, useState, useCallback } from 'react'
+import { useEffect, useState, useCallback, useRef } from 'react'
 import dynamic from 'next/dynamic'
 import { aGet, aPost, aPut, aDel } from '@/lib/admin-fetch'
 import type { GameState } from '@/components/game/GameCanvas'
@@ -42,6 +42,11 @@ type Game = {
 type LessonEntry = {
   lessonGameId: string
   lesson: { id: string; title: string; courseId: string; course?: { title: string } }
+}
+type LessonResult = {
+  id: string; title: string; orderIndex: number
+  course: { id: string; title: string }
+  lessonGames: { game: { id: string; name: string } }[]
 }
 type GameDetail = Game & { lessonGames?: LessonEntry[] }
 
@@ -113,6 +118,13 @@ export default function GameStudioPage() {
   const [previewPassed, setPreviewPassed] = useState(0)
   const [previewTotal,  setPreviewTotal]  = useState(5)
 
+  // ── Lesson search state ──
+  const [lsnSearch,  setLsnSearch]  = useState('')
+  const [lsnResults, setLsnResults] = useState<LessonResult[]>([])
+  const [lsnLoading, setLsnLoading] = useState(false)
+  const [addingLsn,  setAddingLsn]  = useState(false)
+  const lsnRef = useRef<ReturnType<typeof setTimeout>|null>(null)
+
   // ── Load game list ──────────────────────────────────────────────────────
   const loadList = useCallback(async () => {
     setListLoading(true)
@@ -167,6 +179,7 @@ export default function GameStudioPage() {
   // ── Select / New ────────────────────────────────────────────────────────
   const selectGame = (id: string) => {
     setSelectedId(id)
+    setLsnSearch(''); setLsnResults([])
     if (id !== '__new__') loadDetail(id)
   }
 
@@ -175,6 +188,7 @@ export default function GameStudioPage() {
     setDetail(null)
     setFName(''); setFSlug(''); setFType('evolution')
     setFHp(3); setFXp(50); setFDesc(''); setFActive(true); setFCfg('{}')
+    setLsnSearch(''); setLsnResults([])
     setPreviewPassed(0); setPreviewTotal(5); setPreviewState('idle')
   }
 
@@ -238,6 +252,34 @@ export default function GameStudioPage() {
     const r = await aDel(`/api/admin/lessons/${lessonId}/games/${selectedId}`)
     if (!r.ok) return showFlash('Алдаа гарлаа', 'var(--red)')
     showFlash('Хасагдлаа', 'var(--yellow)')
+    loadDetail(selectedId)
+    loadList()
+  }
+
+  // ── Lesson search ────────────────────────────────────────────────────────
+  const searchLessons = useCallback(async (q: string) => {
+    if (!q.trim()) { setLsnResults([]); return }
+    setLsnLoading(true)
+    const r = await aGet(`/api/admin/lessons?search=${encodeURIComponent(q)}&limit=15`)
+    const d = await r.json()
+    setLsnResults(d.lessons ?? [])
+    setLsnLoading(false)
+  }, [])
+
+  const onLsnChange = (v: string) => {
+    setLsnSearch(v)
+    if (lsnRef.current) clearTimeout(lsnRef.current)
+    lsnRef.current = setTimeout(() => searchLessons(v), 350)
+  }
+
+  const handleAddLesson = async (lessonId: string) => {
+    if (!selectedId || selectedId === '__new__') return
+    setAddingLsn(true)
+    const r = await aPost(`/api/admin/lessons/${lessonId}/games`, { gameId: selectedId })
+    setAddingLsn(false)
+    if (!r.ok) { const d = await r.json(); return showFlash(d.error ?? 'Алдаа', 'var(--red)') }
+    showFlash('Хичээл нэмэгдлээ', 'var(--green)')
+    setLsnSearch(''); setLsnResults([])
     loadDetail(selectedId)
     loadList()
   }
@@ -439,10 +481,10 @@ export default function GameStudioPage() {
               {selectedId !== '__new__' && (
                 <div>
                   <SectionHead label={`ОНООГДСОН ХИЧЭЭЛҮҮД — ${lessonGames.length}`} col="var(--green)" />
-                  {lessonGames.length === 0 ? (
-                    <div style={{ ...fp, fontSize: 7, color: 'var(--dim2)', padding: '10px 0' }}>Хичээлд оноогдоогүй байна</div>
-                  ) : (
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+
+                  {/* Current assigned list */}
+                  {lessonGames.length > 0 && (
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: 4, marginBottom: 10 }}>
                       {lessonGames.map(lg => (
                         <div key={lg.lessonGameId} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '7px 10px', background: 'var(--green)08', border: '1px solid var(--green)22' }}>
                           <span style={{ fontSize: 14, flexShrink: 0 }}>📚</span>
@@ -455,6 +497,40 @@ export default function GameStudioPage() {
                           <Btn label="✕" col="var(--red)" onClick={() => handleDetachLesson(lg.lesson.id)} />
                         </div>
                       ))}
+                    </div>
+                  )}
+
+                  {/* Lesson search */}
+                  <input
+                    value={lsnSearch} onChange={e => onLsnChange(e.target.value)}
+                    placeholder="Хичээл хайх (нэр)..."
+                    style={{ ...fm, fontSize: 10, padding: '7px 10px', background: 'var(--bg)', border: '1px solid var(--dim)', color: 'var(--text)', outline: 'none', width: '100%', boxSizing: 'border-box' }}
+                    onFocus={e => e.currentTarget.style.borderColor = 'var(--green)'}
+                    onBlur={e => e.currentTarget.style.borderColor = 'var(--dim)'}
+                  />
+                  {lsnLoading && (
+                    <div style={{ ...fp, fontSize: 6, color: 'var(--dim2)', padding: '6px 0' }}>ХАЙЖ БАЙНА...</div>
+                  )}
+                  {lsnResults.length > 0 && (
+                    <div style={{ border: '1px solid var(--dim)', borderTop: 'none', maxHeight: 220, overflowY: 'auto' }}>
+                      {lsnResults.map(ls => {
+                        const alreadyAdded = lessonGames.some(lg => lg.lesson.id === ls.id)
+                        return (
+                          <div key={ls.id}
+                            style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '7px 10px', borderBottom: '1px solid var(--dim)22', opacity: alreadyAdded ? 0.45 : 1 }}>
+                            <div style={{ flex: 1, minWidth: 0 }}>
+                              <div style={{ ...fm, fontSize: 9, color: 'var(--text)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{ls.title}</div>
+                              <div style={{ ...fp, fontSize: 5, color: 'var(--dim2)', marginTop: 2 }}>{ls.course.title}</div>
+                            </div>
+                            <Btn
+                              label={alreadyAdded ? '✓' : addingLsn ? '...' : '+'}
+                              col={alreadyAdded ? 'var(--dim)' : 'var(--green)'}
+                              disabled={alreadyAdded || addingLsn}
+                              onClick={() => handleAddLesson(ls.id)}
+                            />
+                          </div>
+                        )
+                      })}
                     </div>
                   )}
                 </div>
@@ -489,9 +565,11 @@ export default function GameStudioPage() {
                 </div>
               )}
             </div>
-            <div style={{ position: 'absolute', top: 6, left: 6, ...fp, fontSize: 5, color: gt.col, background: `${gt.col}22`, border: `1px solid ${gt.col}44`, padding: '2px 6px' }}>
-              {gt.icon} {gt.label}
-            </div>
+            {fName && (
+              <div style={{ padding: '5px 10px', background: `${gt.col}18`, borderTop: `1px solid ${gt.col}33`, ...fp, fontSize: 6, color: gt.col, letterSpacing: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                {gt.icon} {fName}
+              </div>
+            )}
           </div>
 
           {/* State simulator */}
