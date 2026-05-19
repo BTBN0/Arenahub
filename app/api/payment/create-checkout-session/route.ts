@@ -47,7 +47,7 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    const { item } = await req.json()
+    const { item, currency = 'mnt' } = await req.json()
     const product = PRODUCTS[item as keyof typeof PRODUCTS]
 
     if (!product) {
@@ -61,14 +61,20 @@ export async function POST(req: NextRequest) {
       )
     }
 
+    // Currency conversion: MNT to USD (1 USD ≈ 3100 MNT)
+    const MNT_TO_USD = 3100
+    const amount = currency === 'usd'
+      ? Math.round((product.price / MNT_TO_USD) * 100)
+      : product.price
+
     const lineItems = [
       {
         price_data: {
-          currency: 'mnt',
+          currency: currency.toLowerCase(),
           product_data: {
             name: product.name,
           },
-          unit_amount: product.price,
+          unit_amount: amount,
         },
         quantity: 1,
       },

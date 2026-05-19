@@ -55,6 +55,7 @@ function PaymentContent() {
   const [progress,       setProgress]      = useState(0)   // 0-100
   const [error,          setError]         = useState('')
   const [paymentLoading, setPaymentLoading] = useState(false)
+  const [currency,       setCurrency]      = useState<'mnt' | 'usd'>('mnt')
   const timerRef = useRef<ReturnType<typeof setInterval>|null>(null)
 
   useEffect(() => { if (!loading && !isAuthenticated) router.replace('/login') }, [loading, isAuthenticated])
@@ -112,7 +113,7 @@ function PaymentContent() {
           'Content-Type': 'application/json',
           ...(bearer ? { 'Authorization': `Bearer ${bearer}` } : {}),
         },
-        body: JSON.stringify({ item: itemKey }),
+        body: JSON.stringify({ item: itemKey, currency }),
       })
       const data = await res.json()
       if (data.url) {
@@ -164,6 +165,25 @@ function PaymentContent() {
         {/* ── IDLE: Show QR + button ── */}
         {phase === 'idle' && (
           <div>
+            {/* Currency selection */}
+            <div style={{ background:'rgba(8,12,22,.96)', border:'1px solid #3a4560',
+              padding:'16px', marginBottom:20, display:'flex', gap:10 }}>
+              <button onClick={() => setCurrency('mnt')}
+                style={{ flex:1, padding:'12px', ...S.fp(9,'#070d1a',1),
+                  background: currency === 'mnt' ? '#00ff41' : 'rgba(0,255,65,0.1)',
+                  border: `1px solid ${currency === 'mnt' ? '#00ff41' : '#3a4560'}`,
+                  cursor: 'pointer', transition:'all .2s' }}>
+                ₮ Tugrug (MNT)
+              </button>
+              <button onClick={() => setCurrency('usd')}
+                style={{ flex:1, padding:'12px', ...S.fp(9,'#070d1a',1),
+                  background: currency === 'usd' ? '#00e5ff' : 'rgba(0,229,255,0.1)',
+                  border: `1px solid ${currency === 'usd' ? '#00e5ff' : '#3a4560'}`,
+                  cursor: 'pointer', transition:'all .2s' }}>
+                $ Dollar (USD)
+              </button>
+            </div>
+
             {/* QR panel */}
             <div style={{ background:'rgba(8,12,22,.96)', border:'1px solid #3a4560',
               padding:'32px', marginBottom:20, textAlign:'center' }}>
@@ -214,7 +234,7 @@ function PaymentContent() {
                   boxShadow: '0 2px 8px rgba(99,91,255,0.3)' }}
                 onMouseEnter={e => !paymentLoading && (e.currentTarget.style.opacity='0.9')}
                 onMouseLeave={e => !paymentLoading && (e.currentTarget.style.opacity='1')}>
-                💳 Pay with Stripe {paymentLoading ? '...' : ''}
+                💳 Pay with VISA {paymentLoading ? '...' : ''}
               </button>
               <button onClick={startPayment}
                 disabled={paymentLoading}
