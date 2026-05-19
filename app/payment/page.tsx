@@ -226,16 +226,23 @@ function PaymentContent() {
             )}
 
             <div style={{ display:'flex', flexDirection:'column', gap:10 }}>
-              <button onClick={startStripePayment}
-                disabled={paymentLoading}
-                style={{ padding:'16px', ...S.fp(10,'#fff',2),
-                  background: '#635bff', border:'none', cursor: paymentLoading ? 'not-allowed' : 'pointer',
-                  transition:'all .2s', opacity: paymentLoading ? 0.6 : 1,
-                  boxShadow: '0 2px 8px rgba(99,91,255,0.3)' }}
-                onMouseEnter={e => !paymentLoading && (e.currentTarget.style.opacity='0.9')}
-                onMouseLeave={e => !paymentLoading && (e.currentTarget.style.opacity='1')}>
-                💳 Pay with VISA {paymentLoading ? '...' : ''}
-              </button>
+              <div>
+                <button onClick={startStripePayment}
+                  disabled={paymentLoading}
+                  style={{ padding:'16px', ...S.fp(10,'#fff',2),
+                    background: '#635bff', border:'none', cursor: paymentLoading ? 'not-allowed' : 'pointer',
+                    transition:'all .2s', opacity: paymentLoading ? 0.6 : 1, width:'100%',
+                    boxShadow: '0 2px 8px rgba(99,91,255,0.3)' }}
+                  onMouseEnter={e => !paymentLoading && (e.currentTarget.style.opacity='0.9')}
+                  onMouseLeave={e => !paymentLoading && (e.currentTarget.style.opacity='1')}>
+                  💳 Pay with VISA {paymentLoading ? '...' : ''}
+                </button>
+                {currency === 'mnt' && (
+                  <div style={{ ...S.fm(10,'#ffd700'), marginTop:8, padding:'8px', background:'rgba(255,215,0,.1)', border:'1px solid rgba(255,215,0,.3)', textAlign:'center' }}>
+                    💱 Dollar болгж Visa-аар төлнө
+                  </div>
+                )}
+              </div>
               <button onClick={startPayment}
                 disabled={paymentLoading}
                 style={{ padding:'16px', ...S.fp(10,'#070d1a',2),
