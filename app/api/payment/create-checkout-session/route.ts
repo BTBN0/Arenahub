@@ -64,11 +64,11 @@ export async function POST(req: NextRequest) {
     const lineItems = [
       {
         price_data: {
-          currency: 'jpy',
+          currency: 'mnt',
           product_data: {
             name: product.name,
           },
-          unit_amount: Math.round(product.price * 100),
+          unit_amount: product.price,
         },
         quantity: 1,
       },

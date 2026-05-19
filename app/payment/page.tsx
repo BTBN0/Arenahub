@@ -17,10 +17,10 @@ const ITEMS: Record<string,{label:string;amount:number;desc:string;col:string;ic
   token_10:     { label:'10 AI Token',   amount:3500,   desc:'10 token · ₮350/token',                       col:'#00ff41', icon:'🤖', plan:''     },
   token_50:     { label:'50 AI Token',   amount:15000,  desc:'50 token · ₮300/token',                       col:'#00ff41', icon:'🤖', plan:''     },
   token_200:    { label:'200+20 Token',  amount:45000,  desc:'200+20 bonus token · ₮225/token',             col:'#00ff41', icon:'🤖', plan:''     },
-  contest:      { label:'Contest — FREE',  amount:10000, desc:'7 хоногийн coding contest оролцоо',           col:'#ffd700', icon:'⚔',  plan:''     },
-  contest_pro:  { label:'Contest — PRO',  amount:3000,  desc:'PRO хямдралтай contest оролцоо · ₮7,000 хямд', col:'#00e5ff', icon:'⚔',  plan:''     },
-  contest_vip:  { label:'Contest — VIP',  amount:0,     desc:'VIP — Contest оролцоо ҮНЭГҮЙ',                 col:'#ffd700', icon:'⚔',  plan:''     },
-  boost:        { label:'Profile Boost', amount:10000,  desc:'24ц leaderboard highlight',                   col:'#bf5af2', icon:'🔆', plan:''     },
+  contest:      { label:'Contest — FREE',  amount:10000, desc:'7 хоногийн coding challenge оролцоо',        col:'#ffd700', icon:'⚔',  plan:''     },
+  contest_pro:  { label:'Contest — PRO',  amount:3000,  desc:'PRO хямдралтай contest · ₮7,000 хүртэл хямд', col:'#00e5ff', icon:'⚔',  plan:''     },
+  contest_vip:  { label:'Contest — VIP',  amount:0,     desc:'VIP эрхтэй бол contest ҮНЭГҮЙ',              col:'#ffd700', icon:'⚔',  plan:''     },
+  boost:        { label:'Profile Boost', amount:10000,  desc:'24 цаг leaderboard highlight',                col:'#bf5af2', icon:'🔆', plan:''     },
   frame:        { label:'Animated Frame',amount:15000,  desc:'Profile animated frame',                      col:'#bf5af2', icon:'🖼', plan:''     },
 }
 
@@ -205,24 +205,25 @@ function PaymentContent() {
                 marginBottom:16 }}>⚠ {error}</div>
             )}
 
-            <div style={{ display:'flex', gap:10 }}>
+            <div style={{ display:'flex', flexDirection:'column', gap:10 }}>
+              <button onClick={startStripePayment}
+                disabled={paymentLoading}
+                style={{ padding:'16px', ...S.fp(10,'#fff',2),
+                  background: '#635bff', border:'none', cursor: paymentLoading ? 'not-allowed' : 'pointer',
+                  transition:'all .2s', opacity: paymentLoading ? 0.6 : 1, borderRadius: '8px',
+                  boxShadow: '0 2px 8px rgba(99,91,255,0.3)' }}
+                onMouseEnter={e => !paymentLoading && (e.currentTarget.style.opacity='0.9')}
+                onMouseLeave={e => !paymentLoading && (e.currentTarget.style.opacity='1')}>
+                💳 Pay with Stripe {paymentLoading ? '...' : ''}
+              </button>
               <button onClick={startPayment}
                 disabled={paymentLoading}
-                style={{ flex:1, padding:'16px', ...S.fp(10,'#070d1a',2),
+                style={{ padding:'16px', ...S.fp(10,'#070d1a',2),
                   background: item.col, border:'none', cursor: paymentLoading ? 'not-allowed' : 'pointer',
                   transition:'all .2s', opacity: paymentLoading ? 0.6 : 1 }}
                 onMouseEnter={e => !paymentLoading && (e.currentTarget.style.opacity='0.85')}
                 onMouseLeave={e => !paymentLoading && (e.currentTarget.style.opacity='1')}>
-                {t('pay_simulate')}
-              </button>
-              <button onClick={startStripePayment}
-                disabled={paymentLoading}
-                style={{ flex:1, padding:'16px', ...S.fp(10,'#070d1a',2),
-                  background: '#635bff', border:'none', cursor: paymentLoading ? 'not-allowed' : 'pointer',
-                  transition:'all .2s', opacity: paymentLoading ? 0.6 : 1 }}
-                onMouseEnter={e => !paymentLoading && (e.currentTarget.style.opacity='0.85')}
-                onMouseLeave={e => !paymentLoading && (e.currentTarget.style.opacity='1')}>
-                Stripe {paymentLoading ? '...' : ''}
+                {t('pay_simulate')} (Demo)
               </button>
             </div>
             <div style={{ ...S.fm(11,'#3a4560'), textAlign:'center', marginTop:10 }}>
