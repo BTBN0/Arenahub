@@ -61,7 +61,7 @@ export async function POST(req: NextRequest) {
       )
     }
 
-    const lineItems: Stripe.Checkout.SessionCreateParams.LineItem[] = [
+    const lineItems = [
       {
         price_data: {
           currency: 'jpy',
@@ -74,7 +74,7 @@ export async function POST(req: NextRequest) {
       },
     ]
 
-    const sessionParams: Stripe.Checkout.SessionCreateParams = {
+    const session = await stripe.checkout.sessions.create({
       customer_email: userEmail,
       line_items: lineItems,
       mode: 'payment',
@@ -84,9 +84,7 @@ export async function POST(req: NextRequest) {
         userId,
         item,
       },
-    }
-
-    const session = await stripe.checkout.sessions.create(sessionParams)
+    })
 
     return NextResponse.json({ sessionId: session.id, url: session.url })
   } catch (e) {
