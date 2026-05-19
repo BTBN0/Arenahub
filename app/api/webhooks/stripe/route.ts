@@ -135,17 +135,8 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    if (event.type === 'charge.refunded') {
-      const charge = event.data.object as Stripe.Charge
-      const { userId } = charge.metadata as { userId?: string }
-
-      if (userId) {
-        await prisma.payment.updateMany({
-          where: { metadata: { path: ['stripeSessionId'], equals: charge.payment_intent } },
-          data: { status: 'REFUNDED' },
-        })
-      }
-    }
+    // TODO: Handle refunds when needed
+    // if (event.type === 'charge.refunded') { ... }
 
     return NextResponse.json({ ok: true })
   } catch (e) {
