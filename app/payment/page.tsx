@@ -228,13 +228,14 @@ function PaymentContent() {
             <div style={{ display:'flex', flexDirection:'column', gap:10 }}>
               <div>
                 <button onClick={startStripePayment}
-                  disabled={paymentLoading}
+                  disabled={paymentLoading || currency === 'mnt'}
                   style={{ padding:'16px', ...S.fp(10,'#fff',2),
-                    background: '#635bff', border:'none', cursor: paymentLoading ? 'not-allowed' : 'pointer',
-                    transition:'all .2s', opacity: paymentLoading ? 0.6 : 1, width:'100%',
-                    boxShadow: '0 2px 8px rgba(99,91,255,0.3)' }}
-                  onMouseEnter={e => !paymentLoading && (e.currentTarget.style.opacity='0.9')}
-                  onMouseLeave={e => !paymentLoading && (e.currentTarget.style.opacity='1')}>
+                    background: currency === 'mnt' ? '#444' : '#635bff', border:'none',
+                    cursor: (paymentLoading || currency === 'mnt') ? 'not-allowed' : 'pointer',
+                    transition:'all .2s', opacity: (paymentLoading || currency === 'mnt') ? 0.5 : 1, width:'100%',
+                    boxShadow: currency === 'mnt' ? 'none' : '0 2px 8px rgba(99,91,255,0.3)' }}
+                  onMouseEnter={e => !(paymentLoading || currency === 'mnt') && (e.currentTarget.style.opacity='0.9')}
+                  onMouseLeave={e => !(paymentLoading || currency === 'mnt') && (e.currentTarget.style.opacity='1')}>
                   💳 Pay with VISA {paymentLoading ? '...' : ''}
                 </button>
                 {currency === 'mnt' && (
