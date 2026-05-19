@@ -9,11 +9,11 @@ const S = {
   fm: (sz:number, col='#d0d8e8'): React.CSSProperties => ({ fontFamily:'var(--fm)', fontSize:sz, color:col }),
 }
 
-const ITEMS: Record<string,{label:string;amount:number;desc:string;col:string;icon:string;plan:string}> = {
-  pro_monthly:  { label:'PRO — Сарын',  amount:17000,  desc:'Бүх 8 курс · 100 AI token · Analytics',       col:'#00e5ff', icon:'⭐', plan:'PRO'  },
-  pro_yearly:   { label:'PRO — Жилийн', amount:170000, desc:'2 сар үнэгүй · PRO бүх боломж',              col:'#00e5ff', icon:'⭐', plan:'PRO'  },
-  vip_monthly:  { label:'VIP — Сарын',  amount:34000,  desc:'400 AI token · Deep AI · Highlight · Badge',  col:'#ffd700', icon:'💎', plan:'VIP'  },
-  vip_yearly:   { label:'VIP — Жилийн', amount:320000, desc:'2–3 сар үнэгүй · VIP бүх боломж',            col:'#ffd700', icon:'💎', plan:'VIP'  },
+const ITEMS: Record<string,{label:string;amount:number;desc:string;col:string;icon:string;plan:string;features?:string[]}> = {
+  pro_monthly:  { label:'PRO — Сарын',  amount:17000,  desc:'Бүх 8 курс · 100 AI token · Analytics',       col:'#00e5ff', icon:'⭐', plan:'PRO',  features:['Бүх 8 курс unlock','Хязгааргүй task','100 AI token / сар','Progress analytics','Contest хямдралтай'] },
+  pro_yearly:   { label:'PRO — Жилийн', amount:170000, desc:'2 сар үнэгүй · PRO бүх боломж',              col:'#00e5ff', icon:'⭐', plan:'PRO',  features:['Бүх 8 курс unlock','Хязгааргүй task','1200 AI token / жил','Progress analytics','Contest хямдралтай'] },
+  vip_monthly:  { label:'VIP — Сарын',  amount:34000,  desc:'400 AI token · Deep AI · Highlight · Badge',  col:'#ffd700', icon:'💎', plan:'VIP',  features:['Pro бүх боломж','400 AI token / сар','Deep AI explanation','Contest ҮНЭГҮЙ','Leaderboard highlight','Exclusive badge + frame'] },
+  vip_yearly:   { label:'VIP — Жилийн', amount:320000, desc:'2–3 сар үнэгүй · VIP бүх боломж',            col:'#ffd700', icon:'💎', plan:'VIP',  features:['Pro бүх боломж','4800 AI token / жил','Deep AI explanation','Contest ҮНЭГҮЙ','Leaderboard highlight','Exclusive badge + frame','Early access features'] },
   token_10:     { label:'10 AI Token',   amount:3500,   desc:'10 token · ₮350/token',                       col:'#00ff41', icon:'🤖', plan:''     },
   token_50:     { label:'50 AI Token',   amount:15000,  desc:'50 token · ₮300/token',                       col:'#00ff41', icon:'🤖', plan:''     },
   token_200:    { label:'200+20 Token',  amount:45000,  desc:'200+20 bonus token · ₮225/token',             col:'#00ff41', icon:'🤖', plan:''     },
@@ -208,20 +208,14 @@ function PaymentContent() {
               <div style={{ ...S.fp(6,'#3a4560'), letterSpacing:2 }}>DEMO — SIMULATE ДАРЖ ТУРШИНА УУ</div>
             </div>
 
-            {/* Benefits preview */}
-            {item.plan && (
+            {/* Features list */}
+            {item.features && item.features.length > 0 && (
               <div style={{ background:'rgba(0,229,255,.04)', border:'1px solid rgba(0,229,255,.1)',
                 padding:'16px 20px', marginBottom:20 }}>
                 <div style={{ ...S.fp(7, item.col, 2), marginBottom:10 }}>{t('pay_benefits')}</div>
-                {item.plan === 'PRO' ? (
-                  ['Бүх 8 курс нэмэгдэнэ','100 AI token / сар','Progress analytics','Contest ₮3,000 хямд'].map(f => (
-                    <div key={f} style={{ ...S.fm(12,'#d0d8e8'), marginBottom:6 }}>✓ {f}</div>
-                  ))
-                ) : (
-                  ['PRO бүх боломж','400 AI token / сар','Contest ҮНЭГҮЙ','Leaderboard highlight','Exclusive badge'].map(f => (
-                    <div key={f} style={{ ...S.fm(12,'#d0d8e8'), marginBottom:6 }}>✓ {f}</div>
-                  ))
-                )}
+                {item.features.map(f => (
+                  <div key={f} style={{ ...S.fm(12,'#d0d8e8'), marginBottom:6 }}>✓ {f}</div>
+                ))}
               </div>
             )}
 
@@ -318,10 +312,8 @@ function PaymentContent() {
             {/* What's unlocked */}
             <div style={{ background:'rgba(8,12,22,.96)', border:'1px solid #00ff4133',
               marginBottom:28, overflow:'hidden' }}>
-              {(item.plan === 'PRO'
-                ? ['Бүх 8 курс нэмэгдлээ','100 AI token нэмэгдлээ','Progress analytics','Contest discount']
-                : item.plan === 'VIP'
-                ? ['PRO бүх боломж','400 AI token нэмэгдлээ','Contest ҮНЭГҮЙ эрх','Leaderboard highlight','Exclusive badge']
+              {(item.features && item.features.length > 0
+                ? item.features
                 : [`${item.label} амжилттай`]
               ).map(txt => (
                 <div key={txt} style={{ display:'flex', alignItems:'center', gap:14,
