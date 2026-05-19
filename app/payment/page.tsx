@@ -60,7 +60,7 @@ function PaymentContent() {
 
   const MNT_TO_USD = 3100
   const displayAmount = currency === 'usd'
-    ? (item.amount / MNT_TO_USD).toFixed(2)
+    ? Math.round(item.amount / MNT_TO_USD)
     : item.amount.toLocaleString()
   const currencySymbol = currency === 'usd' ? '$' : '₮'
 
