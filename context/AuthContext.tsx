@@ -7,8 +7,6 @@ import { authApi, User } from '@/lib/api-client'
 interface AuthCtx {
   user:            User | null
   loading:         boolean
-  login:           (email: string, password: string) => Promise<void>
-  register:        (username: string, email: string, password: string) => Promise<void>
   logout:          () => void
   isAdmin:         boolean
   isAuthenticated: boolean
@@ -16,7 +14,7 @@ interface AuthCtx {
 }
 
 const Ctx = createContext<AuthCtx | null>(null)
-const PUBLIC_PATHS = ['/', '/login', '/register', '/forgot-password', '/reset-password']
+const PUBLIC_PATHS = ['/', '/login']
 const USER_CACHE_KEY  = 'ah_user'
 const USER_CACHE_TTL  = 120_000 // 2min client-side cache
 
@@ -140,20 +138,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try { setAndCacheUser((await authApi.me()).user) } catch {}
   }
 
-  const login = async (email: string, password: string) => {
-    const { user, token } = await authApi.login(email, password)
-    localStorage.setItem('arenahub_token', token)
-    setAndCacheUser(user)
-    router.replace('/dashboard')
-  }
-
-  const register = async (username: string, email: string, password: string) => {
-    const { user, token } = await authApi.register(username, email, password)
-    localStorage.setItem('arenahub_token', token)
-    setAndCacheUser(user)
-    router.replace('/dashboard')
-  }
-
   const logout = async () => {
     localStorage.removeItem('arenahub_token')
     clearUserCache()
@@ -163,7 +147,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   return (
-    <Ctx.Provider value={{ user, loading, login, register, logout, refreshUser,
+    <Ctx.Provider value={{ user, loading, logout, refreshUser,
       isAdmin: user?.role === 'ADMIN', isAuthenticated: !!user }}>
       {children}
     </Ctx.Provider>

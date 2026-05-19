@@ -43,9 +43,7 @@ const pa= <T>(path: string, b: unknown)   => request<T>('PATCH',  path, b)
 const d = <T>(path: string)               => request<T>('DELETE', path)
 
 export const authApi = {
-  me:       ()                                     => g<{user:User}>('/api/auth'),
-  login:    (email:string,password:string)         => p<{user:User;token:string}>('/api/auth?action=login',{email,password}),
-  register: (username:string,email:string,pw:string)=> p<{user:User;token:string}>('/api/auth?action=register',{username,email,password:pw}),
+  me: () => g<{user:User}>('/api/auth'),
 }
 export const coursesApi = {
   list:   (q='')         => g<{courses:Course[];pagination:Pagination}>(`/api/courses${q}`),

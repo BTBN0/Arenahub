@@ -1,37 +1,18 @@
 import jwt from 'jsonwebtoken'
-import { scrypt, randomBytes, timingSafeEqual } from 'crypto'
-import { promisify } from 'util'
 import { NextRequest } from 'next/server'
 import prisma from './db'
-
-const scryptAsync = promisify(scrypt)
 
 export interface JWTPayload {
   id: string; username: string; email: string; role: string
 }
 
 const ACCESS_SECRET  = process.env.JWT_SECRET!
-// Separate refresh secret — predictable fallback is a security risk
 const REFRESH_SECRET = process.env.JWT_REFRESH_SECRET
   ?? (process.env.NODE_ENV === 'production'
       ? (() => { throw new Error('JWT_REFRESH_SECRET is required in production') })()
       : process.env.JWT_SECRET! + '_refresh_dev_only')
 const ACCESS_EXPIRES  = process.env.JWT_EXPIRES_IN || '15m'
 const REFRESH_EXPIRES = '7d'
-
-/* ══ PASSWORD (Node.js crypto — no external dep) ══ */
-export async function hashPassword(pw: string): Promise<string> {
-  const salt = randomBytes(16).toString('hex')
-  const buf  = (await scryptAsync(pw, salt, 64)) as Buffer
-  return `${buf.toString('hex')}.${salt}`
-}
-
-export async function comparePassword(pw: string, stored: string): Promise<boolean> {
-  const [hashed, salt] = stored.split('.')
-  if (!hashed || !salt) return false
-  const buf = (await scryptAsync(pw, salt, 64)) as Buffer
-  return timingSafeEqual(Buffer.from(hashed, 'hex'), buf)
-}
 
 /* ══ JWT ════════════════════════════════ */
 export const generateAccessToken = (p: JWTPayload) =>

@@ -190,7 +190,7 @@ li{margin-bottom:3pt;font-size:11pt;line-height:1.5;}
   <ol>
     <li>Groq API дээр суурилсан bilingual AI tutor system хөгжүүлэх.</li>
     <li>XP, level, combo, HP, achievement, leaderboard gamification хэрэгжүүлэх.</li>
-    <li>OAuth болон JWT dual authentication system хийх.</li>
+    <li>Google болон GitHub OAuth + JWT authentication system хийх.</li>
     <li>Vercel + Neon.tech дээр production deployment хийх.</li>
     <li>Монгол болон Англи 446 translation key бүхий localization систем хийх.</li>
   </ol>
@@ -201,7 +201,7 @@ li{margin-bottom:3pt;font-size:11pt;line-height:1.5;}
   <table>
     <tr><th>Хэрэглэгч</th><th>Удирдагч (Admin)</th></tr>
     <tr>
-      <td><ul style="padding-left:10mm;margin:2pt 0;"><li>Google / GitHub / Email нэвтрэлт</li><li>Course, lesson үзэх</li><li>Quiz, code task бодох</li><li>AI assistant ашиглах</li><li>Contest-д оролцох</li><li>Achievement, reward авах</li></ul></td>
+      <td><ul style="padding-left:10mm;margin:2pt 0;"><li>Google / GitHub OAuth нэвтрэлт</li><li>Course, lesson үзэх</li><li>Quiz, code task бодох</li><li>AI assistant ашиглах</li><li>Contest-д оролцох</li><li>Achievement, reward авах</li></ul></td>
       <td><ul style="padding-left:10mm;margin:2pt 0;"><li>Course / Lesson / Task CRUD</li><li>User management</li><li>XP / Coins / Token засах</li><li>Contest management</li><li>Payment confirmation</li><li>Analytics, reports</li></ul></td>
     </tr>
   </table>
@@ -212,7 +212,7 @@ li{margin-bottom:3pt;font-size:11pt;line-height:1.5;}
     <tr><th>Шаардлага</th><th>Тайлбар</th><th>Хэрэгжилт</th></tr>
     <tr><td>Responsive UI</td><td>Mobile, tablet, desktop дэмжих</td><td>CSS Media Query</td></tr>
     <tr><td>Performance</td><td>API &lt;200ms хариу</td><td>Server-side cache</td></tr>
-    <tr><td>Security</td><td>Production-level хамгаалалт</td><td>CSP + JWT + crypto.scrypt</td></tr>
+    <tr><td>Security</td><td>Production-level хамгаалалт</td><td>CSP + JWT + Zod</td></tr>
     <tr><td>Scalability</td><td>Serverless auto-scale</td><td>Vercel</td></tr>
     <tr><td>Availability</td><td>99.9% uptime</td><td>Neon + Vercel</td></tr>
   </table>
@@ -265,10 +265,10 @@ li{margin-bottom:3pt;font-size:11pt;line-height:1.5;}
   <h2>6.2 Backend Хөгжүүлэлт</h2>
   <p>Backend нь Next.js API Routes дээр суурилсан serverless architecture ашиглан нийт 55 REST endpoint хэрэгжүүлсэн. Бүх request дээр Zod schema validation ашигласан. 5xx алдааг client-д нуух замаар мэдээлэл алдагдахаас хамгаалдаг.</p>
   <h2>6.3 Authentication Систем</h2>
-  <p>Систем нь <strong>dual authentication architecture</strong> ашигладаг: NextAuth.js v4 ашиглан Google болон GitHub OAuth нэвтрэлт, custom JWT токен (15 минутын access + 7 хоногийн refresh) ашиглан email/password нэвтрэлт.</p>
+  <p>Систем нь NextAuth.js v4 ашиглан Google болон GitHub OAuth нэвтрэлт хэрэгжүүлсэн. OAuth session-ийг custom JWT токен (15 минутын access + 7 хоногийн refresh) руу хөрвүүлж Bearer auth ашиглан API хамгаалдаг.</p>
   <p class="tbl-caption no-indent"><em>Зураг 6.1 — Authentication Flow Diagram</em></p>
   <div style="border:1pt solid #666;padding:8pt;margin:6pt 0;text-align:center;background:#fafafa;font-size:10pt;">
-    Login → Verify credentials → JWT Create → localStorage → API Request → Authorization check
+    Google/GitHub OAuth → NextAuth Session → JWT Create → localStorage → API Request → Bearer Auth
   </div>
 </div>
 <div class="page-num">4</div>
@@ -336,7 +336,6 @@ li{margin-bottom:3pt;font-size:11pt;line-height:1.5;}
     <tr><td>CSP Headers</td><td>XSS халдлагаас хамгаалах HTTP header</td></tr>
     <tr><td>HSTS (1 жил)</td><td>HTTPS protocol-ийг заавал мөрдүүлнэ</td></tr>
     <tr><td>X-Frame-Options: DENY</td><td>Clickjacking халдлагаас хамгаалалт</td></tr>
-    <tr><td>crypto.scrypt (Node built-in)</td><td>Нууц үгийг hash хийж хадгална — гадаад хамаарал шаардлагагүй</td></tr>
     <tr><td>JWT 15 минутын хугацаа</td><td>Богино хугацааны access token</td></tr>
     <tr><td>Zod validation</td><td>Бүх API input-д schema баталгаажуулалт</td></tr>
     <tr><td>Rate limiting</td><td>IP болон user тутамд хүсэлтийн хязгаар</td></tr>
@@ -368,7 +367,7 @@ li{margin-bottom:3pt;font-size:11pt;line-height:1.5;}
   <p class="tbl-caption no-indent"><em>Хүснэгт 8.1 — Туршилтын Үр Дүнгийн Хүснэгт</em></p>
   <table>
     <tr><th>Туршилтын төрөл</th><th>Тайлбар</th><th>Үр дүн</th></tr>
-    <tr><td>Authentication</td><td>Google/GitHub/Email нэвтрэлт</td><td>✓ Амжилттай</td></tr>
+    <tr><td>Authentication</td><td>Google/GitHub OAuth нэвтрэлт</td><td>✓ Амжилттай</td></tr>
     <tr><td>API endpoints</td><td>55 endpoint туршсан</td><td>✓ Амжилттай</td></tr>
     <tr><td>Code execution</td><td>JS/HTML/CSS/SQL sandbox</td><td>✓ Амжилттай</td></tr>
     <tr><td>Responsive UI</td><td>Mobile/Tablet/Desktop</td><td>✓ Амжилттай</td></tr>
