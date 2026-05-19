@@ -1,17 +1,12 @@
 'use client'
-import { useState, FormEvent } from 'react'
-import { useAuth } from '@/context/AuthContext'
-import { useRouter } from 'next/navigation'
+import { useState } from 'react'
 import { signIn } from 'next-auth/react'
 
 interface Props { mode?: 'login'|'register'; onClose?: () => void }
 
-export default function AuthModal({ mode='login', onClose }: Props) {
-  const [gLoad,   setGLoad]   = useState(false)
-  const [loading, setLoading] = useState(false)
-  const [error,   setError]   = useState('')
-  const { login } = useAuth()
-  const router = useRouter()
+export default function AuthModal({ onClose }: Props) {
+  const [gLoad, setGLoad] = useState(false)
+  const [error] = useState('')
 
   // Google OAuth — primary login method
   const handleGoogle = async () => {
