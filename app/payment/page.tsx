@@ -210,7 +210,7 @@ function PaymentContent() {
                 disabled={paymentLoading}
                 style={{ padding:'16px', ...S.fp(10,'#fff',2),
                   background: '#635bff', border:'none', cursor: paymentLoading ? 'not-allowed' : 'pointer',
-                  transition:'all .2s', opacity: paymentLoading ? 0.6 : 1, borderRadius: '8px',
+                  transition:'all .2s', opacity: paymentLoading ? 0.6 : 1,
                   boxShadow: '0 2px 8px rgba(99,91,255,0.3)' }}
                 onMouseEnter={e => !paymentLoading && (e.currentTarget.style.opacity='0.9')}
                 onMouseLeave={e => !paymentLoading && (e.currentTarget.style.opacity='1')}>
