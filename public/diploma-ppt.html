@@ -1,962 +1,2264 @@
 <!DOCTYPE html>
 <html lang="mn">
+
 <head>
-<meta charset="UTF-8"/>
-<title>ArenaHub — Диплом Хамгаалалт</title>
-<style>
-@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&display=swap');
-:root{--bg:#05080f;--bg2:#0a0f1e;--bg3:#0d1628;--cyan:#00d4ff;--green:#00ff88;--yellow:#ffc832;--purple:#c77dff;--red:#ff3366;--text:#e2eaf8;--dim:#3a5070;--fp:'Press Start 2P',monospace;--fm:'Share Tech Mono',monospace;--orb:'Orbitron',monospace;}
-*{margin:0;padding:0;box-sizing:border-box;}
-body{background:var(--bg);color:var(--text);font-family:var(--fp);overflow:hidden;width:100vw;height:100vh;}
+  <meta charset="UTF-8" />
+  <title>ArenaHub — Диплом Хамгаалалт</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&display=swap');
 
-/* Slide wrapper — fixed 1280x720, scaled to fit screen */
-#_deck{width:100vw;height:100vh;position:relative;}
-.slide{width:100vw;height:100vh;background:var(--bg);position:absolute;top:0;left:0;overflow:hidden;display:flex;flex-direction:column;opacity:0;pointer-events:none;}
-.slide.active{opacity:1;pointer-events:all;}
-.slide::before{content:'';position:absolute;inset:0;pointer-events:none;background-image:linear-gradient(rgba(0,212,255,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,212,255,.03) 1px,transparent 1px);background-size:24px 24px;}
-.glow-line{position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent,var(--cyan),transparent);}
-.corner{position:absolute;width:18px;height:18px;border-color:var(--cyan);border-style:solid;opacity:.35;}
-.tl{top:8px;left:8px;border-width:2px 0 0 2px}
-.tr{top:8px;right:8px;border-width:2px 2px 0 0}
-.bl{bottom:8px;left:8px;border-width:0 0 2px 2px}
-.br{bottom:8px;right:8px;border-width:0 2px 2px 0}
-.slide-num{position:absolute;bottom:12px;right:20px;font-family:var(--fp);font-size:9px;color:var(--dim);letter-spacing:2px;}
-/* header */
-.hdr{background:rgba(8,12,22,.95);border-bottom:1px solid rgba(0,212,255,.15);padding:9px 28px;display:flex;align-items:center;gap:12px;flex-shrink:0;position:relative;z-index:5;}
-.logo-svg{flex-shrink:0;}
-.hdr-title{font-family:var(--fp);font-size:8px;color:var(--cyan);letter-spacing:2px;}
-.hdr-right{margin-left:auto;font-family:var(--fp);font-size:8px;color:var(--dim);letter-spacing:2px;}
-/* content */
-.body{flex:1;padding:20px 30px 18px;position:relative;z-index:5;display:flex;flex-direction:column;justify-content:space-between;min-height:0;}
-.stitle{font-family:var(--fp);font-weight:900;font-size:13px;color:var(--cyan);letter-spacing:3px;margin-bottom:4px;text-shadow:0 0 24px rgba(0,212,255,.4);}
-.ssub{font-family:var(--fp);font-size:9px;color:var(--dim);letter-spacing:4px;margin-bottom:16px;}
-.bar{height:2px;width:60px;background:linear-gradient(90deg,var(--cyan),transparent);margin-bottom:14px;}
-/* grid */
-.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px;flex:1;align-content:start;}
-.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;flex:1;}
-.g4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:10px;flex:1;}
-/* card */
-.card{background:rgba(8,12,22,.9);border:1px solid rgba(0,212,255,.12);padding:14px 16px;position:relative;height:100%;}
-.card::before{content:'';position:absolute;top:-1px;left:-1px;width:6px;height:6px;border-top:2px solid rgba(0,212,255,.5);border-left:2px solid rgba(0,212,255,.5);}
-/* table */
-table{width:100%;border-collapse:collapse;flex:1;}
-th{background:rgba(0,212,255,.1);border:1px solid rgba(0,212,255,.2);padding:7px 12px;font-family:var(--fp);font-size:9px;color:var(--cyan);letter-spacing:2px;text-align:left;}
-td{border:1px solid rgba(255,255,255,.05);padding:7px 12px;font-family:var(--fp);font-size:8px;color:#c0d0e0;line-height:2;}
-tr:nth-child(even) td{background:rgba(0,212,255,.02);}
-/* check item */
-.ci{display:flex;align-items:flex-start;gap:8px;margin-bottom:9px;}
-.ci-dot{width:6px;height:6px;flex-shrink:0;margin-top:5px;}
-.ci-txt{font-family:var(--fp);font-size:8px;color:#b0c8e0;line-height:2;}
-.ci-bold{font-family:var(--fp);font-size:8px;color:var(--cyan);display:block;margin-bottom:2px;}
-/* badge */
-.badge{display:inline-block;padding:3px 9px;border:1px solid;font-family:var(--fp);font-size:9px;letter-spacing:1px;margin:2px;}
-.bc{color:var(--cyan);border-color:rgba(0,212,255,.4);background:rgba(0,212,255,.06);}
-.bg{color:var(--green);border-color:rgba(0,255,136,.4);background:rgba(0,255,136,.06);}
-.by{color:var(--yellow);border-color:rgba(255,200,50,.4);background:rgba(255,200,50,.06);}
-.bp{color:var(--purple);border-color:rgba(199,125,255,.4);background:rgba(199,125,255,.06);}
-.br2{color:var(--red);border-color:rgba(255,51,102,.4);background:rgba(255,51,102,.06);}
-/* stat */
-.stat{background:rgba(8,12,22,.9);border:1px solid rgba(0,212,255,.15);padding:18px 14px;text-align:center;position:relative;}
-.stat::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--cyan);}
-.snum{font-family:var(--fp);font-size:16px;color:var(--cyan);line-height:1.1;margin-bottom:6px;}
-.slbl{font-family:var(--fp);font-size:8px;color:var(--dim);letter-spacing:2px;}
-/* flow */
-.flow{display:flex;align-items:center;background:rgba(8,12,22,.8);border:1px solid rgba(0,212,255,.1);padding:10px 16px;}
-.fs{flex:1;text-align:center;font-family:var(--fp);font-size:8px;color:var(--cyan);letter-spacing:1px;line-height:2;}
-.fa{font-size:14px;color:rgba(0,212,255,.4);flex-shrink:0;padding:0 6px;}
-/* hero */
-.hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse at 20% 50%,rgba(0,212,255,.07) 0%,transparent 50%),radial-gradient(ellipse at 80% 30%,rgba(199,125,255,.06) 0%,transparent 50%),radial-gradient(ellipse at 50% 80%,rgba(0,255,136,.04) 0%,transparent 40%);}
-/* section label */
-.slabel{font-family:var(--fp);font-size:9px;color:var(--cyan);letter-spacing:4px;margin-bottom:10px;display:flex;align-items:center;gap:8px;}
-.slabel::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,rgba(0,212,255,.3),transparent);}
-/* note */
-.note{position:absolute;bottom:18px;left:32px;right:100px;font-family:var(--fp);font-size:8px;color:rgba(0,212,255,.25);letter-spacing:1px;line-height:2;}
+    :root {
+      --bg: #05080f;
+      --bg2: #0a0f1e;
+      --bg3: #0d1628;
+      --cyan: #00d4ff;
+      --green: #00ff88;
+      --yellow: #ffc832;
+      --purple: #c77dff;
+      --red: #ff3366;
+      --text: #e2eaf8;
+      --dim: #3a5070;
+      --fp: 'Press Start 2P', monospace;
+      --fm: 'Share Tech Mono', monospace;
+      --orb: 'Orbitron', monospace;
+      /* Base design dimensions */
+      --W: 1280;
+      --H: 720;
+    }
 
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-/* TRANSITIONS */
-@keyframes outFade{to{opacity:0;transform:scale(1.03);}}
-@keyframes inFade{from{opacity:0;transform:scale(.97);}to{opacity:1;transform:none;}}
-@keyframes outLeft{to{opacity:0;transform:translateX(-5%);}}
-@keyframes inLeft{from{opacity:0;transform:translateX(5%);}to{opacity:1;transform:none;}}
-@keyframes outRight{to{opacity:0;transform:translateX(5%);}}
-@keyframes inRight{from{opacity:0;transform:translateX(-5%);}to{opacity:1;transform:none;}}
-@keyframes outZoom{to{opacity:0;transform:scale(1.12);}}
-@keyframes inZoom{from{opacity:0;transform:scale(.88);}to{opacity:1;transform:scale(1);}}
-@keyframes outGlitch{
-  0%{opacity:1;filter:none;transform:none;}
-  25%{transform:translateX(-4px);filter:hue-rotate(90deg) brightness(1.6);}
-  50%{transform:translateX(4px);filter:hue-rotate(-90deg);}
-  100%{opacity:0;transform:none;filter:none;}
-}
-@keyframes inGlitch{
-  0%{opacity:0;transform:translateX(8px);filter:hue-rotate(180deg) brightness(2);}
-  30%{opacity:1;transform:translateX(-3px);filter:hue-rotate(-60deg);}
-  60%{transform:translateX(2px);filter:brightness(1.2);}
-  100%{opacity:1;transform:none;filter:none;}
-}
-.out-fade{animation:outFade .4s ease forwards;}
-.in-fade{animation:inFade .4s ease forwards;}
-.out-left{animation:outLeft .4s cubic-bezier(.4,0,.2,1) forwards;}
-.in-left{animation:inLeft .4s cubic-bezier(.4,0,.2,1) forwards;}
-.out-right{animation:outRight .4s ease forwards;}
-.in-right{animation:inRight .4s ease forwards;}
-.out-zoom{animation:outZoom .38s ease forwards;}
-.in-zoom{animation:inZoom .38s ease forwards;}
-.out-glitch{animation:outGlitch .32s ease forwards;}
-.in-glitch{animation:inGlitch .48s ease forwards;}
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: var(--bg);
+    }
 
-/* NAV */
-#_prog{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--cyan),var(--green));z-index:9999;transition:width .4s ease;box-shadow:0 0 10px var(--cyan);}
-#_nav{position:fixed;bottom:10px;left:50%;transform:translateX(-50%);z-index:9999;display:flex;align-items:center;gap:6px;background:rgba(4,8,20,.9);padding:5px 12px;border:1px solid rgba(0,212,255,.18);backdrop-filter:blur(12px);}
-#_nav button{background:transparent;border:1px solid rgba(0,212,255,.25);color:var(--cyan);font-family:var(--fp);font-size:6px;padding:4px 10px;cursor:pointer;transition:all .15s;letter-spacing:1px;}
-#_nav button:hover{background:rgba(0,212,255,.12);border-color:var(--cyan);}
-#_nav button:disabled{opacity:.2;cursor:default;}
-#_ctr{font-family:var(--fp);font-size:6px;color:var(--dim);min-width:44px;text-align:center;}
-#_tb{position:fixed;bottom:18px;left:16px;font-family:var(--fp);font-size:6px;color:var(--dim);cursor:pointer;background:rgba(4,8,20,.85);border:1px solid rgba(0,212,255,.1);padding:6px 10px;z-index:9999;letter-spacing:1px;transition:color .15s;}
-#_tb:hover{color:var(--cyan);}
-#_fs,#_fsbar,#_keys{display:none !important;}
-#_tb{position:fixed;bottom:10px;left:14px;font-family:var(--fp);font-size:5px;color:var(--dim);cursor:pointer;background:rgba(4,8,20,.85);border:1px solid rgba(0,212,255,.12);padding:4px 8px;z-index:9999;letter-spacing:1px;}
-#_tb:hover{color:var(--cyan);}
-#_fsbar{position:fixed;top:0;left:0;right:0;z-index:9998;background:rgba(4,8,20,.95);padding:12px 20px;display:flex;align-items:center;justify-content:center;gap:16px;border-bottom:1px solid rgba(0,212,255,.2);}
-#_fsbar span{font-family:var(--fp);font-size:7px;color:var(--dim);letter-spacing:2px;}
-#_fsbig{font-family:var(--fp);font-size:9px;color:#05080f;background:var(--cyan);border:none;padding:10px 28px;cursor:pointer;letter-spacing:2px;}
-#_keys{display:none;}
+    body {
+      color: var(--text);
+      font-family: var(--fp);
+    }
 
-/* ── PRINT MODE ── */
-@media print{
-  *{
-    -webkit-print-color-adjust:exact !important;
-    print-color-adjust:exact !important;
-    animation:none !important;
-    transition:none !important;
-  }
-  body{overflow:visible !important;width:297mm !important;height:auto !important;background:#05080f !important;display:block !important;}
-  #_deck{width:297mm !important;height:auto !important;position:static !important;overflow:visible !important;}
-  .slide{
-    position:relative !important;
-    width:297mm !important;
-    height:210mm !important;
-    opacity:1 !important;
-    pointer-events:all !important;
-    page-break-after:always !important;
-    page-break-inside:avoid !important;
-    display:flex !important;
-    transform:none !important;
-    filter:none !important;
-  }
-  .slide:last-child{page-break-after:avoid !important;}
-  .out-fade,.in-fade,.out-left,.in-left,.out-right,.in-right,
-  .out-zoom,.in-zoom,.out-glitch,.in-glitch{
-    animation:none !important;opacity:1 !important;transform:none !important;
-  }
-  #_prog,#_nav,#_tb,#_fs,#_keys,#_fsbar{display:none !important;}
-}
-@page{size:A4 landscape;margin:0;}
-</style>
+    /* ── SCALE WRAPPER ── */
+    /* The outer shell fills the viewport; the inner canvas is always 1280×720
+   and scaled uniformly so nothing ever clips or wraps unexpectedly.        */
+    #_deck {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--bg);
+    }
+
+    #_canvas {
+      width: 1280px;
+      height: 720px;
+      position: relative;
+      flex-shrink: 0;
+      /* scale is set by JS on resize */
+      transform-origin: center center;
+    }
+
+    /* Every slide is exactly 1280×720 */
+    .slide {
+      width: 1280px;
+      height: 720px;
+      background: var(--bg);
+      position: absolute;
+      top: 0;
+      left: 0;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .slide.active {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .slide::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background-image: linear-gradient(rgba(0, 212, 255, .03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 212, 255, .03) 1px, transparent 1px);
+      background-size: 24px 24px;
+    }
+
+    .glow-line {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, transparent, var(--cyan), transparent);
+    }
+
+    .corner {
+      position: absolute;
+      width: 18px;
+      height: 18px;
+      border-color: var(--cyan);
+      border-style: solid;
+      opacity: .35;
+    }
+
+    .tl {
+      top: 8px;
+      left: 8px;
+      border-width: 2px 0 0 2px
+    }
+
+    .tr {
+      top: 8px;
+      right: 8px;
+      border-width: 2px 2px 0 0
+    }
+
+    .bl {
+      bottom: 8px;
+      left: 8px;
+      border-width: 0 0 2px 2px
+    }
+
+    .br {
+      bottom: 8px;
+      right: 8px;
+      border-width: 0 2px 2px 0
+    }
+
+    .slide-num {
+      position: absolute;
+      bottom: 12px;
+      right: 20px;
+      font-family: var(--fp);
+      font-size: 10.3px;
+      color: var(--dim);
+      letter-spacing: 2px;
+    }
+
+    .hdr {
+      background: rgba(8, 12, 22, .95);
+      border-bottom: 1px solid rgba(0, 212, 255, .15);
+      padding: 9px 28px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-shrink: 0;
+      position: relative;
+      z-index: 5;
+    }
+
+    .logo-svg {
+      flex-shrink: 0;
+    }
+
+    .hdr-title {
+      font-family: var(--fp);
+      font-size: 9.2px;
+      color: var(--cyan);
+      letter-spacing: 2px;
+    }
+
+    .hdr-right {
+      margin-left: auto;
+      font-family: var(--fp);
+      font-size: 9.2px;
+      color: var(--dim);
+      letter-spacing: 2px;
+    }
+
+    .body {
+      flex: 1;
+      padding: 20px 30px 18px;
+      position: relative;
+      z-index: 5;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 0;
+    }
+
+    .stitle {
+      font-family: var(--fp);
+      font-weight: 900;
+      font-size: 14.9px;
+      color: var(--cyan);
+      letter-spacing: 3px;
+      margin-bottom: 4px;
+      text-shadow: 0 0 24px rgba(0, 212, 255, .4);
+    }
+
+    .ssub {
+      font-family: var(--fp);
+      font-size: 10.3px;
+      color: var(--dim);
+      letter-spacing: 4px;
+      margin-bottom: 16px;
+    }
+
+    .bar {
+      height: 2px;
+      width: 60px;
+      background: linear-gradient(90deg, var(--cyan), transparent);
+      margin-bottom: 14px;
+    }
+
+    .g2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      flex: 1;
+      align-content: start;
+    }
+
+    .g3 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 10px;
+      flex: 1;
+    }
+
+    .g4 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr 1fr;
+      gap: 10px;
+      flex: 1;
+    }
+
+    .card {
+      background: rgba(8, 12, 22, .9);
+      border: 1px solid rgba(0, 212, 255, .12);
+      padding: 14px 16px;
+      position: relative;
+      height: 100%;
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: -1px;
+      left: -1px;
+      width: 6px;
+      height: 6px;
+      border-top: 2px solid rgba(0, 212, 255, .5);
+      border-left: 2px solid rgba(0, 212, 255, .5);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      flex: 1;
+    }
+
+    th {
+      background: rgba(0, 212, 255, .1);
+      border: 1px solid rgba(0, 212, 255, .2);
+      padding: 7px 12px;
+      font-family: var(--fp);
+      font-size: 10.3px;
+      color: var(--cyan);
+      letter-spacing: 2px;
+      text-align: left;
+    }
+
+    td {
+      border: 1px solid rgba(255, 255, 255, .05);
+      padding: 7px 12px;
+      font-family: var(--fp);
+      font-size: 9.2px;
+      color: #c0d0e0;
+      line-height: 2;
+    }
+
+    tr:nth-child(even) td {
+      background: rgba(0, 212, 255, .02);
+    }
+
+    .ci {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      margin-bottom: 9px;
+    }
+
+    .ci-dot {
+      width: 6px;
+      height: 6px;
+      flex-shrink: 0;
+      margin-top: 5px;
+    }
+
+    .ci-txt {
+      font-family: var(--fp);
+      font-size: 9.2px;
+      color: #b0c8e0;
+      line-height: 2;
+    }
+
+    .ci-bold {
+      font-family: var(--fp);
+      font-size: 9.2px;
+      color: var(--cyan);
+      display: block;
+      margin-bottom: 2px;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 3px 9px;
+      border: 1px solid;
+      font-family: var(--fp);
+      font-size: 10.3px;
+      letter-spacing: 1px;
+      margin: 2px;
+    }
+
+    .bc {
+      color: var(--cyan);
+      border-color: rgba(0, 212, 255, .4);
+      background: rgba(0, 212, 255, .06);
+    }
+
+    .bg {
+      color: var(--green);
+      border-color: rgba(0, 255, 136, .4);
+      background: rgba(0, 255, 136, .06);
+    }
+
+    .by {
+      color: var(--yellow);
+      border-color: rgba(255, 200, 50, .4);
+      background: rgba(255, 200, 50, .06);
+    }
+
+    .bp {
+      color: var(--purple);
+      border-color: rgba(199, 125, 255, .4);
+      background: rgba(199, 125, 255, .06);
+    }
+
+    .br2 {
+      color: var(--red);
+      border-color: rgba(255, 51, 102, .4);
+      background: rgba(255, 51, 102, .06);
+    }
+
+    .stat {
+      background: rgba(8, 12, 22, .9);
+      border: 1px solid rgba(0, 212, 255, .15);
+      padding: 18px 14px;
+      text-align: center;
+      position: relative;
+    }
+
+    .stat::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: var(--cyan);
+    }
+
+    .snum {
+      font-family: var(--fp);
+      font-size: 18.4px;
+      color: var(--cyan);
+      line-height: 1.1;
+      margin-bottom: 6px;
+    }
+
+    .slbl {
+      font-family: var(--fp);
+      font-size: 9.2px;
+      color: var(--dim);
+      letter-spacing: 2px;
+    }
+
+    .flow {
+      display: flex;
+      align-items: center;
+      background: rgba(8, 12, 22, .8);
+      border: 1px solid rgba(0, 212, 255, .1);
+      padding: 10px 16px;
+    }
+
+    .fs {
+      flex: 1;
+      text-align: center;
+      font-family: var(--fp);
+      font-size: 9.2px;
+      color: var(--cyan);
+      letter-spacing: 1px;
+      line-height: 2;
+    }
+
+    .fa {
+      font-size: 16.1px;
+      color: rgba(0, 212, 255, .4);
+      flex-shrink: 0;
+      padding: 0 6px;
+    }
+
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 20% 50%, rgba(0, 212, 255, .07) 0%, transparent 50%), radial-gradient(ellipse at 80% 30%, rgba(199, 125, 255, .06) 0%, transparent 50%), radial-gradient(ellipse at 50% 80%, rgba(0, 255, 136, .04) 0%, transparent 40%);
+    }
+
+    .slabel {
+      font-family: var(--fp);
+      font-size: 10.3px;
+      color: var(--cyan);
+      letter-spacing: 4px;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .slabel::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(90deg, rgba(0, 212, 255, .3), transparent);
+    }
+
+    @keyframes outFade {
+      to {
+        opacity: 0;
+        transform: scale(1.03);
+      }
+    }
+
+    @keyframes inFade {
+      from {
+        opacity: 0;
+        transform: scale(.97);
+      }
+
+      to {
+        opacity: 1;
+        transform: none;
+      }
+    }
+
+    @keyframes outLeft {
+      to {
+        opacity: 0;
+        transform: translateX(-5%);
+      }
+    }
+
+    @keyframes inLeft {
+      from {
+        opacity: 0;
+        transform: translateX(5%);
+      }
+
+      to {
+        opacity: 1;
+        transform: none;
+      }
+    }
+
+    @keyframes outRight {
+      to {
+        opacity: 0;
+        transform: translateX(5%);
+      }
+    }
+
+    @keyframes inRight {
+      from {
+        opacity: 0;
+        transform: translateX(-5%);
+      }
+
+      to {
+        opacity: 1;
+        transform: none;
+      }
+    }
+
+    @keyframes outZoom {
+      to {
+        opacity: 0;
+        transform: scale(1.12);
+      }
+    }
+
+    @keyframes inZoom {
+      from {
+        opacity: 0;
+        transform: scale(.88);
+      }
+
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    @keyframes outGlitch {
+      0% {
+        opacity: 1;
+        filter: none;
+        transform: none;
+      }
+
+      25% {
+        transform: translateX(-4px);
+        filter: hue-rotate(90deg) brightness(1.6);
+      }
+
+      50% {
+        transform: translateX(4px);
+        filter: hue-rotate(-90deg);
+      }
+
+      100% {
+        opacity: 0;
+        transform: none;
+        filter: none;
+      }
+    }
+
+    @keyframes inGlitch {
+      0% {
+        opacity: 0;
+        transform: translateX(8px);
+        filter: hue-rotate(180deg) brightness(2);
+      }
+
+      30% {
+        opacity: 1;
+        transform: translateX(-3px);
+        filter: hue-rotate(-60deg);
+      }
+
+      60% {
+        transform: translateX(2px);
+        filter: brightness(1.2);
+      }
+
+      100% {
+        opacity: 1;
+        transform: none;
+        filter: none;
+      }
+    }
+
+    .out-fade {
+      animation: outFade .4s ease forwards;
+    }
+
+    .in-fade {
+      animation: inFade .4s ease forwards;
+    }
+
+    .out-left {
+      animation: outLeft .4s cubic-bezier(.4, 0, .2, 1) forwards;
+    }
+
+    .in-left {
+      animation: inLeft .4s cubic-bezier(.4, 0, .2, 1) forwards;
+    }
+
+    .out-right {
+      animation: outRight .4s ease forwards;
+    }
+
+    .in-right {
+      animation: inRight .4s ease forwards;
+    }
+
+    .out-zoom {
+      animation: outZoom .38s ease forwards;
+    }
+
+    .in-zoom {
+      animation: inZoom .38s ease forwards;
+    }
+
+    .out-glitch {
+      animation: outGlitch .32s ease forwards;
+    }
+
+    .in-glitch {
+      animation: inGlitch .48s ease forwards;
+    }
+
+    /* ── PROGRESS BAR — fixed to viewport ── */
+    #_prog {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--cyan), var(--green));
+      z-index: 9999;
+      transition: width .4s ease;
+      box-shadow: 0 0 10px var(--cyan);
+    }
+
+    /* ── NAV — fixed to viewport, always readable ── */
+    #_nav {
+      position: fixed;
+      bottom: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(4, 8, 20, .92);
+      padding: 5px 14px;
+      border: 1px solid rgba(0, 212, 255, .2);
+      backdrop-filter: blur(16px);
+      border-radius: 2px;
+    }
+
+    #_nav button {
+      background: transparent;
+      border: 1px solid rgba(0, 212, 255, .3);
+      color: var(--cyan);
+      font-family: var(--fp);
+      font-size: 8.0px;
+      padding: 5px 12px;
+      cursor: pointer;
+      transition: all .15s;
+      letter-spacing: 1px;
+      touch-action: manipulation;
+    }
+
+    #_nav button:hover,
+    #_nav button:active {
+      background: rgba(0, 212, 255, .14);
+      border-color: var(--cyan);
+    }
+
+    #_nav button:disabled {
+      opacity: .2;
+      cursor: default;
+    }
+
+    #_ctr {
+      font-family: var(--fp);
+      font-size: 8.0px;
+      color: var(--dim);
+      min-width: 50px;
+      text-align: center;
+    }
+
+    #_tb {
+      position: fixed;
+      bottom: 10px;
+      left: 10px;
+      font-family: var(--fp);
+      font-size: 6.9px;
+      color: var(--dim);
+      cursor: pointer;
+      background: rgba(4, 8, 20, .88);
+      border: 1px solid rgba(0, 212, 255, .15);
+      padding: 5px 9px;
+      z-index: 9999;
+      letter-spacing: 1px;
+      touch-action: manipulation;
+      border-radius: 2px;
+    }
+
+    #_tb:hover,
+    #_tb:active {
+      color: var(--cyan);
+    }
+
+    /* ── PRINT ── */
+    @media print {
+      * {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+        animation: none !important;
+        transition: none !important;
+      }
+
+      html,
+      body {
+        overflow: visible !important;
+        width: 297mm !important;
+        height: auto !important;
+        background: #05080f !important;
+      }
+
+      #_deck {
+        position: static !important;
+        width: 297mm !important;
+        height: auto !important;
+        display: block !important;
+      }
+
+      #_canvas {
+        width: 297mm !important;
+        height: auto !important;
+        transform: none !important;
+        position: static !important;
+      }
+
+      .slide {
+        position: relative !important;
+        width: 297mm !important;
+        height: 210mm !important;
+        opacity: 1 !important;
+        pointer-events: all !important;
+        page-break-after: always !important;
+        page-break-inside: avoid !important;
+        display: flex !important;
+        transform: none !important;
+        filter: none !important;
+      }
+
+      .slide:last-child {
+        page-break-after: avoid !important;
+      }
+
+      #_prog,
+      #_nav,
+      #_tb {
+        display: none !important;
+      }
+    }
+
+    @page {
+      size: A4 landscape;
+      margin: 0;
+    }
+  </style>
 </head>
+
 <body>
-<div id="_deck">
-<!-- LOGO SVG reusable -->
-<svg id="logo-tmpl" style="display:none">
-  <symbol id="ah-logo" viewBox="0 0 32 32">
-    <rect width="32" height="32" fill="#040a14"/>
-    <rect x="4" y="4" width="24" height="24" stroke="#00e5ff" stroke-width="1" fill="none"/>
-    <rect x="9" y="9" width="6" height="6" fill="#00e5ff"/>
-    <rect x="17" y="9" width="6" height="6" fill="#00ff41"/>
-    <rect x="9" y="17" width="6" height="6" fill="#ffe600"/>
-    <rect x="17" y="17" width="6" height="6" fill="#bf5af2"/>
-  </symbol>
-</svg>
+  <div id="_deck">
+    <div id="_canvas">
 
-<!-- ═══════ SLIDE 1 — TITLE ═══════ -->
-<div class="slide" style="height:210mm;">
-  <div class="hero-bg"></div>
-  <div class="glow-line"></div>
-  <div class="corner tl"></div><div class="corner tr"></div>
-  <div class="corner bl"></div><div class="corner br"></div>
-
-  <!-- top accent line -->
-  <div style="position:absolute;top:3px;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(0,212,255,.3),transparent);"></div>
-
-  <div style="flex:1;display:flex;flex-direction:column;padding:0;position:relative;z-index:5;">
-
-    <!-- TOP SECTION -->
-    <div style="padding:18px 28px 14px;border-bottom:1px solid rgba(0,212,255,.1);display:flex;align-items:center;justify-content:space-between;">
-      <div style="display:flex;align-items:center;gap:10px;">
-        <svg width="28" height="28"><use href="#ah-logo"/></svg>
-        <span style="font-family:var(--fp);font-size:7px;color:var(--cyan);letter-spacing:3px;">ARENAHUB</span>
-      </div>
-      <span style="font-family:var(--fp);font-size:6px;color:var(--dim);letter-spacing:3px;">ДИПЛОМ ХАМГААЛАЛТ · 2026</span>
-    </div>
-
-    <!-- HERO CENTER -->
-    <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 28px;text-align:center;gap:0;">
-      <div style="font-family:var(--fp);font-size:7px;color:rgba(0,212,255,.5);letter-spacing:8px;margin-bottom:14px;">DIPLOMA DEFENSE PRESENTATION</div>
-
-      <!-- Logo big -->
-      <svg width="72" height="72" style="margin-bottom:14px;filter:drop-shadow(0 0 20px rgba(0,212,255,.4));">
-        <use href="#ah-logo"/>
+      <svg id="logo-tmpl" style="display:none">
+        <symbol id="ah-logo" viewBox="0 0 32 32">
+          <rect width="32" height="32" fill="#040a14" />
+          <rect x="4" y="4" width="24" height="24" stroke="#00e5ff" stroke-width="1" fill="none" />
+          <rect x="9" y="9" width="6" height="6" fill="#00e5ff" />
+          <rect x="17" y="9" width="6" height="6" fill="#00ff41" />
+          <rect x="9" y="17" width="6" height="6" fill="#ffe600" />
+          <rect x="17" y="17" width="6" height="6" fill="#bf5af2" />
+        </symbol>
       </svg>
 
-      <!-- Main title -->
-      <div style="font-family:var(--fp);font-weight:900;font-size:28px;color:var(--cyan);letter-spacing:4px;text-shadow:0 0 60px rgba(0,212,255,.6);line-height:1;margin-bottom:12px;">ARENAHUB</div>
-      <div style="height:2px;width:200px;background:linear-gradient(90deg,transparent,var(--cyan),transparent);margin-bottom:12px;"></div>
-      <div style="font-family:var(--fp);font-size:9px;color:var(--green);letter-spacing:3px;text-shadow:0 0 16px rgba(0,255,136,.4);margin-bottom:6px;">Gamified AI-Powered Coding Learning Platform</div>
-      <div style="font-family:var(--fp);font-size:7px;color:rgba(255,255,255,.25);letter-spacing:3px;margin-bottom:18px;">Full-Stack Web Application Graduation Project</div>
+      <!-- ═══════ SLIDE 1 — ГАРЧИГ ═══════ -->
+      <div class="slide">
+        <div class="hero-bg"></div>
+        <div class="glow-line"></div>
+        <div class="corner tl"></div>
+        <div class="corner tr"></div>
+        <div class="corner bl"></div>
+        <div class="corner br"></div>
 
-      <!-- Badges -->
-      <div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin-bottom:18px;">
-        <span class="badge bc">Next.js 15</span>
-        <span class="badge bg">React 19</span>
-        <span class="badge by">Groq AI</span>
-        <span class="badge bp">Prisma ORM</span>
-        <span class="badge bc">TypeScript</span>
-        <span class="badge br2">Gamification</span>
-        <span class="badge bg">PostgreSQL</span>
-        <span class="badge by">Vercel</span>
-      </div>
-
-      <!-- Stats row -->
-      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;width:100%;max-width:480px;margin-bottom:18px;">
-        <div style="background:rgba(0,212,255,.06);border:1px solid rgba(0,212,255,.2);padding:10px;text-align:center;">
-          <div style="font-family:var(--fp);font-size:22px;color:var(--cyan);line-height:1;">8</div>
-          <div style="font-family:var(--fp);font-size:6px;color:var(--dim);margin-top:4px;">COURSES</div>
-        </div>
-        <div style="background:rgba(0,255,136,.06);border:1px solid rgba(0,255,136,.2);padding:10px;text-align:center;">
-          <div style="font-family:var(--fp);font-size:18px;color:var(--green);line-height:1;">350+</div>
-          <div style="font-family:var(--fp);font-size:6px;color:var(--dim);margin-top:4px;">TASKS</div>
-        </div>
-        <div style="background:rgba(199,125,255,.06);border:1px solid rgba(199,125,255,.2);padding:10px;text-align:center;">
-          <div style="font-family:var(--fp);font-size:18px;color:var(--purple);line-height:1;">AI</div>
-          <div style="font-family:var(--fp);font-size:6px;color:var(--dim);margin-top:4px;">TUTOR</div>
-        </div>
-        <div style="background:rgba(255,200,50,.06);border:1px solid rgba(255,200,50,.2);padding:10px;text-align:center;">
-          <div style="font-family:var(--fp);font-size:18px;color:var(--yellow);line-height:1;">30</div>
-          <div style="font-family:var(--fp);font-size:6px;color:var(--dim);margin-top:4px;">DB MODELS</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- BOTTOM INFO -->
-    <div style="border-top:1px solid rgba(0,212,255,.2);padding:16px 32px 20px;display:grid;grid-template-columns:repeat(5,1fr);gap:16px;background:rgba(6,10,20,.7);flex-shrink:0;">
-      <div>
-        <div style="font-family:var(--fp);font-size:6px;color:var(--dim);letter-spacing:2px;margin-bottom:6px;">ОЮУТАН</div>
-        <div style="font-family:var(--fp);font-size:9px;color:var(--text);">Б.БАТБАЯСГАЛАН</div>
-      </div>
-      <div>
-        <div style="font-family:var(--fp);font-size:6px;color:var(--dim);letter-spacing:2px;margin-bottom:6px;">СУРГУУЛЬ</div>
-        <div style="font-family:var(--fp);font-size:8px;color:var(--text);">ИНДРА КИБЕР ИНС.</div>
-      </div>
-      <div>
-        <div style="font-family:var(--fp);font-size:6px;color:var(--dim);letter-spacing:2px;margin-bottom:6px;">АНГИ</div>
-        <div style="font-family:var(--fp);font-size:9px;color:var(--text);">SW25-01</div>
-      </div>
-      <div>
-        <div style="font-family:var(--fp);font-size:6px;color:var(--dim);letter-spacing:2px;margin-bottom:6px;">МЭРГЭЖИЛ</div>
-        <div style="font-family:var(--fp);font-size:8px;color:var(--green);">FULLSTACK DEV</div>
-      </div>
-      <div>
-        <div style="font-family:var(--fp);font-size:6px;color:var(--dim);letter-spacing:2px;margin-bottom:6px;">УДИРДАГЧ</div>
-        <div style="font-family:var(--fp);font-size:9px;color:var(--cyan);">ЧИНХҮСЛЭН</div>
-      </div>
-    </div>
-  </div>
-  <div class="slide-num">01 / 16</div>
-</div>
-
-<!-- ═══════ SLIDE 2 — INTRODUCTION ═══════ -->
-<div class="slide">
-  <div class="glow-line"></div><div class="corner tl"></div><div class="corner tr"></div><div class="corner bl"></div><div class="corner br"></div>
-  <div class="hdr"><svg class="logo-svg" width="28" height="28"><use href="#ah-logo"/></svg><span class="hdr-title">ARENAHUB</span><span class="hdr-right">INTRODUCTION</span></div>
-  <div class="body">
-    <div class="slabel">ТӨСЛИЙН ТАНИЛЦУУЛГА</div>
-    <div class="stitle" style="font-size:18px;">ArenaHub гэж юу вэ?</div><div class="bar"></div>
-    <div class="g2" style="gap:16px;">
-      <div>
-        <div style="font-family:var(--fp);font-size:8px;color:var(--cyan);margin-bottom:10px;letter-spacing:2px;">ПЛАТФОРМЫН ОНЦЛОГ</div>
-        <div class="ci"><div class="ci-dot" style="background:var(--cyan)"></div><div class="ci-txt"><span class="ci-bold">AI-powered coding learning</span>Groq llama-3.3-70b AI туторт</div></div>
-        <div class="ci"><div class="ci-dot" style="background:var(--green)"></div><div class="ci-txt"><span class="ci-bold">Gamification system</span>XP, level, combo, HP, achievement</div></div>
-        <div class="ci"><div class="ci-dot" style="background:var(--yellow)"></div><div class="ci-txt"><span class="ci-bold">Online contest system</span>Мөнгөн шагналтай тэмцээн</div></div>
-        <div class="ci"><div class="ci-dot" style="background:var(--purple)"></div><div class="ci-txt"><span class="ci-bold">Global leaderboard</span>XP-ээр өрсөлдөх ranking</div></div>
-        <div class="ci"><div class="ci-dot" style="background:var(--red)"></div><div class="ci-txt"><span class="ci-bold">Монгол + Англи хэл</span>446 translation keys</div></div>
-      </div>
-      <div>
-        <div style="font-family:var(--fp);font-size:8px;color:var(--green);margin-bottom:10px;letter-spacing:2px;">ЗОРИЛГО</div>
-        <div style="font-size:9px;color:#8090b0;line-height:2;margin-bottom:14px;">Програмчлал сурах процессыг <span style="color:var(--cyan);">илүү сонирхолтой</span>, <span style="color:var(--green);">interactive</span>, <span style="color:var(--yellow);">personalized</span> болгох</div>
-        <div class="g2" style="gap:8px;">
-          <div class="stat"><div class="snum" style="font-size:20px;">8</div><div class="slbl">COURSES</div></div>
-          <div class="stat"><div class="snum" style="font-size:14px;color:var(--green);">350+</div><div class="slbl">TASKS</div></div>
-          <div class="stat"><div class="snum" style="font-size:14px;color:var(--yellow);">56</div><div class="slbl">LESSONS</div></div>
-          <div class="stat"><div class="snum" style="font-size:14px;color:var(--purple);">AI</div><div class="slbl">TUTOR</div></div>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="slide-num">02 / 16</div>
-</div>
-
-<!-- ═══════ SLIDE 3 — PROBLEM ═══════ -->
-<div class="slide">
-  <div class="glow-line"></div><div class="corner tl"></div><div class="corner tr"></div><div class="corner bl"></div><div class="corner br"></div>
-  <div class="hdr"><svg class="logo-svg" width="28" height="28"><use href="#ah-logo"/></svg><span class="hdr-title">ARENAHUB</span><span class="hdr-right">PROBLEM STATEMENT</span></div>
-  <div class="body">
-    <div class="slabel">АСУУДЛЫН ТОДОРХОЙЛОЛТ</div>
-    <div class="stitle" style="font-size:18px;">Одоогийн Сургалтын Системийн Дутагдал</div><div class="bar"></div>
-    <div class="g2" style="gap:16px;">
-      <div>
-        <div style="font-family:var(--fp);font-size:8px;color:var(--red);margin-bottom:10px;letter-spacing:2px;">❌ АСУУДЛУУД</div>
-        <div class="card" style="border-color:rgba(255,51,102,.2);margin-bottom:8px;">
-          <div class="ci"><div class="ci-dot" style="background:var(--red)"></div><div class="ci-txt"><span class="ci-bold" style="color:var(--red);">Уйтгартай learning experience</span>Текст дүүрэн статик хуудсууд</div></div>
-          <div class="ci"><div class="ci-dot" style="background:var(--red)"></div><div class="ci-txt"><span class="ci-bold" style="color:var(--red);">Personalized guidance дутмаг</span>Хэн бүхэнд нэг адил контент</div></div>
-          <div class="ci"><div class="ci-dot" style="background:var(--red)"></div><div class="ci-txt"><span class="ci-bold" style="color:var(--red);">Motivation буурдаг</span>Дунд зэрэгт орхидог</div></div>
-          <div class="ci"><div class="ci-dot" style="background:var(--red)"></div><div class="ci-txt"><span class="ci-bold" style="color:var(--red);">Real-time feedback байхгүй</span>Алдаагаа ойлгоход удаан</div></div>
-          <div class="ci"><div class="ci-dot" style="background:var(--red)"></div><div class="ci-txt"><span class="ci-bold" style="color:var(--red);">Practice system хангалтгүй</span>Онол ихтэй, дасгал цөөн</div></div>
-        </div>
-      </div>
-      <div>
-        <div style="font-family:var(--fp);font-size:8px;color:var(--green);margin-bottom:10px;letter-spacing:2px;">✅ ARENAHUB ШИЙДЭЛ</div>
-        <div class="card" style="border-color:rgba(0,255,136,.2);">
-          <div class="ci"><div class="ci-dot" style="background:var(--green)"></div><div class="ci-txt"><span class="ci-bold" style="color:var(--green);">AI Tutor</span>Groq AI instant feedback, personalized hints</div></div>
-          <div class="ci"><div class="ci-dot" style="background:var(--cyan)"></div><div class="ci-txt"><span class="ci-bold" style="color:var(--cyan);">Gamification</span>XP, combo, HP — тоглоом шиг</div></div>
-          <div class="ci"><div class="ci-dot" style="background:var(--yellow)"></div><div class="ci-txt"><span class="ci-bold" style="color:var(--yellow);">Live progress tracking</span>Real-time leaderboard, statistics</div></div>
-          <div class="ci"><div class="ci-dot" style="background:var(--purple)"></div><div class="ci-txt"><span class="ci-bold" style="color:var(--purple);">Interactive coding system</span>Monaco editor + sandbox</div></div>
-          <div class="ci"><div class="ci-dot" style="background:var(--red)"></div><div class="ci-txt"><span class="ci-bold" style="color:var(--red);">Achievement system</span>15 achievement, 10 reward</div></div>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="slide-num">03 / 16</div>
-</div>
-
-<!-- ═══════ SLIDE 4 — TECH STACK ═══════ -->
-<div class="slide">
-  <div class="glow-line"></div><div class="corner tl"></div><div class="corner tr"></div><div class="corner bl"></div><div class="corner br"></div>
-  <div class="hdr"><svg class="logo-svg" width="28" height="28"><use href="#ah-logo"/></svg><span class="hdr-title">ARENAHUB</span><span class="hdr-right">TECHNOLOGY STACK</span></div>
-  <div class="body">
-    <div class="slabel">АШИГЛАСАН ТЕХНОЛОГИУД</div>
-    <div class="stitle" style="font-size:18px;">Full-Stack Technology</div><div class="bar"></div>
-    <div class="g2" style="gap:14px;">
-      <div>
-        <div style="font-family:var(--fp);font-size:9px;color:var(--cyan);margin-bottom:8px;letter-spacing:2px;">FRONTEND STACK</div>
-        <table>
-          <tr><th>ТЕХНОЛОГИ</th><th>ХУВИЛБАР</th><th>ЗОРИУЛАЛТ</th></tr>
-          <tr><td style="color:var(--cyan);font-family:var(--fp);font-size:9px;">Next.js</td><td>15.3.9</td><td>React framework, SSR</td></tr>
-          <tr><td style="color:var(--green);font-family:var(--fp);font-size:9px;">React</td><td>19</td><td>UI library</td></tr>
-          <tr><td style="color:var(--yellow);font-family:var(--fp);font-size:9px;">TypeScript</td><td>5</td><td>Type safety</td></tr>
-          <tr><td style="color:var(--purple);font-family:var(--fp);font-size:9px;">Tailwind CSS</td><td>3.4</td><td>Styling</td></tr>
-          <tr><td style="color:var(--red);font-family:var(--fp);font-size:9px;">Three.js</td><td>0.169</td><td>3D rendering</td></tr>
-          <tr><td style="color:var(--cyan);font-family:var(--fp);font-size:9px;">Monaco Editor</td><td>0.52</td><td>VS Code editor</td></tr>
-        </table>
-      </div>
-      <div>
-        <div style="font-family:var(--fp);font-size:9px;color:var(--green);margin-bottom:8px;letter-spacing:2px;">BACKEND STACK</div>
-        <table>
-          <tr><th>ТЕХНОЛОГИ</th><th>ЗОРИУЛАЛТ</th></tr>
-          <tr><td style="color:var(--cyan);font-family:var(--fp);font-size:9px;">Node.js</td><td>Runtime environment</td></tr>
-          <tr><td style="color:var(--green);font-family:var(--fp);font-size:9px;">API Routes</td><td>REST API (55 endpoints)</td></tr>
-          <tr><td style="color:var(--yellow);font-family:var(--fp);font-size:9px;">JWT</td><td>Authentication tokens</td></tr>
-          <tr><td style="color:var(--red);font-family:var(--fp);font-size:9px;">Zod</td><td>Input validation</td></tr>
-          <tr><td style="color:var(--cyan);font-family:var(--fp);font-size:9px;">Nodemailer</td><td>Email service</td></tr>
-        </table>
-      </div>
-    </div>
-  </div>
-  <div class="slide-num">04 / 16</div>
-</div>
-
-<!-- ═══════ SLIDE 5 — ARCHITECTURE ═══════ -->
-<div class="slide">
-  <div class="glow-line"></div><div class="corner tl"></div><div class="corner tr"></div><div class="corner bl"></div><div class="corner br"></div>
-  <div class="hdr"><svg class="logo-svg" width="28" height="28"><use href="#ah-logo"/></svg><span class="hdr-title">ARENAHUB</span><span class="hdr-right">SYSTEM ARCHITECTURE</span></div>
-  <div class="body">
-    <div class="slabel">СИСТЕМИЙН АРХИТЕКТУР</div>
-    <div class="stitle" style="font-size:18px;">System Architecture</div><div class="bar"></div>
-    <div class="g2" style="gap:14px;align-items:start;">
-      <div>
-        <div class="flow" style="flex-direction:column;gap:0;padding:0;">
-          <div style="text-align:center;padding:12px;background:rgba(0,212,255,.08);border-bottom:1px solid rgba(0,212,255,.15);width:100%;">
-            <div style="font-family:var(--fp);font-size:8px;color:var(--cyan);">🖥️ FRONTEND</div>
-            <div style="font-size:8px;color:var(--dim);margin-top:3px;">Next.js 15 · React 19 · TypeScript</div>
-          </div>
-          <div style="text-align:center;padding:6px;color:rgba(0,212,255,.4);font-size:16px;">⬇</div>
-          <div style="text-align:center;padding:12px;background:rgba(0,255,136,.06);border-bottom:1px solid rgba(0,212,255,.1);width:100%;">
-            <div style="font-family:var(--fp);font-size:8px;color:var(--green);">⚙️ API LAYER</div>
-            <div style="font-size:8px;color:var(--dim);margin-top:3px;">Next.js API Routes · REST · 55 endpoints</div>
-          </div>
-          <div style="text-align:center;padding:6px;color:rgba(0,212,255,.4);font-size:16px;">⬇</div>
-          <div style="text-align:center;padding:12px;background:rgba(255,200,50,.06);border-bottom:1px solid rgba(0,212,255,.1);width:100%;">
-            <div style="font-family:var(--fp);font-size:8px;color:var(--yellow);">🔐 AUTH LAYER</div>
-            <div style="font-size:8px;color:var(--dim);margin-top:3px;">NextAuth · JWT · Google · GitHub</div>
-          </div>
-          <div style="text-align:center;padding:6px;color:rgba(0,212,255,.4);font-size:16px;">⬇</div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;width:100%;">
-            <div style="text-align:center;padding:12px;background:rgba(199,125,255,.06);border-right:1px solid rgba(0,212,255,.1);">
-              <div style="font-family:var(--fp);font-size:8px;color:var(--purple);">🗄️ DATABASE</div>
-              <div style="font-size:9px;color:var(--dim);margin-top:3px;">PostgreSQL · Prisma</div>
+        <div style="flex:1;display:flex;flex-direction:column;padding:0;position:relative;z-index:5;">
+          <div
+            style="padding:18px 28px 14px;border-bottom:1px solid rgba(0,212,255,.1);display:flex;align-items:center;justify-content:space-between;">
+            <div style="display:flex;align-items:center;gap:10px;">
+              <svg width="28" height="28">
+                <use href="#ah-logo" />
+              </svg>
+              <span style="font-family:var(--fp);font-size:8.0px;color:var(--cyan);letter-spacing:3px;">ARENAHUB</span>
             </div>
-            <div style="text-align:center;padding:12px;background:rgba(255,51,102,.06);">
-              <div style="font-family:var(--fp);font-size:8px;color:var(--red);">🤖 AI SYSTEM</div>
-              <div style="font-size:9px;color:var(--dim);margin-top:3px;">Groq API · llama-3.3</div>
+            <span style="font-family:var(--fp);font-size:6.9px;color:var(--dim);letter-spacing:3px;">ДИПЛОМ ХАМГААЛАЛТ ·
+              2026</span>
+          </div>
+
+          <div
+            style="flex:1;display:grid;grid-template-columns:1fr 1fr;align-items:center;padding:0 36px;gap:24px;min-height:0;">
+            <!-- LEFT: title -->
+            <div style="display:flex;flex-direction:column;align-items:flex-start;justify-content:center;">
+              <div
+                style="font-family:var(--fp);font-size:8.0px;color:rgba(0,212,255,.5);letter-spacing:8px;margin-bottom:12px;">
+                DIPLOMA DEFENSE PRESENTATION</div>
+              <svg width="36" height="36" style="margin-bottom:10px;filter:drop-shadow(0 0 20px rgba(0,212,255,.4));">
+                <use href="#ah-logo" />
+              </svg>
+              <div
+                style="font-family:var(--fp);font-weight:900;font-size:30px;color:var(--cyan);letter-spacing:4px;text-shadow:0 0 60px rgba(0,212,255,.6);line-height:1;margin-bottom:10px;">
+                ARENAHUB</div>
+              <div
+                style="height:2px;width:180px;background:linear-gradient(90deg,var(--cyan),transparent);margin-bottom:10px;">
+              </div>
+              <div
+                style="font-family:var(--fp);font-size:8.5px;color:var(--green);letter-spacing:2px;text-shadow:0 0 16px rgba(0,255,136,.4);margin-bottom:4px;">
+                AI Технологид Суурилсан Gamification Системтэй</div>
+              <div
+                style="font-family:var(--fp);font-size:8.5px;color:var(--green);letter-spacing:2px;margin-bottom:10px;">
+                Програмчлал Сургалтын Платформ</div>
+              <div
+                style="font-family:var(--fp);font-size:7.5px;color:rgba(255,255,255,.25);letter-spacing:3px;margin-bottom:14px;">
+                Full-Stack Web Application Graduation Project</div>
+              <div style="display:flex;gap:5px;flex-wrap:wrap;">
+                <span class="badge bc">Next.js 15</span>
+                <span class="badge bg">React 19</span>
+                <span class="badge by">Groq AI</span>
+                <span class="badge bp">Prisma ORM</span>
+                <span class="badge bc">TypeScript</span>
+                <span class="badge br2">Gamification</span>
+                <span class="badge bg">PostgreSQL</span>
+                <span class="badge by">Vercel</span>
+                <span class="badge bp">Three.js</span>
+              </div>
+            </div>
+            <!-- RIGHT: stats grid -->
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;">
+              <div
+                style="background:rgba(0,212,255,.06);border:1px solid rgba(0,212,255,.2);padding:14px 8px;text-align:center;">
+                <div style="font-family:var(--fp);font-size:20px;color:var(--cyan);line-height:1;">8</div>
+                <div style="font-family:var(--fp);font-size:7px;color:var(--dim);margin-top:6px;">COURSE</div>
+              </div>
+              <div
+                style="background:rgba(0,255,136,.06);border:1px solid rgba(0,255,136,.2);padding:14px 8px;text-align:center;">
+                <div style="font-family:var(--fp);font-size:20px;color:var(--green);line-height:1;">56</div>
+                <div style="font-family:var(--fp);font-size:7px;color:var(--dim);margin-top:6px;">LESSON</div>
+              </div>
+              <div
+                style="background:rgba(255,200,50,.06);border:1px solid rgba(255,200,50,.2);padding:14px 8px;text-align:center;">
+                <div style="font-family:var(--fp);font-size:17px;color:var(--yellow);line-height:1;">350+</div>
+                <div style="font-family:var(--fp);font-size:7px;color:var(--dim);margin-top:6px;">TASK</div>
+              </div>
+              <div
+                style="background:rgba(255,51,102,.06);border:1px solid rgba(255,51,102,.2);padding:14px 8px;text-align:center;">
+                <div style="font-family:var(--fp);font-size:20px;color:var(--red);line-height:1;">55</div>
+                <div style="font-family:var(--fp);font-size:7px;color:var(--dim);margin-top:6px;">API</div>
+              </div>
+              <div
+                style="background:rgba(199,125,255,.06);border:1px solid rgba(199,125,255,.2);padding:14px 8px;text-align:center;">
+                <div style="font-family:var(--fp);font-size:20px;color:var(--purple);line-height:1;">30</div>
+                <div style="font-family:var(--fp);font-size:7px;color:var(--dim);margin-top:6px;">DB MODEL</div>
+              </div>
+              <div
+                style="background:rgba(0,212,255,.06);border:1px solid rgba(0,212,255,.15);padding:14px 8px;text-align:center;">
+                <div style="font-family:var(--fp);font-size:17px;color:var(--cyan);line-height:1;">446</div>
+                <div style="font-family:var(--fp);font-size:7px;color:var(--dim);margin-top:6px;">i18n KEY</div>
+              </div>
+            </div>
+          </div>
+
+          <div
+            style="border-top:1px solid rgba(0,212,255,.2);padding:14px 32px 18px;display:grid;grid-template-columns:repeat(5,1fr);gap:16px;background:rgba(6,10,20,.7);flex-shrink:0;">
+            <div>
+              <div style="font-family:var(--fp);font-size:6.9px;color:var(--dim);letter-spacing:2px;margin-bottom:6px;">
+                ОЮУТАН</div>
+              <div style="font-family:var(--fp);font-size:10.3px;color:var(--text);">Б.БАТБАЯСГАЛАН</div>
+            </div>
+            <div>
+              <div style="font-family:var(--fp);font-size:6.9px;color:var(--dim);letter-spacing:2px;margin-bottom:6px;">
+                СУРГУУЛЬ</div>
+              <div style="font-family:var(--fp);font-size:9.2px;color:var(--text);">ИНДРА КИБЕР ИНС.</div>
+            </div>
+            <div>
+              <div style="font-family:var(--fp);font-size:6.9px;color:var(--dim);letter-spacing:2px;margin-bottom:6px;">
+                АНГИ</div>
+              <div style="font-family:var(--fp);font-size:10.3px;color:var(--text);">SW25-01</div>
+            </div>
+            <div>
+              <div style="font-family:var(--fp);font-size:6.9px;color:var(--dim);letter-spacing:2px;margin-bottom:6px;">
+                МЭРГЭЖИЛ</div>
+              <div style="font-family:var(--fp);font-size:9.2px;color:var(--green);">FULLSTACK DEV</div>
+            </div>
+            <div>
+              <div style="font-family:var(--fp);font-size:6.9px;color:var(--dim);letter-spacing:2px;margin-bottom:6px;">
+                УДИРДАГЧ</div>
+              <div style="font-family:var(--fp);font-size:10.3px;color:var(--cyan);">ЧИНХҮСЛЭН</div>
             </div>
           </div>
         </div>
+        <div class="slide-num">01 / 15</div>
       </div>
-      <div>
-        <div style="font-family:var(--fp);font-size:9px;color:var(--yellow);margin-bottom:8px;letter-spacing:2px;">COMPONENTS</div>
-        <div class="ci"><div class="ci-dot" style="background:var(--cyan)"></div><div class="ci-txt"><span class="ci-bold">Next.js Monorepo</span>Frontend + Backend нэг repo</div></div>
-        <div class="ci"><div class="ci-dot" style="background:var(--green)"></div><div class="ci-txt"><span class="ci-bold">Serverless Functions</span>Vercel-д auto deploy</div></div>
-        <div class="ci"><div class="ci-dot" style="background:var(--yellow)"></div><div class="ci-txt"><span class="ci-bold">React Context API</span>Auth, Language state management</div></div>
-        <div class="ci"><div class="ci-dot" style="background:var(--purple)"></div><div class="ci-txt"><span class="ci-bold">Prisma ORM</span>Type-safe DB client, migrations</div></div>
-        <div class="ci"><div class="ci-dot" style="background:var(--red)"></div><div class="ci-txt"><span class="ci-bold">In-memory Cache</span>10s–60s TTL, leaderboard caching</div></div>
-        <div style="margin-top:10px;padding:8px 12px;background:rgba(0,212,255,.04);border:1px solid rgba(0,212,255,.1);">
-          <div style="font-family:var(--fp);font-size:8px;color:var(--dim);letter-spacing:2px;margin-bottom:4px;">DEPLOYMENT</div>
-          <div class="flow" style="padding:6px 0;background:transparent;border:none;">
-            <div class="fs" style="font-size:9px;">GitHub</div><div class="fa">→</div>
-            <div class="fs" style="font-size:9px;">Vercel</div><div class="fa">→</div>
-            <div class="fs" style="font-size:9px;">Production</div>
+
+      <!-- ═══════ SLIDE 2 — ТАНИЛЦУУЛГА ═══════ -->
+      <div class="slide">
+        <div class="glow-line"></div>
+        <div class="corner tl"></div>
+        <div class="corner tr"></div>
+        <div class="corner bl"></div>
+        <div class="corner br"></div>
+        <div class="hdr"><svg class="logo-svg" width="28" height="28">
+            <use href="#ah-logo" />
+          </svg><span class="hdr-title">ARENAHUB</span><span class="hdr-right">INTRODUCTION</span></div>
+        <div class="body">
+          <div class="slabel">ТАНИЛЦУУЛГА</div>
+          <div class="stitle" style="font-size:20.7px;">ArenaHub гэж юу вэ?</div>
+          <div class="bar"></div>
+          <div class="g2" style="gap:16px;">
+            <div>
+              <div
+                style="font-family:var(--fp);font-size:9.2px;color:var(--cyan);margin-bottom:10px;letter-spacing:2px;">
+                ПЛАТФОРМЫН ҮНДСЭН БОЛОМЖУУД</div>
+              <div class="ci">
+                <div class="ci-dot" style="background:var(--red)"></div>
+                <div class="ci-txt"><span class="ci-bold">🤖 AI Tutor System</span>Groq AI ашиглан personalized guidance
+                </div>
+              </div>
+              <div class="ci">
+                <div class="ci-dot" style="background:var(--yellow)"></div>
+                <div class="ci-txt"><span class="ci-bold">🎮 Gamification System</span>XP, level, combo, HP, achievement
+                </div>
+              </div>
+              <div class="ci">
+                <div class="ci-dot" style="background:var(--cyan)"></div>
+                <div class="ci-txt"><span class="ci-bold">💻 Interactive Coding Environment</span>Monaco editor +
+                  sandbox</div>
+              </div>
+              <div class="ci">
+                <div class="ci-dot" style="background:var(--green)"></div>
+                <div class="ci-txt"><span class="ci-bold">🏆 Online Contest System</span>Мөнгөн шагналтай тэмцээн</div>
+              </div>
+              <div class="ci">
+                <div class="ci-dot" style="background:var(--purple)"></div>
+                <div class="ci-txt"><span class="ci-bold">🌍 Монгол + English хэлний дэмжлэг</span>446 translation keys
+                </div>
+              </div>
+              <div class="ci">
+                <div class="ci-dot" style="background:var(--red)"></div>
+                <div class="ci-txt"><span class="ci-bold">📊 Global Leaderboard System</span>XP-ээр өрсөлдөх ranking
+                </div>
+              </div>
+            </div>
+            <div>
+              <div
+                style="font-family:var(--fp);font-size:9.2px;color:var(--green);margin-bottom:10px;letter-spacing:2px;">
+                ТӨСЛИЙН ЗОРИЛГО</div>
+              <div
+                style="font-family:var(--fp);font-size:9.2px;color:#8090b0;line-height:2.2;margin-bottom:14px;padding:10px;border-left:2px solid var(--green);background:rgba(0,255,136,.03);">
+                Програмчлал сурах процессыг<br />
+                <span style="color:var(--cyan);">· Илүү сонирхолтой</span><br />
+                <span style="color:var(--green);">· Interactive</span><br />
+                <span style="color:var(--yellow);">· Personalized</span><br />
+                <span style="color:var(--purple);">· Motivation өндөртэй</span><br />
+                болгох.
+              </div>
+              <div class="g2" style="gap:8px;">
+                <div class="stat">
+                  <div class="snum" style="font-size:23.0px;">8</div>
+                  <div class="slbl">COURSES</div>
+                </div>
+                <div class="stat">
+                  <div class="snum" style="font-size:16.1px;color:var(--green);">350+</div>
+                  <div class="slbl">TASKS</div>
+                </div>
+                <div class="stat">
+                  <div class="snum" style="font-size:16.1px;color:var(--yellow);">56</div>
+                  <div class="slbl">LESSONS</div>
+                </div>
+                <div class="stat">
+                  <div class="snum" style="font-size:16.1px;color:var(--purple);">AI</div>
+                  <div class="slbl">TUTOR</div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
+        <div class="slide-num">02 / 15</div>
       </div>
-    </div>
+
+      <!-- ═══════ SLIDE 3 — АСУУДЛЫН ТОДОРХОЙЛОЛТ ═══════ -->
+      <div class="slide">
+        <div class="glow-line"></div>
+        <div class="corner tl"></div>
+        <div class="corner tr"></div>
+        <div class="corner bl"></div>
+        <div class="corner br"></div>
+        <div class="hdr"><svg class="logo-svg" width="28" height="28">
+            <use href="#ah-logo" />
+          </svg><span class="hdr-title">ARENAHUB</span><span class="hdr-right">PROBLEM STATEMENT</span></div>
+        <div class="body">
+          <div class="slabel">АСУУДЛЫН ТОДОРХОЙЛОЛТ</div>
+          <div class="stitle" style="font-size:20.7px;">Одоогийн Coding Learning Platform-уудын Асуудал</div>
+          <div class="bar"></div>
+          <div class="g2" style="gap:14px;">
+            <div>
+              <div
+                style="font-family:var(--fp);font-size:9.2px;color:var(--red);margin-bottom:10px;letter-spacing:2px;">❌
+                ТУЛГАРДАГ АСУУДЛУУД</div>
+              <div class="card" style="border-color:rgba(255,51,102,.2);">
+                <div class="ci">
+                  <div class="ci-dot" style="background:var(--red)"></div>
+                  <div class="ci-txt"><span class="ci-bold" style="color:var(--red);">Motivation хурдан
+                      буурдаг</span>Ихэнх хэрэглэгч хэдэн хичээлийн дараа идэвхгүй болж, progress харагдахгүй, reward
+                    system сул байдаг</div>
+                </div>
+                <div class="ci">
+                  <div class="ci-dot" style="background:var(--red)"></div>
+                  <div class="ci-txt"><span class="ci-bold" style="color:var(--red);">Personalized Guidance
+                      дутмаг</span>Бүх хэрэглэгчид ижил контент — beginner хоцорч, advanced хэрэглэгч уйддаг</div>
+                </div>
+                <div class="ci">
+                  <div class="ci-dot" style="background:var(--red)"></div>
+                  <div class="ci-txt"><span class="ci-bold" style="color:var(--red);">Real-time Feedback
+                      хангалтгүй</span>Алдаа гарсан үед debug тайлбар байхгүй, guidance сул</div>
+                </div>
+                <div class="ci">
+                  <div class="ci-dot" style="background:var(--red)"></div>
+                  <div class="ci-txt"><span class="ci-bold" style="color:var(--red);">Практик Coding Environment
+                      сул</span>Текст, онол, quiz дээр төвлөрсөн — interactive sandbox хангалтгүй</div>
+                </div>
+                <div class="ci">
+                  <div class="ci-dot" style="background:var(--red)"></div>
+                  <div class="ci-txt"><span class="ci-bold" style="color:var(--red);">Монгол хэлний дэмжлэг
+                      сул</span>Technical English ойлгоход хүндрэлтэй, localized platform ховор</div>
+                </div>
+              </div>
+            </div>
+            <div>
+              <div
+                style="font-family:var(--fp);font-size:9.2px;color:var(--green);margin-bottom:10px;letter-spacing:2px;">
+                ✅ ARENAHUB ШИЙДЭЛ</div>
+              <div class="card" style="border-color:rgba(0,255,136,.2);">
+                <div class="ci">
+                  <div class="ci-dot" style="background:var(--green)"></div>
+                  <div class="ci-txt"><span class="ci-bold" style="color:var(--green);">AI Tutor System</span>Groq AI:
+                    personalized hint, debug assistant, code explanation, task recommendation</div>
+                </div>
+                <div class="ci">
+                  <div class="ci-dot" style="background:var(--cyan)"></div>
+                  <div class="ci-txt"><span class="ci-bold" style="color:var(--cyan);">Gamification Engine</span>XP,
+                    combo, HP — суралцахыг тоглоом шиг болгоно</div>
+                </div>
+                <div class="ci">
+                  <div class="ci-dot" style="background:var(--yellow)"></div>
+                  <div class="ci-txt"><span class="ci-bold" style="color:var(--yellow);">Live progress
+                      tracking</span>Real-time leaderboard, statistics, achievement system</div>
+                </div>
+                <div class="ci">
+                  <div class="ci-dot" style="background:var(--purple)"></div>
+                  <div class="ci-txt"><span class="ci-bold" style="color:var(--purple);">Interactive Coding</span>Monaco
+                    editor + Node.js sandbox, instant feedback</div>
+                </div>
+                <div class="ci">
+                  <div class="ci-dot" style="background:var(--red)"></div>
+                  <div class="ci-txt"><span class="ci-bold" style="color:var(--red);">Монгол Localization</span>446
+                    translation key — бүрэн Монгол хэлний дэмжлэг</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="slide-num">03 / 15</div>
+      </div>
+
+      <!-- ═══════ SLIDE 4 — ӨРСӨЛДӨГЧ ХАРЬЦУУЛАЛТ ═══════ -->
+      <div class="slide">
+        <div class="glow-line"></div>
+        <div class="corner tl"></div>
+        <div class="corner tr"></div>
+        <div class="corner bl"></div>
+        <div class="corner br"></div>
+        <div class="hdr"><svg class="logo-svg" width="28" height="28">
+            <use href="#ah-logo" />
+          </svg><span class="hdr-title">ARENAHUB</span><span class="hdr-right">COMPETITIVE ANALYSIS</span></div>
+        <div class="body">
+          <div class="slabel">ӨРСӨЛДӨГЧ СИСТЕМИЙН ХАРЬЦУУЛАЛТ</div>
+          <div class="stitle" style="font-size:20.7px;">Existing Platform Comparison</div>
+          <div class="bar"></div>
+          <div class="g2" style="gap:16px;">
+            <div>
+              <table>
+                <tr>
+                  <th>ПЛАТФОРМ</th>
+                  <th>ДАВУУ ТАЛ</th>
+                  <th>СУЛ ТАЛ</th>
+                </tr>
+                <tr>
+                  <td style="color:var(--cyan);">LeetCode</td>
+                  <td>Олон task</td>
+                  <td style="color:var(--red);">AI байхгүй</td>
+                </tr>
+                <tr>
+                  <td style="color:var(--green);">HackerRank</td>
+                  <td>Certification</td>
+                  <td style="color:var(--red);">Gamification сул</td>
+                </tr>
+                <tr>
+                  <td style="color:var(--yellow);">Codecademy</td>
+                  <td>Beginner-friendly</td>
+                  <td style="color:var(--red);">Subscription өндөр</td>
+                </tr>
+                <tr>
+                  <td style="color:var(--purple);">ArenaHub</td>
+                  <td style="color:var(--green);">AI + Gamification + МН</td>
+                  <td style="color:var(--yellow);">Шинэ платформ</td>
+                </tr>
+              </table>
+            </div>
+            <div>
+              <div
+                style="font-family:var(--fp);font-size:9.2px;color:var(--green);margin-bottom:10px;letter-spacing:2px;">
+                ARENAHUB-ИЙН ДАВУУ ТАЛ</div>
+              <div class="card" style="border-color:rgba(0,255,136,.3);">
+                <div class="ci">
+                  <div class="ci-dot" style="background:var(--green)"></div>
+                  <div class="ci-txt"><span class="ci-bold" style="color:var(--green);">✅ AI Tutor</span>Groq
+                    llama-3.3-70b bilingual туторт — өрсөлдөгчид байхгүй</div>
+                </div>
+                <div class="ci">
+                  <div class="ci-dot" style="background:var(--cyan)"></div>
+                  <div class="ci-txt"><span class="ci-bold" style="color:var(--cyan);">✅ Gamification System</span>XP,
+                    combo, HP, achievement — engagement өсгөнө</div>
+                </div>
+                <div class="ci">
+                  <div class="ci-dot" style="background:var(--yellow)"></div>
+                  <div class="ci-txt"><span class="ci-bold" style="color:var(--yellow);">✅ Монгол Localization</span>446
+                    translation key — Монгол хэрэглэгчдэд зориулсан</div>
+                </div>
+                <div class="ci">
+                  <div class="ci-dot" style="background:var(--purple)"></div>
+                  <div class="ci-txt"><span class="ci-bold" style="color:var(--purple);">✅ Interactive
+                      Sandbox</span>Browser дээр код ажиллуулах боломж</div>
+                </div>
+                <div class="ci">
+                  <div class="ci-dot" style="background:var(--red)"></div>
+                  <div class="ci-txt"><span class="ci-bold" style="color:var(--red);">✅ Real-time Leaderboard</span>30s
+                    auto-refresh, глобал ranking</div>
+                </div>
+                <div
+                  style="margin-top:10px;padding:8px;background:rgba(0,212,255,.04);border:1px solid rgba(0,212,255,.15);text-align:center;">
+                  <div
+                    style="font-family:var(--fp);font-size:9.2px;color:var(--dim);letter-spacing:2px;margin-bottom:4px;">
+                    НИЙТ ЗАРДАЛ</div>
+                  <div style="font-family:var(--fp);font-size:11px;color:var(--green);">$0 — Бүрэн үнэгүй</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="slide-num">04 / 15</div>
+      </div>
+
+      <!-- ═══════ SLIDE 5 — ТЕХНОЛОГИЙН СТАК ═══════ -->
+      <div class="slide">
+        <div class="glow-line"></div>
+        <div class="corner tl"></div>
+        <div class="corner tr"></div>
+        <div class="corner bl"></div>
+        <div class="corner br"></div>
+        <div class="hdr"><svg class="logo-svg" width="28" height="28">
+            <use href="#ah-logo" />
+          </svg><span class="hdr-title">ARENAHUB</span><span class="hdr-right">TECHNOLOGY STACK</span></div>
+        <div class="body">
+          <div class="slabel">АШИГЛАСАН ТЕХНОЛОГИУД</div>
+          <div class="stitle" style="font-size:20.7px;">Full-Stack Technology Stack</div>
+          <div class="bar"></div>
+          <div class="g2" style="gap:14px;">
+            <div>
+              <div
+                style="font-family:var(--fp);font-size:10.3px;color:var(--cyan);margin-bottom:8px;letter-spacing:2px;">
+                FRONTEND</div>
+              <table>
+                <tr>
+                  <th>ТЕХНОЛОГИ</th>
+                  <th>ЗОРИУЛАЛТ</th>
+                </tr>
+                <tr>
+                  <td style="color:var(--cyan);">Next.js 15</td>
+                  <td>React framework, SSR/SSG</td>
+                </tr>
+                <tr>
+                  <td style="color:var(--green);">React 19</td>
+                  <td>UI Library</td>
+                </tr>
+                <tr>
+                  <td style="color:var(--yellow);">TypeScript</td>
+                  <td>Type safety</td>
+                </tr>
+                <tr>
+                  <td style="color:var(--purple);">Tailwind CSS</td>
+                  <td>Styling</td>
+                </tr>
+                <tr>
+                  <td style="color:var(--cyan);">Monaco Editor</td>
+                  <td>VS Code-style code editor</td>
+                </tr>
+                <tr>
+                  <td style="color:var(--red);">Three.js</td>
+                  <td>3D pixel art rendering</td>
+                </tr>
+              </table>
+            </div>
+            <div>
+              <div
+                style="font-family:var(--fp);font-size:10.3px;color:var(--green);margin-bottom:8px;letter-spacing:2px;">
+                BACKEND & DATABASE</div>
+              <table>
+                <tr>
+                  <th>ТЕХНОЛОГИ</th>
+                  <th>ЗОРИУЛАЛТ</th>
+                </tr>
+                <tr>
+                  <td style="color:var(--cyan);">API Routes</td>
+                  <td>REST API — 55 endpoints</td>
+                </tr>
+                <tr>
+                  <td style="color:var(--green);">NextAuth</td>
+                  <td>Authentication system</td>
+                </tr>
+                <tr>
+                  <td style="color:var(--yellow);">JWT</td>
+                  <td>Session system</td>
+                </tr>
+                <tr>
+                  <td style="color:var(--purple);">Prisma ORM v6</td>
+                  <td>Type-safe database client</td>
+                </tr>
+                <tr>
+                  <td style="color:var(--red);">PostgreSQL</td>
+                  <td>Relational database</td>
+                </tr>
+                <tr>
+                  <td style="color:var(--cyan);">Groq AI</td>
+                  <td>llama-3.3-70b AI system</td>
+                </tr>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="slide-num">05 / 15</div>
+      </div>
+
+      <!-- ═══════ SLIDE 6 — СИСТЕМИЙН АРХИТЕКТУР ═══════ -->
+      <div class="slide">
+        <div class="glow-line"></div>
+        <div class="corner tl"></div>
+        <div class="corner tr"></div>
+        <div class="corner bl"></div>
+        <div class="corner br"></div>
+        <div class="hdr"><svg class="logo-svg" width="28" height="28">
+            <use href="#ah-logo" />
+          </svg><span class="hdr-title">ARENAHUB</span><span class="hdr-right">SYSTEM ARCHITECTURE</span></div>
+        <div class="body">
+          <div class="slabel">СИСТЕМИЙН АРХИТЕКТУР</div>
+          <div class="stitle" style="font-size:20.7px;">System Architecture</div>
+          <div class="bar"></div>
+          <div class="g2" style="gap:14px;align-items:start;">
+            <div>
+              <div class="flow" style="flex-direction:column;gap:0;padding:0;">
+                <div
+                  style="text-align:center;padding:12px;background:rgba(0,212,255,.08);border-bottom:1px solid rgba(0,212,255,.15);width:100%;">
+                  <div style="font-family:var(--fp);font-size:9.2px;color:var(--cyan);">🖥️ FRONTEND LAYER</div>
+                  <div style="font-size:9.2px;color:var(--dim);margin-top:3px;">Next.js 15 · React 19 · TypeScript ·
+                    Tailwind</div>
+                </div>
+                <div style="text-align:center;padding:5px;color:rgba(0,212,255,.4);font-size:18.4px;">⬇</div>
+                <div
+                  style="text-align:center;padding:12px;background:rgba(0,255,136,.06);border-bottom:1px solid rgba(0,212,255,.1);width:100%;">
+                  <div style="font-family:var(--fp);font-size:9.2px;color:var(--green);">⚙️ API LAYER</div>
+                  <div style="font-size:9.2px;color:var(--dim);margin-top:3px;">Next.js API Routes · REST · 55 endpoints
+                  </div>
+                </div>
+                <div style="text-align:center;padding:5px;color:rgba(0,212,255,.4);font-size:18.4px;">⬇</div>
+                <div
+                  style="text-align:center;padding:12px;background:rgba(255,200,50,.06);border-bottom:1px solid rgba(0,212,255,.1);width:100%;">
+                  <div style="font-family:var(--fp);font-size:9.2px;color:var(--yellow);">🔐 AUTHENTICATION LAYER</div>
+                  <div style="font-size:9.2px;color:var(--dim);margin-top:3px;">NextAuth · JWT · Google OAuth · GitHub
+                    OAuth</div>
+                </div>
+                <div style="text-align:center;padding:5px;color:rgba(0,212,255,.4);font-size:18.4px;">⬇</div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;width:100%;">
+                  <div
+                    style="text-align:center;padding:12px;background:rgba(199,125,255,.06);border-right:1px solid rgba(0,212,255,.1);">
+                    <div style="font-family:var(--fp);font-size:9.2px;color:var(--purple);">🗄️ DATABASE</div>
+                    <div style="font-size:10.3px;color:var(--dim);margin-top:3px;">PostgreSQL · Prisma ORM</div>
+                  </div>
+                  <div style="text-align:center;padding:12px;background:rgba(255,51,102,.06);">
+                    <div style="font-family:var(--fp);font-size:9.2px;color:var(--red);">🤖 AI SYSTEM</div>
+                    <div style="font-size:10.3px;color:var(--dim);margin-top:3px;">Groq API · llama-3.3-70b</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div>
+              <div
+                style="font-family:var(--fp);font-size:10.3px;color:var(--yellow);margin-bottom:8px;letter-spacing:2px;">
+                СИСТЕМИЙН ОНЦЛОГ</div>
+              <div class="ci">
+                <div class="ci-dot" style="background:var(--cyan)"></div>
+                <div class="ci-txt"><span class="ci-bold">Serverless Architecture</span>Next.js monorepo — Frontend +
+                  Backend нэг repo</div>
+              </div>
+              <div class="ci">
+                <div class="ci-dot" style="background:var(--green)"></div>
+                <div class="ci-txt"><span class="ci-bold">Auto Deployment</span>Vercel-д автоматаар deploy</div>
+              </div>
+              <div class="ci">
+                <div class="ci-dot" style="background:var(--yellow)"></div>
+                <div class="ci-txt"><span class="ci-bold">React Context API</span>Auth, Language state management</div>
+              </div>
+              <div class="ci">
+                <div class="ci-dot" style="background:var(--purple)"></div>
+                <div class="ci-txt"><span class="ci-bold">Cache System</span>10s–60s TTL, leaderboard caching</div>
+              </div>
+              <div class="ci">
+                <div class="ci-dot" style="background:var(--red)"></div>
+                <div class="ci-txt"><span class="ci-bold">Scalable Infrastructure</span>Traffic нэмэгдэхэд автоматаар
+                  scale</div>
+              </div>
+
+              <div
+                style="margin-top:10px;padding:8px 12px;background:rgba(0,212,255,.04);border:1px solid rgba(0,212,255,.1);">
+                <div
+                  style="font-family:var(--fp);font-size:9.2px;color:var(--dim);letter-spacing:2px;margin-bottom:6px;">
+                  DEPLOYMENT FLOW</div>
+                <div style="display:flex;align-items:center;gap:4px;">
+                  <span
+                    style="font-family:var(--fp);font-size:8.0px;color:var(--cyan);flex:1;text-align:center;">GitHub</span>
+                  <span style="color:rgba(0,212,255,.4);">→</span>
+                  <span
+                    style="font-family:var(--fp);font-size:8.0px;color:var(--green);flex:1;text-align:center;">Vercel
+                    Build</span>
+                  <span style="color:rgba(0,212,255,.4);">→</span>
+                  <span
+                    style="font-family:var(--fp);font-size:8.0px;color:var(--yellow);flex:1;text-align:center;">Production</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="slide-num">06 / 15</div>
+      </div>
+
+      <!-- ═══════ SLIDE 7 — DATABASE & API ═══════ -->
+      <div class="slide">
+        <div class="glow-line"></div>
+        <div class="corner tl"></div>
+        <div class="corner tr"></div>
+        <div class="corner bl"></div>
+        <div class="corner br"></div>
+        <div class="hdr"><svg class="logo-svg" width="28" height="28">
+            <use href="#ah-logo" />
+          </svg><span class="hdr-title">ARENAHUB</span><span class="hdr-right">DATABASE & API</span></div>
+        <div class="body">
+          <div class="slabel">DATABASE БОЛОН API СИСТЕМ</div>
+          <div class="stitle" style="font-size:20.7px;">Database болон API System</div>
+          <div class="bar"></div>
+          <div class="g2" style="gap:14px;">
+            <div>
+              <div
+                style="font-family:var(--fp);font-size:10.3px;color:var(--cyan);margin-bottom:8px;letter-spacing:2px;">
+                ҮНДСЭН DATABASE MODELS (30)</div>
+              <div id="db-models-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:3px;margin-bottom:10px;">
+              </div>
+              <script>
+                const models = ['User', 'Course', 'Lesson', 'Task', 'Game', 'LessonGame', 'GameTask', 'TaskSubmission', 'Achievement', 'UserAchievement', 'Reward', 'UserReward', 'Payment', 'Subscription', 'TokenBalance', 'TokenUsage', 'Contest', 'ContestParticipant', 'Notification', 'ActivityLog', 'Enrollment', 'LessonProgress', 'RefreshToken', 'Account', 'Session', 'VerificationToken', 'EmailVerification', 'PasswordReset', 'AdminLog', 'SystemConfig'];
+                const cols = ['#00d4ff', '#00ff88', '#ffc832', '#c77dff', '#ff3366'];
+                const g = document.getElementById('db-models-grid');
+                g.innerHTML = models.map((m, i) => `<div style="background:rgba(8,12,22,.8);border:1px solid rgba(0,212,255,.1);padding:3px 7px;font-family:var(--fp);font-size:8.0px;color:${cols[i % 5]};">${m}</div>`).join('');
+              </script>
+            </div>
+            <div>
+              <div
+                style="font-family:var(--fp);font-size:10.3px;color:var(--green);margin-bottom:6px;letter-spacing:2px;">
+                API СИСТЕМИЙН ОНЦЛОГ</div>
+              <div
+                style="background:rgba(8,12,22,.9);border:1px solid rgba(0,212,255,.2);padding:12px 14px;margin-bottom:8px;position:relative;">
+                <div
+                  style="position:absolute;top:-1px;left:-1px;width:6px;height:6px;border-top:2px solid rgba(0,212,255,.5);border-left:2px solid rgba(0,212,255,.5);">
+                </div>
+                <div style="font-family:var(--fp);font-size:10px;color:var(--cyan);margin-bottom:6px;">PostgreSQL +
+                  Prisma ORM v6</div>
+                <div style="font-family:var(--fp);font-size:8.5px;color:#8090b0;line-height:2;">Neon.tech serverless
+                  cloud · Auto-scale · SSL<br />Type-safe queries · Schema migrations · Studio UI</div>
+              </div>
+              <div
+                style="background:rgba(8,12,22,.9);border:1px solid rgba(0,255,136,.2);padding:12px 14px;margin-bottom:10px;position:relative;">
+                <div
+                  style="position:absolute;top:-1px;left:-1px;width:6px;height:6px;border-top:2px solid rgba(0,255,136,.5);border-left:2px solid rgba(0,255,136,.5);">
+                </div>
+                <div style="font-family:var(--fp);font-size:10px;color:var(--green);margin-bottom:6px;">REST API — 55
+                  Routes</div>
+                <div style="display:flex;flex-direction:column;gap:4px;">
+                  <div style="display:flex;align-items:center;gap:6px;">
+                    <div style="width:5px;height:5px;flex-shrink:0;background:var(--green);"></div>
+                    <div style="font-family:var(--fp);font-size:8.5px;color:#b0c8e0;line-height:1.8;">✅ Input validation
+                      (Zod)</div>
+                  </div>
+                  <div style="display:flex;align-items:center;gap:6px;">
+                    <div style="width:5px;height:5px;flex-shrink:0;background:var(--cyan);"></div>
+                    <div style="font-family:var(--fp);font-size:8.5px;color:#b0c8e0;line-height:1.8;">✅ Authentication
+                      guard</div>
+                  </div>
+                  <div style="display:flex;align-items:center;gap:6px;">
+                    <div style="width:5px;height:5px;flex-shrink:0;background:var(--yellow);"></div>
+                    <div style="font-family:var(--fp);font-size:8.5px;color:#b0c8e0;line-height:1.8;">✅ Error handling
+                    </div>
+                  </div>
+                  <div style="display:flex;align-items:center;gap:6px;">
+                    <div style="width:5px;height:5px;flex-shrink:0;background:var(--purple);"></div>
+                    <div style="font-family:var(--fp);font-size:8.5px;color:#b0c8e0;line-height:1.8;">✅ Protected routes
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="g4" style="gap:6px;">
+                <div class="stat">
+                  <div class="snum" style="font-size:16px;">30</div>
+                  <div class="slbl">MODELS</div>
+                </div>
+                <div class="stat">
+                  <div class="snum" style="font-size:14px;color:var(--green);">350+</div>
+                  <div class="slbl">TASKS</div>
+                </div>
+                <div class="stat">
+                  <div class="snum" style="font-size:16px;color:var(--yellow);">55</div>
+                  <div class="slbl">API</div>
+                </div>
+                <div class="stat">
+                  <div class="snum" style="font-size:16px;color:var(--purple);">56</div>
+                  <div class="slbl">LESSONS</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="slide-num">07 / 15</div>
+      </div>
+
+      <!-- ═══════ SLIDE 8 — AUTH & SECURITY ═══════ -->
+      <div class="slide">
+        <div class="glow-line" style="background:linear-gradient(90deg,transparent,var(--red),transparent)"></div>
+        <div class="corner tl"></div>
+        <div class="corner tr"></div>
+        <div class="corner bl"></div>
+        <div class="corner br"></div>
+        <div class="hdr"><svg class="logo-svg" width="28" height="28">
+            <use href="#ah-logo" />
+          </svg><span class="hdr-title">ARENAHUB</span><span class="hdr-right">AUTHENTICATION & SECURITY</span></div>
+        <div class="body">
+          <div class="slabel" style="color:var(--red);">АЮУЛГҮЙ БАЙДАЛ</div>
+          <div class="stitle" style="font-size:20.7px;color:var(--red);">Authentication болон Security</div>
+          <div class="bar" style="background:linear-gradient(90deg,var(--red),transparent)"></div>
+          <div class="g2" style="gap:14px;">
+            <div>
+              <div
+                style="font-family:var(--fp);font-size:10.3px;color:var(--cyan);margin-bottom:8px;letter-spacing:2px;">
+                AUTHENTICATION SYSTEM</div>
+              <div class="card" style="margin-bottom:8px;border-color:rgba(0,212,255,.3);">
+                <div class="ci">
+                  <div class="ci-dot" style="background:var(--cyan)"></div>
+                  <div class="ci-txt"><span class="ci-bold">🔵 Google OAuth 2.0</span>Google-ийн аюулгүй OAuth protocol
+                    · email, name, avatar авна</div>
+                </div>
+                <div class="ci">
+                  <div class="ci-dot" style="background:var(--purple)"></div>
+                  <div class="ci-txt"><span class="ci-bold">⚫ GitHub OAuth</span>Developer-friendly login · GitHub
+                    account</div>
+                </div>
+                <div class="ci">
+                  <div class="ci-dot" style="background:var(--green)"></div>
+                  <div class="ci-txt"><span class="ci-bold">JWT Session</span>HttpOnly cookie · 15 минут expiry</div>
+                </div>
+                <div class="ci">
+                  <div class="ci-dot" style="background:var(--yellow)"></div>
+                  <div class="ci-txt"><span class="ci-bold">Protected Route</span>Middleware-р бүх API хамгаалагдана
+                  </div>
+                </div>
+              </div>
+              <div
+                style="padding:8px;background:rgba(0,255,136,.04);border:1px solid rgba(0,255,136,.2);text-align:center;font-family:var(--fp);font-size:9.2px;color:var(--green);">
+                ✓ Password хэрэггүй · ✓ Аюулгүй · ✓ Хялбар
+              </div>
+            </div>
+            <div>
+              <div
+                style="font-family:var(--fp);font-size:10.3px;color:var(--red);margin-bottom:8px;letter-spacing:2px;">
+                SECURITY LAYERS</div>
+              <table>
+                <tr>
+                  <th>ХАМГААЛАЛТ</th>
+                  <th>ЗОРИУЛАЛТ</th>
+                </tr>
+                <tr>
+                  <td style="color:var(--cyan);">CSP Headers</td>
+                  <td>XSS хамгаалалт</td>
+                </tr>
+                <tr>
+                  <td style="color:var(--yellow);">HSTS (1yr)</td>
+                  <td>HTTPS enforcement</td>
+                </tr>
+                <tr>
+                  <td style="color:var(--green);">Zod Validation</td>
+                  <td>Бүх input баталгаажуулалт</td>
+                </tr>
+                <tr>
+                  <td style="color:var(--purple);">Rate Limiting</td>
+                  <td>Brute force хамгаалалт</td>
+                </tr>
+                <tr>
+                  <td style="color:var(--red);">vm Sandbox</td>
+                  <td>Code execution isolation</td>
+                </tr>
+                <tr>
+                  <td style="color:var(--cyan);">Input Sanitize</td>
+                  <td>Prompt injection, XSS</td>
+                </tr>
+                <tr>
+                  <td style="color:var(--green);">Admin Role Check</td>
+                  <td>DB-д role баталгаажуулна</td>
+                </tr>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="slide-num">08 / 15</div>
+      </div>
+
+      <!-- ═══════ SLIDE 9 — AI TUTOR ═══════ -->
+      <div class="slide">
+        <div class="glow-line" style="background:linear-gradient(90deg,transparent,var(--red),transparent)"></div>
+        <div class="corner tl"></div>
+        <div class="corner tr"></div>
+        <div class="corner bl"></div>
+        <div class="corner br"></div>
+        <div class="hdr"><svg class="logo-svg" width="28" height="28">
+            <use href="#ah-logo" />
+          </svg><span class="hdr-title">ARENAHUB</span><span class="hdr-right">AI TUTOR SYSTEM</span></div>
+        <div class="body">
+          <div class="slabel" style="color:var(--red);">AI-POWERED LEARNING</div>
+          <div class="stitle" style="font-size:20.7px;color:var(--red);">AI Tutor System</div>
+          <div class="bar" style="background:linear-gradient(90deg,var(--red),transparent)"></div>
+          <div class="g2" style="gap:14px;">
+            <div>
+              <div class="card" style="margin-bottom:10px;border-color:rgba(255,51,102,.3);">
+                <div style="font-family:var(--fp);font-size:10.3px;color:var(--red);margin-bottom:8px;">🤖 GROQ API
+                  INTEGRATION</div>
+                <div style="font-size:9.2px;color:#8090b0;line-height:2;">Model: <span
+                    style="color:var(--green);">llama-3.3-70b-versatile</span><br />Ultra-fast inference · Low latency ·
+                  Free tier<br />Bilingual: МН + EN · Max 1024 tokens<br />Context-aware: last 6 messages</div>
+              </div>
+              <div
+                style="font-family:var(--fp);font-size:10.3px;color:var(--yellow);margin-bottom:8px;letter-spacing:2px;">
+                AI FEATURES</div>
+              <div class="ci">
+                <div class="ci-dot" style="background:var(--green)"></div>
+                <div class="ci-txt"><span class="ci-bold">💡 Hint System</span>Шийдэл өгөхгүй — алхмаар чиглүүлнэ</div>
+              </div>
+              <div class="ci">
+                <div class="ci-dot" style="background:var(--cyan)"></div>
+                <div class="ci-txt"><span class="ci-bold">📖 Code Explanation</span>Concept гүнзгий тайлбар + жишээ
+                </div>
+              </div>
+              <div class="ci">
+                <div class="ci-dot" style="background:var(--yellow)"></div>
+                <div class="ci-txt"><span class="ci-bold">🔍 Debug Assistant</span>Алдааны шалтгаан задлал</div>
+              </div>
+              <div class="ci">
+                <div class="ci-dot" style="background:var(--purple)"></div>
+                <div class="ci-txt"><span class="ci-bold">🎯 Task Recommendation</span>Personalized дараагийн task санал
+                </div>
+              </div>
+            </div>
+            <div>
+              <div
+                style="font-family:var(--fp);font-size:10.3px;color:var(--cyan);margin-bottom:8px;letter-spacing:2px;">
+                TOKEN ECONOMY</div>
+              <table style="margin-bottom:12px;">
+                <tr>
+                  <th>FEATURE</th>
+                  <th>ТОКЕН</th>
+                  <th>ЗОРИУЛАЛТ</th>
+                </tr>
+                <tr>
+                  <td>💡 Hint авах</td>
+                  <td style="color:var(--green);font-family:var(--fp);text-align:center;">1</td>
+                  <td style="color:var(--dim);">Light guidance</td>
+                </tr>
+                <tr>
+                  <td>📖 Тайлбар авах</td>
+                  <td style="color:var(--cyan);font-family:var(--fp);text-align:center;">2</td>
+                  <td style="color:var(--dim);">Deep explanation</td>
+                </tr>
+                <tr>
+                  <td>🔍 Debug help</td>
+                  <td style="color:var(--yellow);font-family:var(--fp);text-align:center;">3</td>
+                  <td style="color:var(--dim);">Error analysis</td>
+                </tr>
+                <tr>
+                  <td>🔓 Full solution</td>
+                  <td style="color:var(--red);font-family:var(--fp);text-align:center;">5</td>
+                  <td style="color:var(--dim);">Complete answer</td>
+                </tr>
+              </table>
+              <div
+                style="font-size:9.2px;color:var(--dim);line-height:2;background:rgba(255,51,102,.04);padding:10px;border-left:2px solid var(--red);">
+                <strong style="color:var(--red);">Яагаад AI?</strong><br />
+                Personalized learning · Instant feedback<br />Teacher dependency багасна · Retention нэмэгдэнэ
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="slide-num">09 / 15</div>
+      </div>
+
+      <!-- ═══════ SLIDE 10 — GAMIFICATION ═══════ -->
+      <div class="slide">
+        <div class="glow-line" style="background:linear-gradient(90deg,transparent,var(--yellow),transparent)"></div>
+        <div class="corner tl"></div>
+        <div class="corner tr"></div>
+        <div class="corner bl"></div>
+        <div class="corner br"></div>
+        <div class="hdr"><svg class="logo-svg" width="28" height="28">
+            <use href="#ah-logo" />
+          </svg><span class="hdr-title">ARENAHUB</span><span class="hdr-right">GAMIFICATION</span></div>
+        <div class="body">
+          <div class="slabel" style="color:var(--yellow);">ТОГЛООМЖУУЛАЛТЫН СИСТЕМ</div>
+          <div class="stitle" style="font-size:20.7px;color:var(--yellow);">Gamification System</div>
+          <div class="bar" style="background:linear-gradient(90deg,var(--yellow),transparent)"></div>
+          <div class="g2" style="gap:14px;">
+            <div>
+              <div
+                style="font-family:var(--fp);font-size:10.3px;color:var(--yellow);margin-bottom:8px;letter-spacing:2px;">
+                ҮНДСЭН СИСТЕМҮҮД</div>
+              <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:10px;">
+                <div class="card" style="border-color:rgba(0,212,255,.3);text-align:center;padding:10px;">
+                  <div style="font-size:18.4px;margin-bottom:4px;">⚡</div>
+                  <div style="font-family:var(--fp);font-size:8.0px;color:var(--cyan);">XP SYSTEM</div>
+                  <div style="font-size:8.0px;color:var(--dim);margin-top:3px;">Task → XP → Level</div>
+                </div>
+                <div class="card" style="border-color:rgba(255,200,50,.3);text-align:center;padding:10px;">
+                  <div style="font-size:18.4px;margin-bottom:4px;">🔥</div>
+                  <div style="font-family:var(--fp);font-size:8.0px;color:var(--yellow);">COMBO</div>
+                  <div style="font-size:8.0px;color:var(--dim);margin-top:3px;">Streak multiplier</div>
+                </div>
+                <div class="card" style="border-color:rgba(255,51,102,.3);text-align:center;padding:10px;">
+                  <div style="font-size:18.4px;margin-bottom:4px;">❤️</div>
+                  <div style="font-family:var(--fp);font-size:8.0px;color:var(--red);">HP SYSTEM</div>
+                  <div style="font-size:8.0px;color:var(--dim);margin-top:3px;">Буруу → HP хасна</div>
+                </div>
+                <div class="card" style="border-color:rgba(199,125,255,.3);text-align:center;padding:10px;">
+                  <div style="font-size:18.4px;margin-bottom:4px;">🏆</div>
+                  <div style="font-family:var(--fp);font-size:8.0px;color:var(--purple);">LEADERBOARD</div>
+                  <div style="font-size:8.0px;color:var(--dim);margin-top:3px;">Global ranking</div>
+                </div>
+                <div class="card" style="border-color:rgba(0,255,136,.3);text-align:center;padding:10px;">
+                  <div style="font-size:18.4px;margin-bottom:4px;">📅</div>
+                  <div style="font-family:var(--fp);font-size:8.0px;color:var(--green);">STREAK</div>
+                  <div style="font-size:8.0px;color:var(--dim);margin-top:3px;">Өдөр тутам</div>
+                </div>
+                <div class="card" style="border-color:rgba(255,107,53,.3);text-align:center;padding:10px;">
+                  <div style="font-size:18.4px;margin-bottom:4px;">⚔️</div>
+                  <div style="font-family:var(--fp);font-size:8.0px;color:#ff6b35;">CONTEST</div>
+                  <div style="font-size:8.0px;color:var(--dim);margin-top:3px;">Тэмцээн</div>
+                </div>
+              </div>
+              <div class="g3" style="gap:8px;">
+                <div class="stat">
+                  <div class="snum" style="font-size:18.4px;color:var(--purple);">15</div>
+                  <div class="slbl">ACHIEVEMENTS</div>
+                </div>
+                <div class="stat">
+                  <div class="snum" style="font-size:18.4px;color:var(--yellow);">10</div>
+                  <div class="slbl">REWARDS</div>
+                </div>
+                <div class="stat">
+                  <div class="snum" style="font-size:18.4px;color:var(--green);">350+</div>
+                  <div class="slbl">TASKS</div>
+                </div>
+              </div>
+            </div>
+            <div>
+              <div
+                style="font-family:var(--fp);font-size:10.3px;color:var(--green);margin-bottom:8px;letter-spacing:2px;">
+                ЯАГААД GAMIFICATION?</div>
+              <div class="ci">
+                <div class="ci-dot" style="background:var(--green)"></div>
+                <div class="ci-txt"><span class="ci-bold">Motivation нэмэгдүүлдэг</span>Дэвшил харагдах → үргэлжлүүлнэ
+                </div>
+              </div>
+              <div class="ci">
+                <div class="ci-dot" style="background:var(--cyan)"></div>
+                <div class="ci-txt"><span class="ci-bold">Daily engagement өсгөнө</span>Streak систем өдөр тутам эргэж
+                  ирдэг</div>
+              </div>
+              <div class="ci">
+                <div class="ci-dot" style="background:var(--yellow)"></div>
+                <div class="ci-txt"><span class="ci-bold">Learning retention сайжруулна</span>Achievement → дүүргэхэд
+                  уриалдаг</div>
+              </div>
+              <div class="ci">
+                <div class="ci-dot" style="background:var(--purple)"></div>
+                <div class="ci-txt"><span class="ci-bold">Competitive environment</span>Leaderboard — healthy
+                  competition</div>
+              </div>
+              <div
+                style="margin-top:10px;padding:10px;background:rgba(255,200,50,.04);border:1px solid rgba(255,200,50,.2);">
+                <div style="font-family:var(--fp);font-size:9.2px;color:var(--yellow);margin-bottom:4px;">ACHIEVEMENT
+                  SYSTEM</div>
+                <div style="font-size:9.2px;color:var(--dim);line-height:1.8;">15 Achievement · 10 Reward<br />XP reward
+                  system · Progress tracking<br />Badge collection</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="slide-num">10 / 15</div>
+      </div>
+
+      <!-- ═══════ SLIDE 11 — CODING ENVIRONMENT ═══════ -->
+      <div class="slide">
+        <div class="glow-line"></div>
+        <div class="corner tl"></div>
+        <div class="corner tr"></div>
+        <div class="corner bl"></div>
+        <div class="corner br"></div>
+        <div class="hdr"><svg class="logo-svg" width="28" height="28">
+            <use href="#ah-logo" />
+          </svg><span class="hdr-title">ARENAHUB</span><span class="hdr-right">CODING ENVIRONMENT</span></div>
+        <div class="body">
+          <div class="slabel">ИНТЕРАКТИВ КОДЫН ОРЧИН</div>
+          <div class="stitle" style="font-size:20.7px;">Interactive Coding Environment</div>
+          <div class="bar"></div>
+          <div class="g2" style="gap:14px;">
+            <div>
+              <div
+                style="font-family:var(--fp);font-size:10.3px;color:var(--cyan);margin-bottom:8px;letter-spacing:2px;">
+                MONACO EDITOR SYSTEM</div>
+              <div class="ci">
+                <div class="ci-dot" style="background:var(--cyan)"></div>
+                <div class="ci-txt"><span class="ci-bold">VS Code-style Monaco Editor</span>Syntax highlighting,
+                  autocomplete, theme support</div>
+              </div>
+              <div class="ci">
+                <div class="ci-dot" style="background:var(--green)"></div>
+                <div class="ci-txt"><span class="ci-bold">Multi-language support</span>JavaScript · HTML · CSS · SQL
+                </div>
+              </div>
+              <div class="ci">
+                <div class="ci-dot" style="background:var(--yellow)"></div>
+                <div class="ci-txt"><span class="ci-bold">Sandbox Execution</span>Browser дээр код ажиллуулах, output
+                  харах</div>
+              </div>
+              <div class="ci">
+                <div class="ci-dot" style="background:var(--purple)"></div>
+                <div class="ci-txt"><span class="ci-bold">Real-time Test Cases</span>Input/expected output comparison,
+                  instant feedback</div>
+              </div>
+              <div class="ci">
+                <div class="ci-dot" style="background:var(--red)"></div>
+                <div class="ci-txt"><span class="ci-bold">WPM Tracker</span>Код бичих хурдны хэмжүүр</div>
+              </div>
+              <div class="ci">
+                <div class="ci-dot" style="background:var(--cyan)"></div>
+                <div class="ci-txt"><span class="ci-bold">Game HUD</span>HP, XP, combo, streak — live display</div>
+              </div>
+            </div>
+            <div>
+              <div
+                style="font-family:var(--fp);font-size:10.3px;color:var(--green);margin-bottom:8px;letter-spacing:2px;">
+                ТЕХНОЛОГИ</div>
+              <table style="margin-bottom:12px;">
+                <tr>
+                  <th>ТЕХНОЛОГИ</th>
+                  <th>ЗОРИУЛАЛТ</th>
+                </tr>
+                <tr>
+                  <td style="color:var(--cyan);">Monaco Editor</td>
+                  <td>VS Code engine</td>
+                </tr>
+                <tr>
+                  <td style="color:var(--green);">Node.js vm</td>
+                  <td>Sandbox execution</td>
+                </tr>
+                <tr>
+                  <td style="color:var(--yellow);">TypeScript</td>
+                  <td>Type checking</td>
+                </tr>
+                <tr>
+                  <td style="color:var(--purple);">dynamic import</td>
+                  <td>Lazy loading</td>
+                </tr>
+              </table>
+              <div
+                style="background:rgba(8,12,22,.9);border:1px solid rgba(0,212,255,.15);padding:12px;font-family:var(--fp);font-size:9.2px;border-left:3px solid var(--cyan);">
+                <div style="color:#569cd6;">function </div>
+                <div style="color:var(--yellow);">solution<span style="color:#c0c0c0;">(</span><span
+                    style="color:#9cdcfe;">input</span><span style="color:#c0c0c0;">)</span> {</div>
+                <div style="color:#c0c0c0;padding-left:16px;"><span style="color:#c586c0;">return</span> input + <span
+                    style="color:#b5cea8;">10</span>;</div>
+                <div style="color:#c0c0c0;">}</div>
+                <div style="margin-top:6px;color:var(--green);">✓ Test 1: PASS 12ms</div>
+                <div style="color:var(--green);">✓ Test 2: PASS 8ms</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="slide-num">11 / 15</div>
+      </div>
+
+      <!-- ═══════ SLIDE 12 — TESTING & RESULTS ═══════ -->
+      <div class="slide">
+        <div class="glow-line" style="background:linear-gradient(90deg,transparent,var(--green),transparent)"></div>
+        <div class="corner tl"></div>
+        <div class="corner tr"></div>
+        <div class="corner bl"></div>
+        <div class="corner br"></div>
+        <div class="hdr"><svg class="logo-svg" width="28" height="28">
+            <use href="#ah-logo" />
+          </svg><span class="hdr-title">ARENAHUB</span><span class="hdr-right">TESTING & RESULTS</span></div>
+        <div class="body">
+          <div class="slabel" style="color:var(--green);">ТУРШИЛТ БОЛОН ҮР ДҮН</div>
+          <div class="stitle" style="font-size:20.7px;color:var(--green);">Testing болон Үр Дүн</div>
+          <div class="bar" style="background:linear-gradient(90deg,var(--green),transparent)"></div>
+          <div class="g4" style="gap:8px;margin-bottom:12px;">
+            <div class="stat">
+              <div class="snum">8</div>
+              <div class="slbl">COURSES</div>
+            </div>
+            <div class="stat">
+              <div class="snum" style="color:var(--green);">56</div>
+              <div class="slbl">LESSONS</div>
+            </div>
+            <div class="stat">
+              <div class="snum" style="color:var(--yellow);">350+</div>
+              <div class="slbl">TASKS</div>
+            </div>
+            <div class="stat">
+              <div class="snum" style="color:var(--purple);">30</div>
+              <div class="slbl">DB MODELS</div>
+            </div>
+            <div class="stat">
+              <div class="snum" style="color:var(--red);">55</div>
+              <div class="slbl">API ROUTES</div>
+            </div>
+            <div class="stat">
+              <div class="snum" style="color:var(--cyan);">19</div>
+              <div class="slbl">ADMIN PAGES</div>
+            </div>
+            <div class="stat">
+              <div class="snum" style="color:var(--green);">2</div>
+              <div class="slbl">LANGUAGES</div>
+            </div>
+            <div class="stat">
+              <div class="snum" style="color:var(--yellow);">446</div>
+              <div class="slbl">i18n KEYS</div>
+            </div>
+          </div>
+          <div class="g2" style="gap:14px;">
+            <div>
+              <div
+                style="font-family:var(--fp);font-size:10.3px;color:var(--green);margin-bottom:8px;letter-spacing:2px;">
+                ТУРШИЛТЫН ҮР ДҮН</div>
+              <table>
+                <tr>
+                  <th>ТУРШИЛТ</th>
+                  <th>ҮР ДҮН</th>
+                </tr>
+                <tr>
+                  <td>Authentication</td>
+                  <td style="color:var(--green);">✓ Амжилттай</td>
+                </tr>
+                <tr>
+                  <td>API Testing</td>
+                  <td style="color:var(--green);">✓ Амжилттай</td>
+                </tr>
+                <tr>
+                  <td>Sandbox Testing</td>
+                  <td style="color:var(--green);">✓ Амжилттай</td>
+                </tr>
+                <tr>
+                  <td>Responsive UI</td>
+                  <td style="color:var(--green);">✓ Амжилттай</td>
+                </tr>
+                <tr>
+                  <td>Localization</td>
+                  <td style="color:var(--green);">✓ Амжилттай</td>
+                </tr>
+              </table>
+            </div>
+            <div>
+              <div
+                style="font-family:var(--fp);font-size:10.3px;color:var(--cyan);margin-bottom:8px;letter-spacing:2px;">
+                OPTIMIZATION</div>
+              <div class="ci">
+                <div class="ci-dot" style="background:var(--cyan)"></div>
+                <div class="ci-txt"><span class="ci-bold">Lazy loading</span>Dynamic import ашиглан хурд сайжруулсан
+                </div>
+              </div>
+              <div class="ci">
+                <div class="ci-dot" style="background:var(--green)"></div>
+                <div class="ci-txt"><span class="ci-bold">Server-side Cache</span>10s–60s TTL, leaderboard caching</div>
+              </div>
+              <div class="ci">
+                <div class="ci-dot" style="background:var(--yellow)"></div>
+                <div class="ci-txt"><span class="ci-bold">CDN Distribution</span>Vercel edge network — хурдан хариу
+                </div>
+              </div>
+              <div class="ci">
+                <div class="ci-dot" style="background:var(--purple)"></div>
+                <div class="ci-txt"><span class="ci-bold">Serverless Scaling</span>Traffic нэмэгдэхэд автоматаар scale
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="slide-num">12 / 15</div>
+      </div>
+
+      <!-- ═══════ SLIDE 13 — DEPLOYMENT ═══════ -->
+      <div class="slide">
+        <div class="glow-line"></div>
+        <div class="corner tl"></div>
+        <div class="corner tr"></div>
+        <div class="corner bl"></div>
+        <div class="corner br"></div>
+        <div class="hdr"><svg class="logo-svg" width="28" height="28">
+            <use href="#ah-logo" />
+          </svg><span class="hdr-title">ARENAHUB</span><span class="hdr-right">DEPLOYMENT</span></div>
+        <div class="body">
+          <div class="slabel">DEPLOYMENT АРХИТЕКТУР</div>
+          <div class="stitle" style="font-size:20.7px;">Hosting & Deployment</div>
+          <div class="bar"></div>
+          <div class="g2" style="gap:14px;">
+            <div>
+              <div
+                style="font-family:var(--fp);font-size:10.3px;color:var(--cyan);margin-bottom:8px;letter-spacing:2px;">
+                ПЛАТФОРМУУД</div>
+              <table style="margin-bottom:12px;">
+                <tr>
+                  <th>ПЛАТФОРМ</th>
+                  <th>ЗОРИУЛАЛТ</th>
+                  <th>TIER</th>
+                </tr>
+                <tr>
+                  <td style="color:var(--cyan);">Vercel</td>
+                  <td>Frontend + API hosting</td>
+                  <td style="color:var(--green);">Free</td>
+                </tr>
+                <tr>
+                  <td style="color:var(--green);">Neon.tech</td>
+                  <td>PostgreSQL cloud</td>
+                  <td style="color:var(--green);">Free</td>
+                </tr>
+                <tr>
+                  <td style="color:var(--yellow);">GitHub</td>
+                  <td>Source control, CI/CD</td>
+                  <td style="color:var(--green);">Free</td>
+                </tr>
+                <tr>
+                  <td style="color:var(--purple);">Groq</td>
+                  <td>AI inference API</td>
+                  <td style="color:var(--green);">Free</td>
+                </tr>
+              </table>
+              <div
+                style="font-family:var(--fp);font-size:10.3px;color:var(--yellow);margin-bottom:8px;letter-spacing:2px;">
+                CI/CD FLOW</div>
+              <div style="display:flex;flex-direction:column;gap:2px;">
+                <div
+                  style="display:flex;align-items:center;padding:8px 14px;background:rgba(0,212,255,.06);border-bottom:1px solid rgba(0,212,255,.1);">
+                  <span style="font-family:var(--fp);font-size:9.2px;color:var(--cyan);">1. git push origin main</span>
+                </div>
+                <div
+                  style="display:flex;align-items:center;padding:8px 14px;background:rgba(0,255,136,.04);border-bottom:1px solid rgba(0,212,255,.1);">
+                  <span style="font-family:var(--fp);font-size:9.2px;color:var(--green);">2. GitHub trigger → Vercel
+                    webhook</span></div>
+                <div
+                  style="display:flex;align-items:center;padding:8px 14px;background:rgba(255,200,50,.04);border-bottom:1px solid rgba(0,212,255,.1);">
+                  <span style="font-family:var(--fp);font-size:9.2px;color:var(--yellow);">3. npm install → next
+                    build</span></div>
+                <div style="display:flex;align-items:center;padding:8px 14px;background:rgba(199,125,255,.04);"><span
+                    style="font-family:var(--fp);font-size:9.2px;color:var(--purple);">4. Deploy →
+                    btbn-arenahub.vercel.app</span></div>
+              </div>
+            </div>
+            <div>
+              <div
+                style="font-family:var(--fp);font-size:10.3px;color:var(--green);margin-bottom:8px;letter-spacing:2px;">
+                ДАВУУ ТАЛУУД</div>
+              <div class="ci">
+                <div class="ci-dot" style="background:var(--green)"></div>
+                <div class="ci-txt"><span class="ci-bold">Zero server management</span>Serverless — infrastructure
+                  нойрмоггүй</div>
+              </div>
+              <div class="ci">
+                <div class="ci-dot" style="background:var(--cyan)"></div>
+                <div class="ci-txt"><span class="ci-bold">Auto scaling</span>Traffic нэмэгдэхэд автоматаар scale</div>
+              </div>
+              <div class="ci">
+                <div class="ci-dot" style="background:var(--yellow)"></div>
+                <div class="ci-txt"><span class="ci-bold">Global CDN</span>Vercel edge network — хурдан хариу</div>
+              </div>
+              <div class="ci">
+                <div class="ci-dot" style="background:var(--purple)"></div>
+                <div class="ci-txt"><span class="ci-bold">Preview deployments</span>PR бүрт preview URL автоматаар</div>
+              </div>
+              <div class="ci">
+                <div class="ci-dot" style="background:var(--red)"></div>
+                <div class="ci-txt"><span class="ci-bold" style="color:var(--green);">Free tier — Нийт зардал
+                    $0</span>Бүх сервис үнэгүй tier ашигладаг</div>
+              </div>
+              <div
+                style="margin-top:12px;padding:10px;background:rgba(0,212,255,.04);border:1px solid rgba(0,212,255,.2);text-align:center;">
+                <div style="font-family:var(--fp);font-size:9.2px;color:var(--dim);margin-bottom:6px;">🌐 PRODUCTION URL
+                </div>
+                <div style="font-family:var(--fp);font-size:10.3px;color:var(--cyan);">btbn-arenahub.vercel.app</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="slide-num">13 / 15</div>
+      </div>
+
+      <!-- ═══════ SLIDE 14 — ИРЭЭДҮЙН ХӨГЖҮҮЛЭЛТ ═══════ -->
+      <div class="slide">
+        <div class="glow-line"></div>
+        <div class="corner tl"></div>
+        <div class="corner tr"></div>
+        <div class="corner bl"></div>
+        <div class="corner br"></div>
+        <div class="hdr"><svg class="logo-svg" width="28" height="28">
+            <use href="#ah-logo" />
+          </svg><span class="hdr-title">ARENAHUB</span><span class="hdr-right">FUTURE PLAN</span></div>
+        <div class="body">
+          <div class="slabel">ЦААШИД САЙЖРУУЛАХ БОЛОМЖ</div>
+          <div class="stitle" style="font-size:20.7px;">Future Improvements</div>
+          <div class="bar"></div>
+          <div class="g2" style="gap:14px;">
+            <div>
+              <div
+                style="font-family:var(--fp);font-size:10.3px;color:var(--cyan);margin-bottom:10px;letter-spacing:2px;">
+                ТӨЛӨВЛӨСӨН СИСТЕМҮҮД</div>
+              <div class="ci">
+                <div class="ci-dot" style="background:var(--cyan)"></div>
+                <div class="ci-txt"><span class="ci-bold">⚔️ Multiplayer Contest</span>WebSocket ашиглан real-time live
+                  coding battle</div>
+              </div>
+              <div class="ci">
+                <div class="ci-dot" style="background:var(--green)"></div>
+                <div class="ci-txt"><span class="ci-bold">🎙️ AI Voice Tutor</span>Text-to-speech AI тайлбар</div>
+              </div>
+              <div class="ci">
+                <div class="ci-dot" style="background:var(--yellow)"></div>
+                <div class="ci-txt"><span class="ci-bold">📱 Mobile Application</span>React Native / Expo cross-platform
+                </div>
+              </div>
+              <div class="ci">
+                <div class="ci-dot" style="background:var(--purple)"></div>
+                <div class="ci-txt"><span class="ci-bold">🤝 Real-time Collaboration</span>Pair programming — хамтарч
+                  код бичих</div>
+              </div>
+              <div class="ci">
+                <div class="ci-dot" style="background:var(--red)"></div>
+                <div class="ci-txt"><span class="ci-bold">📈 Advanced Analytics</span>Learning path optimization,
+                  teacher dashboard</div>
+              </div>
+            </div>
+            <div>
+              <div
+                style="font-family:var(--fp);font-size:10.3px;color:var(--yellow);margin-bottom:10px;letter-spacing:2px;">
+                ТЕХНИКИЙН САЙЖРУУЛАЛТ</div>
+              <div class="ci">
+                <div class="ci-dot" style="background:var(--yellow)"></div>
+                <div class="ci-txt"><span class="ci-bold">Redis Cache</span>Upstash Redis — serverless rate limiting
+                </div>
+              </div>
+              <div class="ci">
+                <div class="ci-dot" style="background:var(--green)"></div>
+                <div class="ci-txt"><span class="ci-bold">isolated-vm Sandbox</span>Аюулгүй code sandbox</div>
+              </div>
+              <div class="ci">
+                <div class="ci-dot" style="background:var(--cyan)"></div>
+                <div class="ci-txt"><span class="ci-bold">Error Monitoring</span>Sentry — production error tracking
+                </div>
+              </div>
+              <div class="ci">
+                <div class="ci-dot" style="background:var(--purple)"></div>
+                <div class="ci-txt"><span class="ci-bold">Cloud Storage</span>Vercel Blob — screenshot cloud storage
+                </div>
+              </div>
+
+              <div
+                style="margin-top:14px;padding:12px;background:rgba(0,212,255,.04);border:1px solid rgba(0,212,255,.15);text-align:center;">
+                <div
+                  style="font-family:var(--fp);font-size:10.3px;color:var(--dim);margin-bottom:8px;letter-spacing:3px;">
+                  VISION</div>
+                <div style="font-family:var(--fp);font-size:9.2px;color:#b0c8e0;line-height:2;">ArenaHub-г Монголын
+                  <span style="color:var(--cyan);">IT боловсролын</span><br />хамгийн <span
+                    style="color:var(--green);">инновацлаг платформ</span> болгох</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="slide-num">14 / 15</div>
+      </div>
+
+      <!-- ═══════ SLIDE 15 — ДҮГНЭЛТ ═══════ -->
+      <div class="slide">
+        <div class="hero-bg"></div>
+        <div class="glow-line"></div>
+        <div class="corner tl"></div>
+        <div class="corner tr"></div>
+        <div class="corner bl"></div>
+        <div class="corner br"></div>
+        <div class="hdr"><svg class="logo-svg" width="28" height="28">
+            <use href="#ah-logo" />
+          </svg><span class="hdr-title">ARENAHUB</span><span class="hdr-right">CONCLUSION</span></div>
+        <div class="body"
+          style="display:flex;flex-direction:column;gap:8px;padding:10px 36px 6px;position:relative;z-index:5;">
+          <!-- TOP: 2 column grid -->
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:28px;flex:1;min-height:0;">
+            <!-- LEFT -->
+            <div style="display:flex;flex-direction:column;justify-content:center;">
+              <div style="font-family:var(--fp);font-size:9px;color:var(--dim);letter-spacing:6px;margin-bottom:10px;">
+                ДҮГНЭЛТ</div>
+              <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;">
+                <svg width="44" height="44">
+                  <use href="#ah-logo" />
+                </svg>
+                <div
+                  style="font-family:var(--fp);font-weight:900;font-size:22px;color:var(--cyan);letter-spacing:4px;text-shadow:0 0 40px rgba(0,212,255,.5);">
+                  ARENAHUB</div>
+              </div>
+              <div
+                style="height:2px;width:160px;background:linear-gradient(90deg,var(--cyan),transparent);margin-bottom:12px;">
+              </div>
+              <div style="font-family:var(--fp);font-size:8.5px;color:#8090b0;line-height:2;margin-bottom:14px;">
+                ArenaHub нь <span style="color:var(--cyan);">AI-powered learning system</span>,
+                <span style="color:var(--green);">Gamification engine</span>,
+                <span style="color:var(--yellow);">Secure full-stack architecture</span>,
+                <span style="color:var(--purple);">Interactive coding environment</span>
+                болон <span style="color:var(--red);">Cloud deployment infrastructure</span> зэрэг
+                орчин үеийн технологийг нэгтгэсэн <span style="color:var(--cyan);">production-ready платформ</span> юм.
+              </div>
+              <div style="display:flex;gap:5px;flex-wrap:wrap;">
+                <span class="badge bc">Next.js 15</span><span class="badge bg">PostgreSQL</span><span
+                  class="badge by">Groq AI</span>
+                <span class="badge bp">Prisma ORM</span><span class="badge bc">TypeScript</span><span
+                  class="badge br2">Gamification</span>
+                <span class="badge bg">OAuth</span><span class="badge by">Vercel</span><span
+                  class="badge bp">Three.js</span>
+              </div>
+            </div>
+            <!-- RIGHT -->
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;align-content:center;">
+              <div
+                style="padding:12px 10px;background:rgba(0,255,136,.04);border:1px solid rgba(0,255,136,.2);font-family:var(--fp);font-size:8px;color:var(--green);line-height:1.8;">
+                ✅ Full-stack<br />production system</div>
+              <div
+                style="padding:12px 10px;background:rgba(0,212,255,.04);border:1px solid rgba(0,212,255,.2);font-family:var(--fp);font-size:8px;color:var(--cyan);line-height:1.8;">
+                ✅ AI bilingual<br />tutor</div>
+              <div
+                style="padding:12px 10px;background:rgba(255,200,50,.04);border:1px solid rgba(255,200,50,.2);font-family:var(--fp);font-size:8px;color:var(--yellow);line-height:1.8;">
+                ✅ Gamification<br />system</div>
+              <div
+                style="padding:12px 10px;background:rgba(199,125,255,.04);border:1px solid rgba(199,125,255,.2);font-family:var(--fp);font-size:8px;color:var(--purple);line-height:1.8;">
+                ✅ Монгол<br />localization</div>
+              <div
+                style="padding:12px 10px;background:rgba(255,51,102,.04);border:1px solid rgba(255,51,102,.2);font-family:var(--fp);font-size:8px;color:var(--red);line-height:1.8;">
+                ✅ Cloud<br />deployment</div>
+              <div
+                style="padding:12px 10px;background:rgba(0,212,255,.04);border:1px solid rgba(0,212,255,.15);font-family:var(--fp);font-size:8px;color:var(--cyan);line-height:1.8;">
+                ✅ Interactive<br />coding env</div>
+            </div>
+          </div>
+          <!-- BOTTOM: full-width thank you, no box -->
+          <div style="text-align:center;flex-shrink:0;padding-bottom:4px;">
+            <div
+              style="font-family:var(--fp);font-size:18px;color:var(--green);letter-spacing:3px;text-shadow:0 0 20px rgba(0,255,136,.4);">
+              АНХААРАЛ ТАВЬСАНД БАЯРЛАЛАА</div>
+            <div style="font-family:var(--fp);font-size:9px;color:var(--dim);letter-spacing:3px;margin-top:6px;">АСУУЛТ
+              БАЙВАЛ ХАРИУЛЪЯ</div>
+          </div>
+        </div>
+        <div class="slide-num">15 / 15</div>
+      </div>
+
+    </div><!-- /#_canvas -->
+  </div><!-- /#_deck -->
+
+  <div id="_prog" style="width:0"></div>
+  <div id="_nav">
+    <button id="_p">◀ PREV</button>
+    <span id="_ctr">1/1</span>
+    <button id="_n">NEXT ▶</button>
   </div>
-  <div class="slide-num">05 / 16</div>
-</div>
+  <button id="_tb">✦ FADE</button>
+  <script>
+    (function () {
+      /* ── SCALE ── */
+      const canvas = document.getElementById('_canvas');
+      function scale() {
+        const sw = window.innerWidth, sh = window.innerHeight;
+        const s = Math.min(sw / 1280, sh / 720);
+        canvas.style.transform = 'scale(' + s + ')';
+      }
+      scale();
+      window.addEventListener('resize', scale);
 
-<!-- ═══════ SLIDE 6 — DATABASE ═══════ -->
-<div class="slide">
-  <div class="glow-line"></div><div class="corner tl"></div><div class="corner tr"></div><div class="corner bl"></div><div class="corner br"></div>
-  <div class="hdr"><svg class="logo-svg" width="28" height="28"><use href="#ah-logo"/></svg><span class="hdr-title">ARENAHUB</span><span class="hdr-right">DATABASE DESIGN</span></div>
-  <div class="body">
-    <div class="slabel">DATABASE БҮТЭЦ</div>
-    <div class="stitle" style="font-size:18px;">Database Design</div><div class="bar"></div>
-    <div class="g2" style="gap:14px;">
-      <div>
-        <div style="font-family:var(--fp);font-size:9px;color:var(--cyan);margin-bottom:8px;letter-spacing:2px;">MAIN MODELS (30)</div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;">
-          {['User','Course','Lesson','Task','TaskSubmission','Achievement','UserAchievement','Reward','Payment','Subscription','TokenBalance','Contest','Notification','ActivityLog','Enrollment','LessonProgress','RefreshToken','EmailVerification','PasswordReset','AdminLog','ContestParticipant','SystemConfig','TokenUsage'].map((t,i)=>`<div style="background:rgba(8,12,22,.8);border:1px solid rgba(0,212,255,.1);padding:4px 8px;font-family:var(--fp);font-size:8px;color:${['#00d4ff','#00ff88','#ffc832','#c77dff','#ff3366'][i%5]};">${t}</div>`).join('')}
-        </div>
-        <script>
-          const models=['User','Course','Lesson','Task','Game','LessonGame','GameTask','TaskSubmission','Achievement','UserAchievement','Reward','UserReward','Payment','Subscription','TokenBalance','TokenUsage','Contest','ContestParticipant','Notification','ActivityLog','Enrollment','LessonProgress','RefreshToken','Account','Session','VerificationToken','EmailVerification','PasswordReset','AdminLog','SystemConfig'];
-          const cols=['#00d4ff','#00ff88','#ffc832','#c77dff','#ff3366'];
-          const grid=document.currentScript.previousElementSibling;
-          grid.innerHTML=models.map((m,i)=>`<div style="background:rgba(8,12,22,.8);border:1px solid rgba(0,212,255,.1);padding:4px 8px;font-family:var(--fp);font-size:8px;color:${cols[i%5]};">${m}</div>`).join('');
-        </script>
-      </div>
-      <div>
-        <div style="font-family:var(--fp);font-size:9px;color:var(--purple);margin-bottom:8px;letter-spacing:2px;">ТЕХНОЛОГИ</div>
-        <div class="card" style="margin-bottom:8px;border-color:rgba(0,212,255,.2);">
-          <div style="font-family:var(--fp);font-size:9px;color:var(--cyan);margin-bottom:6px;">PostgreSQL</div>
-          <div style="font-size:8px;color:#8090b0;line-height:2;">Neon.tech — Serverless cloud · Auto-scale · SSL · Free tier · Connection pooling</div>
-        </div>
-        <div class="card" style="margin-bottom:10px;border-color:rgba(199,125,255,.2);">
-          <div style="font-family:var(--fp);font-size:9px;color:var(--purple);margin-bottom:6px;">Prisma ORM v6</div>
-          <div style="font-size:8px;color:#8090b0;line-height:2;">Type-safe queries · Auto-generated client · Schema migrations · Studio UI</div>
-        </div>
-        <div class="g4" style="gap:8px;">
-          <div class="stat"><div class="snum" style="font-size:18px;">30</div><div class="slbl">MODELS</div></div>
-          <div class="stat"><div class="snum" style="font-size:18px;color:var(--green);">350+</div><div class="slbl">TASKS</div></div>
-          <div class="stat"><div class="snum" style="font-size:18px;color:var(--yellow);">55</div><div class="slbl">API</div></div>
-          <div class="stat"><div class="snum" style="font-size:18px;color:var(--purple);">56</div><div class="slbl">LESSONS</div></div>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="slide-num">06 / 16</div>
-</div>
+      /* ── SLIDES ── */
+      const sl = document.querySelectorAll('.slide');
+      const TR = ['fade', 'left', 'zoom', 'glitch'];
+      const TL = { fade: 'FADE', left: 'SLIDE', zoom: 'ZOOM', glitch: 'GLITCH' };
+      let cur = 0, ti = 0, busy = false;
 
-<!-- ═══════ SLIDE 7 — AUTH ═══════ -->
-<div class="slide">
-  <div class="glow-line"></div><div class="corner tl"></div><div class="corner tr"></div><div class="corner bl"></div><div class="corner br"></div>
-  <div class="hdr"><svg class="logo-svg" width="28" height="28"><use href="#ah-logo"/></svg><span class="hdr-title">ARENAHUB</span><span class="hdr-right">AUTHENTICATION</span></div>
-  <div class="body">
-    <div class="slabel">НЭВТРЭЛТИЙН СИСТЕМ</div>
-    <div class="stitle" style="font-size:18px;">Authentication System</div><div class="bar"></div>
-    <div class="g2" style="gap:14px;">
-      <div>
-        <div style="font-family:var(--fp);font-size:9px;color:var(--cyan);margin-bottom:10px;letter-spacing:2px;">OAUTH НЭВТРЭЛТ</div>
-        <div class="card" style="margin-bottom:10px;border-color:rgba(0,212,255,.4);">
-          <div style="font-family:var(--fp);font-size:9px;color:var(--cyan);margin-bottom:10px;">🔵 GOOGLE OAUTH 2.0</div>
-          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;">
-            <span class="badge bc">Google Account</span>
-            <span class="badge bp">Session Cookie</span>
-            <span class="badge bg">JWT Token</span>
-          </div>
-          <div style="font-size:8px;color:var(--dim);line-height:1.8;">Google-ийн аюулгүй OAuth 2.0 protocol ашиглана.<br/>Хэрэглэгч Google-ийн сервер дээр нэвтэрнэ.<br/>Манай систем email, name, avatar авна.</div>
-        </div>
-        <div class="card" style="border-color:rgba(199,125,255,.3);">
-          <div style="font-family:var(--fp);font-size:9px;color:var(--purple);margin-bottom:10px;">⚫ GITHUB OAUTH</div>
-          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;">
-            <span class="badge bp">GitHub Account</span>
-            <span class="badge bc">Developer Login</span>
-          </div>
-          <div style="font-size:8px;color:var(--dim);line-height:1.8;">GitHub-аар нэвтэрч developer experience нэмнэ.</div>
-        </div>
-      </div>
-      <div>
-        <div style="font-family:var(--fp);font-size:9px;color:var(--green);margin-bottom:10px;letter-spacing:2px;">AUTH FLOW</div>
-        <div class="flow" style="flex-direction:column;padding:0;border:none;gap:0;">
-          <div style="text-align:center;padding:10px;background:rgba(0,212,255,.06);border:1px solid rgba(0,212,255,.2);margin-bottom:4px;">
-            <div style="font-family:var(--fp);font-size:7px;color:var(--cyan);">1. Google Login</div>
-            <div style="font-size:7px;color:var(--dim);margin-top:3px;">Google → verify → redirect</div>
-          </div>
-          <div style="text-align:center;font-size:12px;color:rgba(0,212,255,.4);">↓</div>
-          <div style="text-align:center;padding:10px;background:rgba(0,255,136,.06);border:1px solid rgba(0,255,136,.2);margin-bottom:4px;">
-            <div style="font-family:var(--fp);font-size:7px;color:var(--green);">2. NextAuth Session</div>
-            <div style="font-size:7px;color:var(--dim);margin-top:3px;">JWT token → HttpOnly cookie</div>
-          </div>
-          <div style="text-align:center;font-size:12px;color:rgba(0,212,255,.4);">↓</div>
-          <div style="text-align:center;padding:10px;background:rgba(255,200,50,.06);border:1px solid rgba(255,200,50,.2);">
-            <div style="font-family:var(--fp);font-size:7px;color:var(--yellow);">3. Dashboard Access</div>
-            <div style="font-size:7px;color:var(--dim);margin-top:3px;">Protected routes → user data</div>
-          </div>
-        </div>
-        <div style="margin-top:10px;font-family:var(--fp);font-size:7px;color:var(--green);text-align:center;padding:6px;border:1px solid rgba(0,255,136,.2);background:rgba(0,255,136,.04);">
-          ✓ Password хэрэггүй · ✓ Аюулгүй · ✓ Хялбар
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="slide-num">07 / 16</div>
-</div>
+      function go(d) {
+        if (busy || cur + d < 0 || cur + d >= sl.length) return;
+        busy = true;
+        const t = TR[ti];
+        const isDir = t === 'left';
+        const oc = 'out-' + (isDir ? (d > 0 ? 'left' : 'right') : t);
+        const ic = 'in-' + (isDir ? (d > 0 ? 'left' : 'right') : t);
+        sl[cur].classList.add(oc);
+        setTimeout(() => {
+          sl[cur].classList.remove('active', oc);
+          cur += d;
+          sl[cur].classList.add('active', ic);
+          setTimeout(() => { sl[cur].classList.remove(ic); busy = false; }, 500);
+          upd();
+        }, 380);
+      }
+      function upd() {
+        document.getElementById('_ctr').textContent = (cur + 1) + '/' + sl.length;
+        document.getElementById('_prog').style.width = ((cur + 1) / sl.length * 100) + '%';
+        document.getElementById('_p').disabled = cur === 0;
+        document.getElementById('_n').disabled = cur === sl.length - 1;
+      }
+      function ct() { ti = (ti + 1) % TR.length; document.getElementById('_tb').textContent = '✦ ' + TL[TR[ti]]; }
 
-<!-- ═══════ SLIDE 8 — AI ═══════ -->
-<div class="slide">
-  <div class="glow-line" style="background:linear-gradient(90deg,transparent,var(--red),transparent)"></div>
-  <div class="corner tl"></div><div class="corner tr"></div><div class="corner bl"></div><div class="corner br"></div>
-  <div class="hdr"><svg class="logo-svg" width="28" height="28"><use href="#ah-logo"/></svg><span class="hdr-title">ARENAHUB</span><span class="hdr-right">AI SYSTEM</span></div>
-  <div class="body">
-    <div class="slabel" style="color:var(--red);">AI-POWERED LEARNING</div>
-    <div class="stitle" style="font-size:18px;color:var(--red);">AI Tutor System</div><div class="bar" style="background:linear-gradient(90deg,var(--red),transparent)"></div>
-    <div class="g2" style="gap:14px;">
-      <div>
-        <div class="card" style="margin-bottom:8px;border-color:rgba(255,51,102,.3);">
-          <div style="font-family:var(--fp);font-size:9px;color:var(--red);margin-bottom:8px;">🤖 GROQ API</div>
-          <div style="font-size:8px;color:#8090b0;line-height:2;">Model: <span style="color:var(--green);">llama-3.3-70b-versatile</span><br/>Ultra-fast inference · Low latency · Free tier<br/>Bilingual: МН + EN · Max 1024 tokens</div>
-        </div>
-        <div style="font-family:var(--fp);font-size:9px;color:var(--yellow);margin-bottom:8px;letter-spacing:2px;">AI FEATURES</div>
-        <div class="ci"><div class="ci-dot" style="background:var(--green)"></div><div class="ci-txt"><span class="ci-bold">Hint System</span>Шийдэл өгөхгүй — алхмаар чиглүүлнэ</div></div>
-        <div class="ci"><div class="ci-dot" style="background:var(--cyan)"></div><div class="ci-txt"><span class="ci-bold">Code Explanation</span>Concept гүнзгий тайлбар + жишээ</div></div>
-        <div class="ci"><div class="ci-dot" style="background:var(--yellow)"></div><div class="ci-txt"><span class="ci-bold">Debug Assistant</span>Алдааны шалтгаан задлал</div></div>
-        <div class="ci"><div class="ci-dot" style="background:var(--purple)"></div><div class="ci-txt"><span class="ci-bold">Task Recommendation</span>Personalized дараагийн task санал</div></div>
-        <div class="ci"><div class="ci-dot" style="background:var(--red)"></div><div class="ci-txt"><span class="ci-bold">Conversation History</span>Context-aware (last 6 messages)</div></div>
-      </div>
-      <div>
-        <div style="font-family:var(--fp);font-size:9px;color:var(--cyan);margin-bottom:8px;letter-spacing:2px;">TOKEN ECONOMY</div>
-        <table style="margin-bottom:14px;">
-          <tr><th>FEATURE</th><th>ТОКЕН</th><th>ЗОРИУЛАЛТ</th></tr>
-          <tr><td>💡 Hint авах</td><td style="color:var(--green);font-family:var(--fp);text-align:center;">1</td><td style="color:var(--dim);">Light guidance</td></tr>
-          <tr><td>📖 Тайлбар авах</td><td style="color:var(--cyan);font-family:var(--fp);text-align:center;">2</td><td style="color:var(--dim);">Deep explanation</td></tr>
-          <tr><td>🔍 Debug help</td><td style="color:var(--yellow);font-family:var(--fp);text-align:center;">3</td><td style="color:var(--dim);">Error analysis</td></tr>
-          <tr><td>🔓 Full solution</td><td style="color:var(--red);font-family:var(--fp);text-align:center;">5</td><td style="color:var(--dim);">Complete answer</td></tr>
-        </table>
-        <div style="font-size:8px;color:var(--dim);line-height:2;background:rgba(255,51,102,.04);padding:10px;border-left:2px solid var(--red);">
-          <strong style="color:var(--red);">Яагаад AI?</strong><br/>
-          Personalized learning · Instant feedback · Teacher dependency багасна · Retention нэмэгдэнэ
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="slide-num">08 / 16</div>
-</div>
+      document.getElementById('_p').onclick = () => go(-1);
+      document.getElementById('_n').onclick = () => go(1);
+      document.getElementById('_tb').onclick = ct;
 
-<!-- ═══════ SLIDE 9 — GAMIFICATION ═══════ -->
-<div class="slide">
-  <div class="glow-line" style="background:linear-gradient(90deg,transparent,var(--yellow),transparent)"></div>
-  <div class="corner tl"></div><div class="corner tr"></div><div class="corner bl"></div><div class="corner br"></div>
-  <div class="hdr"><svg class="logo-svg" width="28" height="28"><use href="#ah-logo"/></svg><span class="hdr-title">ARENAHUB</span><span class="hdr-right">GAMIFICATION</span></div>
-  <div class="body">
-    <div class="slabel" style="color:var(--yellow);">ТОГЛООМЖУУЛАЛТЫН СИСТЕМ</div>
-    <div class="stitle" style="font-size:18px;color:var(--yellow);">Gamification Features</div><div class="bar" style="background:linear-gradient(90deg,var(--yellow),transparent)"></div>
-    <div class="g2" style="gap:14px;">
-      <div>
-        <div class="g2" style="gap:8px;margin-bottom:12px;">
-          <div class="card" style="border-color:rgba(0,212,255,.3);text-align:center;">
-            <div style="font-size:18px;margin-bottom:4px;">⚡</div>
-            <div style="font-family:var(--fp);font-size:9px;color:var(--cyan);">XP SYSTEM</div>
-            <div style="font-size:9px;color:var(--dim);margin-top:3px;">Task → XP → Level</div>
-          </div>
-          <div class="card" style="border-color:rgba(255,200,50,.3);text-align:center;">
-            <div style="font-size:18px;margin-bottom:4px;">🔥</div>
-            <div style="font-family:var(--fp);font-size:9px;color:var(--yellow);">COMBO</div>
-            <div style="font-size:9px;color:var(--dim);margin-top:3px;">Streak multiplier</div>
-          </div>
-          <div class="card" style="border-color:rgba(255,51,102,.3);text-align:center;">
-            <div style="font-size:18px;margin-bottom:4px;">❤️</div>
-            <div style="font-family:var(--fp);font-size:9px;color:var(--red);">HP SYSTEM</div>
-            <div style="font-size:9px;color:var(--dim);margin-top:3px;">Буруу → HP хасна</div>
-          </div>
-          <div class="card" style="border-color:rgba(199,125,255,.3);text-align:center;">
-            <div style="font-size:18px;margin-bottom:4px;">🏆</div>
-            <div style="font-family:var(--fp);font-size:9px;color:var(--purple);">LEADERBOARD</div>
-            <div style="font-size:9px;color:var(--dim);margin-top:3px;">Global ranking</div>
-          </div>
-          <div class="card" style="border-color:rgba(0,255,136,.3);text-align:center;">
-            <div style="font-size:18px;margin-bottom:4px;">📅</div>
-            <div style="font-family:var(--fp);font-size:9px;color:var(--green);">STREAK</div>
-            <div style="font-size:9px;color:var(--dim);margin-top:3px;">Өдөр тутам</div>
-          </div>
-          <div class="card" style="border-color:rgba(255,107,53,.3);text-align:center;">
-            <div style="font-size:18px;margin-bottom:4px;">⚔️</div>
-            <div style="font-family:var(--fp);font-size:9px;color:#ff6b35;">CONTEST</div>
-            <div style="font-size:9px;color:var(--dim);margin-top:3px;">Тэмцээн</div>
-          </div>
-        </div>
-      </div>
-      <div>
-        <div class="g3" style="gap:8px;margin-bottom:12px;">
-          <div class="stat"><div class="snum" style="font-size:18px;color:var(--purple);">15</div><div class="slbl">ACHIEVEMENTS</div></div>
-          <div class="stat"><div class="snum" style="font-size:18px;color:var(--yellow);">10</div><div class="slbl">REWARDS</div></div>
-          <div class="stat"><div class="snum" style="font-size:18px;color:var(--green);">350+</div><div class="slbl">TASKS</div></div>
-        </div>
-        <div style="font-family:var(--fp);font-size:9px;color:var(--green);margin-bottom:8px;letter-spacing:2px;">ЯАГААД GAMIFICATION?</div>
-        <div class="ci"><div class="ci-dot" style="background:var(--green)"></div><div class="ci-txt"><span class="ci-bold">Motivation нэмэгдүүлдэг</span>Дэвшил харагдах → үргэлжлүүлнэ</div></div>
-        <div class="ci"><div class="ci-dot" style="background:var(--cyan)"></div><div class="ci-txt"><span class="ci-bold">Daily engagement</span>Streak систем өдөр тутам эргэж ирдэг</div></div>
-        <div class="ci"><div class="ci-dot" style="background:var(--yellow)"></div><div class="ci-txt"><span class="ci-bold">Competitive environment</span>Leaderboard healthy competition</div></div>
-        <div class="ci"><div class="ci-dot" style="background:var(--purple)"></div><div class="ci-txt"><span class="ci-bold">Course completion</span>Achievement → дүүргэхэд уриалдаг</div></div>
-      </div>
-    </div>
-  </div>
-  <div class="slide-num">09 / 16</div>
-</div>
+      /* keyboard */
+      document.addEventListener('keydown', e => {
+        if (['ArrowRight', 'Space', ' '].includes(e.key) || e.code === 'Space') go(1);
+        else if (e.key === 'ArrowLeft') go(-1);
+        else if (e.key.toLowerCase() === 't') ct();
+        if ([' ', 'ArrowRight', 'ArrowLeft'].includes(e.key)) e.preventDefault();
+      });
 
-<!-- ═══════ SLIDE 10 — CODE EDITOR ═══════ -->
-<div class="slide">
-  <div class="glow-line"></div><div class="corner tl"></div><div class="corner tr"></div><div class="corner bl"></div><div class="corner br"></div>
-  <div class="hdr"><svg class="logo-svg" width="28" height="28"><use href="#ah-logo"/></svg><span class="hdr-title">ARENAHUB</span><span class="hdr-right">CODING ENVIRONMENT</span></div>
-  <div class="body">
-    <div class="slabel">КОДЫН ОРЧИН</div>
-    <div class="stitle" style="font-size:18px;">Integrated Coding Environment</div><div class="bar"></div>
-    <div class="g2" style="gap:14px;">
-      <div>
-        <div style="font-family:var(--fp);font-size:9px;color:var(--cyan);margin-bottom:8px;letter-spacing:2px;">EDITOR FEATURES</div>
-        <div class="ci"><div class="ci-dot" style="background:var(--cyan)"></div><div class="ci-txt"><span class="ci-bold">VS Code-style Monaco Editor</span>Syntax highlighting, autocomplete, themes</div></div>
-        <div class="ci"><div class="ci-dot" style="background:var(--green)"></div><div class="ci-txt"><span class="ci-bold">Multi-language support</span>JavaScript, HTML, CSS, SQL</div></div>
-        <div class="ci"><div class="ci-dot" style="background:var(--yellow)"></div><div class="ci-txt"><span class="ci-bold">Sandbox execution</span>Node.js vm module — safe code run</div></div>
-        <div class="ci"><div class="ci-dot" style="background:var(--purple)"></div><div class="ci-txt"><span class="ci-bold">Real-time test cases</span>Input/expected output comparison</div></div>
-        <div class="ci"><div class="ci-dot" style="background:var(--red)"></div><div class="ci-txt"><span class="ci-bold">WPM tracker</span>Код бичих хурдны хэмжүүр</div></div>
-        <div class="ci"><div class="ci-dot" style="background:var(--cyan)"></div><div class="ci-txt"><span class="ci-bold">Game HUD</span>HP, XP, combo, streak live display</div></div>
-      </div>
-      <div>
-        <div style="font-family:var(--fp);font-size:9px;color:var(--green);margin-bottom:8px;letter-spacing:2px;">ТЕХНОЛОГИ</div>
-        <table style="margin-bottom:12px;">
-          <tr><th>ТЕХНОЛОГИ</th><th>ЗОРИУЛАЛТ</th></tr>
-          <tr><td style="color:var(--cyan);">Monaco Editor</td><td>VS Code engine</td></tr>
-          <tr><td style="color:var(--green);">Node.js vm</td><td>Sandbox execution</td></tr>
-          <tr><td style="color:var(--yellow);">TypeScript</td><td>Type checking</td></tr>
-          <tr><td style="color:var(--purple);">dynamic import</td><td>Lazy loading</td></tr>
-        </table>
-        <div style="background:rgba(8,12,22,.9);border:1px solid rgba(0,212,255,.15);padding:12px;font-family:var(--fp);font-size:8px;border-left:3px solid var(--cyan);">
-          <div style="color:#569cd6;">function </div>
-          <div style="color:var(--yellow);">solution<span style="color:#c0c0c0;">(</span><span style="color:#9cdcfe;">input</span><span style="color:#c0c0c0;">)</span> {</div>
-          <div style="color:#c0c0c0;padding-left:16px;"><span style="color:#c586c0;">return</span> input + <span style="color:#b5cea8;">10</span>;</div>
-          <div style="color:#c0c0c0;">}</div>
-          <div style="margin-top:6px;color:var(--green);">✓ Test 1: PASS  12ms</div>
-          <div style="color:var(--green);">✓ Test 2: PASS  8ms</div>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="slide-num">10 / 16</div>
-</div>
+      /* touch/swipe — coordinates are in viewport space (outside canvas scale) */
+      let tx = 0, ty = 0;
+      document.addEventListener('touchstart', e => { tx = e.touches[0].clientX; ty = e.touches[0].clientY; }, { passive: true });
+      document.addEventListener('touchend', e => {
+        const dx = e.changedTouches[0].clientX - tx;
+        const dy = e.changedTouches[0].clientY - ty;
+        if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 40) { dx < 0 ? go(1) : go(-1); }
+      }, { passive: true });
 
-<!-- ═══════ SLIDE 11 — i18n ═══════ -->
-<div class="slide">
-  <div class="glow-line"></div><div class="corner tl"></div><div class="corner tr"></div><div class="corner bl"></div><div class="corner br"></div>
-  <div class="hdr"><svg class="logo-svg" width="28" height="28"><use href="#ah-logo"/></svg><span class="hdr-title">ARENAHUB</span><span class="hdr-right">INTERNATIONALIZATION</span></div>
-  <div class="body">
-    <div class="slabel">ОЛОН ХЭЛ ДЭМЖЛЭГ</div>
-    <div class="stitle" style="font-size:18px;">Multi-language System</div><div class="bar"></div>
-    <div class="g2" style="gap:14px;">
-      <div>
-        <div style="font-family:var(--fp);font-size:9px;color:var(--cyan);margin-bottom:10px;letter-spacing:2px;">ДЭМЖИГДЭХ ХЭЛҮҮД</div>
-        <div class="g2" style="gap:8px;margin-bottom:12px;">
-          <div class="card" style="text-align:center;border-color:rgba(0,212,255,.3);">
-            <div style="font-size:28px;margin-bottom:6px;">🇲🇳</div>
-            <div style="font-family:var(--fp);font-size:9px;color:var(--cyan);">МОНГОЛ</div>
-            <div style="font-size:8px;color:var(--dim);margin-top:4px;">Үндсэн хэл</div>
-          </div>
-          <div class="card" style="text-align:center;border-color:rgba(0,255,136,.3);">
-            <div style="font-size:28px;margin-bottom:6px;">🇺🇸</div>
-            <div style="font-family:var(--fp);font-size:9px;color:var(--green);">ENGLISH</div>
-            <div style="font-size:8px;color:var(--dim);margin-top:4px;">International</div>
-          </div>
-        </div>
-        <div style="font-family:var(--fp);font-size:9px;color:var(--yellow);margin-bottom:8px;letter-spacing:2px;">FEATURES</div>
-        <div class="ci"><div class="ci-dot" style="background:var(--cyan)"></div><div class="ci-txt"><span class="ci-bold">446 translation keys</span>Бүх UI текст орчуулагдсан</div></div>
-        <div class="ci"><div class="ci-dot" style="background:var(--green)"></div><div class="ci-txt"><span class="ci-bold">Persistent settings</span>localStorage-д хадгалагдана</div></div>
-        <div class="ci"><div class="ci-dot" style="background:var(--yellow)"></div><div class="ci-txt"><span class="ci-bold">Dynamic currency</span>₮ ↔ $ автомат хөрвүүлэлт</div></div>
-        <div class="ci"><div class="ci-dot" style="background:var(--purple)"></div><div class="ci-txt"><span class="ci-bold">Bilingual AI tutor</span>AI хэл дагаж хариулдаг</div></div>
-        <div class="ci"><div class="ci-dot" style="background:var(--red)"></div><div class="ci-txt"><span class="ci-bold">Bilingual tasks</span>350+ task-д МН/EN орчуулга</div></div>
-      </div>
-      <div>
-        <div style="font-family:var(--fp);font-size:9px;color:var(--purple);margin-bottom:8px;letter-spacing:2px;">ТЕХНИК ХЭРЭГЖИЛТ</div>
-        <div class="card" style="margin-bottom:10px;">
-          <div style="font-family:var(--fp);font-size:8px;color:var(--purple);margin-bottom:6px;">React Context API</div>
-          <div style="font-size:8px;color:#8090b0;line-height:2;">LanguageContext → бүх component-д хэрэглэгдэнэ<br/>useLang() hook → t('key') функц</div>
-        </div>
-        <div style="background:rgba(8,12,22,.9);border:1px solid rgba(0,212,255,.15);padding:12px;font-family:var(--fp);font-size:8px;border-left:3px solid var(--purple);">
-          <div style="color:#569cd6;">const</div>
-          <div style="color:#9cdcfe;padding-left:8px;">{ lang, setLang, t } = useLang()</div>
-          <br/>
-          <div style="color:#c0c0c0;"><span style="color:#c586c0;">// МН:</span> t('nav_dashboard') → 'ДАШБОРД'</div>
-          <div style="color:#c0c0c0;"><span style="color:#c586c0;">// EN:</span> t('nav_dashboard') → 'DASHBOARD'</div>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="slide-num">11 / 16</div>
-</div>
-
-<!-- ═══════ SLIDE 12 — SECURITY ═══════ -->
-<div class="slide">
-  <div class="glow-line" style="background:linear-gradient(90deg,transparent,var(--red),transparent)"></div>
-  <div class="corner tl"></div><div class="corner tr"></div><div class="corner bl"></div><div class="corner br"></div>
-  <div class="hdr"><svg class="logo-svg" width="28" height="28"><use href="#ah-logo"/></svg><span class="hdr-title">ARENAHUB</span><span class="hdr-right">SECURITY</span></div>
-  <div class="body">
-    <div class="slabel" style="color:var(--red);">АЮУЛГҮЙ БАЙДЛЫН АРХИТЕКТУР</div>
-    <div class="stitle" style="font-size:18px;color:var(--red);">Security Architecture</div><div class="bar" style="background:linear-gradient(90deg,var(--red),transparent)"></div>
-    <div class="g2" style="gap:14px;">
-      <div>
-        <div style="font-family:var(--fp);font-size:9px;color:var(--red);margin-bottom:8px;letter-spacing:2px;">SECURITY LAYERS</div>
-        <table>
-          <tr><th>ХАМГААЛАЛТ</th><th>ЗОРИУЛАЛТ</th></tr>
-          <tr><td style="color:var(--cyan);">CSP Headers</td><td>Content Security Policy — XSS</td></tr>
-          <tr><td style="color:var(--yellow);">HSTS (1yr)</td><td>HTTPS enforcement</td></tr>
-          <tr><td style="color:var(--green);">X-Frame-Options</td><td>Clickjacking prevention</td></tr>
-          <tr><td style="color:var(--purple);">crypto.scrypt</td><td>Password hashing (Node built-in)</td></tr>
-          <tr><td style="color:var(--red);">JWT 15m expiry</td><td>Short-lived tokens</td></tr>
-          <tr><td style="color:var(--cyan);">Zod validation</td><td>All input validation</td></tr>
-          <tr><td style="color:var(--yellow);">Rate limiting</td><td>Brute force protection</td></tr>
-          <tr><td style="color:var(--green);">vm sandbox</td><td>Code execution isolation</td></tr>
-        </table>
-      </div>
-      <div>
-        <div style="font-family:var(--fp);font-size:9px;color:var(--green);margin-bottom:8px;letter-spacing:2px;">НЭМЭЛТ ХАМГААЛАЛТ</div>
-        <div class="ci"><div class="ci-dot" style="background:var(--green)"></div><div class="ci-txt"><span class="ci-bold" style="color:var(--green);">✅ Dual auth system</span>NextAuth cookie + Bearer fallback</div></div>
-        <div class="ci"><div class="ci-dot" style="background:var(--cyan)"></div><div class="ci-txt"><span class="ci-bold" style="color:var(--cyan);">✅ DB role check</span>Admin operations DB-д role баталгаажуулна</div></div>
-        <div class="ci"><div class="ci-dot" style="background:var(--yellow)"></div><div class="ci-txt"><span class="ci-bold" style="color:var(--yellow);">✅ Input sanitize</span>Prompt injection XSS хамгаалалт</div></div>
-        <div class="ci"><div class="ci-dot" style="background:var(--purple)"></div><div class="ci-txt"><span class="ci-bold" style="color:var(--purple);">✅ Referrer policy</span>strict-origin-when-cross-origin</div></div>
-        <div class="ci"><div class="ci-dot" style="background:var(--red)"></div><div class="ci-txt"><span class="ci-bold" style="color:var(--red);">✅ BLOCKED list</span>Code sandbox-д eval, process, fs хориглосон</div></div>
-        <div style="margin-top:10px;padding:10px;background:rgba(255,51,102,.04);border:1px solid rgba(255,51,102,.2);">
-          <div style="font-family:var(--fp);font-size:8px;color:var(--red);margin-bottom:6px;letter-spacing:2px;">PRODUCTION SECURITY SCORES</div>
-          <div style="display:flex;gap:8px;">
-            <div style="flex:1;text-align:center;"><div style="font-family:var(--fp);font-size:9px;color:var(--yellow);">B+</div><div style="font-size:9px;color:var(--dim);">Security</div></div>
-            <div style="flex:1;text-align:center;"><div style="font-family:var(--fp);font-size:9px;color:var(--green);">A</div><div style="font-size:9px;color:var(--dim);">Headers</div></div>
-            <div style="flex:1;text-align:center;"><div style="font-family:var(--fp);font-size:9px;color:var(--cyan);">A</div><div style="font-size:9px;color:var(--dim);">Auth</div></div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="slide-num">12 / 16</div>
-</div>
-
-<!-- ═══════ SLIDE 13 — DEPLOYMENT ═══════ -->
-<div class="slide">
-  <div class="glow-line"></div><div class="corner tl"></div><div class="corner tr"></div><div class="corner bl"></div><div class="corner br"></div>
-  <div class="hdr"><svg class="logo-svg" width="28" height="28"><use href="#ah-logo"/></svg><span class="hdr-title">ARENAHUB</span><span class="hdr-right">DEPLOYMENT</span></div>
-  <div class="body">
-    <div class="slabel">DEPLOYMENT АРХИТЕКТУР</div>
-    <div class="stitle" style="font-size:18px;">Hosting & Deployment</div><div class="bar"></div>
-    <div class="g2" style="gap:14px;">
-      <div>
-        <div style="font-family:var(--fp);font-size:9px;color:var(--cyan);margin-bottom:8px;letter-spacing:2px;">ПЛАТФОРМУУД</div>
-        <table style="margin-bottom:12px;">
-          <tr><th>ПЛАТФОРМ</th><th>ЗОРИУЛАЛТ</th><th>TIER</th></tr>
-          <tr><td style="color:var(--cyan);">Vercel</td><td>Frontend + API hosting</td><td style="color:var(--green);">Free</td></tr>
-          <tr><td style="color:var(--green);">Neon.tech</td><td>PostgreSQL cloud</td><td style="color:var(--green);">Free</td></tr>
-          <tr><td style="color:var(--yellow);">GitHub</td><td>Source control</td><td style="color:var(--green);">Free</td></tr>
-          <tr><td style="color:var(--purple);">Groq</td><td>AI inference API</td><td style="color:var(--green);">Free</td></tr>
-        </table>
-        <div style="font-family:var(--fp);font-size:9px;color:var(--yellow);margin-bottom:8px;letter-spacing:2px;">CI/CD FLOW</div>
-        <div class="flow" style="flex-direction:column;gap:0;padding:0;">
-          <div style="display:flex;align-items:center;padding:8px 14px;background:rgba(0,212,255,.06);border-bottom:1px solid rgba(0,212,255,.1);">
-            <span style="font-family:var(--fp);font-size:9px;color:var(--cyan);">1. git push origin main</span>
-          </div>
-          <div style="display:flex;align-items:center;padding:8px 14px;background:rgba(0,255,136,.04);border-bottom:1px solid rgba(0,212,255,.1);">
-            <span style="font-family:var(--fp);font-size:9px;color:var(--green);">2. GitHub trigger → Vercel webhook</span>
-          </div>
-          <div style="display:flex;align-items:center;padding:8px 14px;background:rgba(255,200,50,.04);border-bottom:1px solid rgba(0,212,255,.1);">
-            <span style="font-family:var(--fp);font-size:9px;color:var(--yellow);">3. npm install → next build</span>
-          </div>
-          <div style="display:flex;align-items:center;padding:8px 14px;background:rgba(199,125,255,.04);">
-            <span style="font-family:var(--fp);font-size:9px;color:var(--purple);">4. Deploy → btbn-arenahub.vercel.app</span>
-          </div>
-        </div>
-      </div>
-      <div>
-        <div style="font-family:var(--fp);font-size:9px;color:var(--green);margin-bottom:8px;letter-spacing:2px;">ДАВУУ ТАЛУУД</div>
-        <div class="ci"><div class="ci-dot" style="background:var(--green)"></div><div class="ci-txt"><span class="ci-bold">Zero server management</span>Serverless — infrastructure нойрмоггүй</div></div>
-        <div class="ci"><div class="ci-dot" style="background:var(--cyan)"></div><div class="ci-txt"><span class="ci-bold">Auto scaling</span>Traffic нэмэгдэхэд автоматаар scale</div></div>
-        <div class="ci"><div class="ci-dot" style="background:var(--yellow)"></div><div class="ci-txt"><span class="ci-bold">Global CDN</span>Vercel edge network — хурдан хариу</div></div>
-        <div class="ci"><div class="ci-dot" style="background:var(--purple)"></div><div class="ci-txt"><span class="ci-bold">Preview deployments</span>PR бүрт preview URL</div></div>
-        <div class="ci"><div class="ci-dot" style="background:var(--red)"></div><div class="ci-txt"><span class="ci-bold">Free tier</span>Нийт зардал $0</div></div>
-        <div style="margin-top:10px;" class="card" style="border-color:rgba(0,255,136,.2);">
-          <div style="font-family:var(--fp);font-size:9px;color:var(--green);margin-bottom:4px;">🌐 PRODUCTION URL</div>
-          <div style="font-size:8px;color:var(--cyan);">btbn-arenahub.vercel.app</div>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="slide-num">13 / 16</div>
-</div>
-
-<!-- ═══════ SLIDE 14 — RESULTS ═══════ -->
-<div class="slide">
-  <div class="glow-line" style="background:linear-gradient(90deg,transparent,var(--green),transparent)"></div>
-  <div class="corner tl"></div><div class="corner tr"></div><div class="corner bl"></div><div class="corner br"></div>
-  <div class="hdr"><svg class="logo-svg" width="28" height="28"><use href="#ah-logo"/></svg><span class="hdr-title">ARENAHUB</span><span class="hdr-right">RESULTS</span></div>
-  <div class="body">
-    <div class="slabel" style="color:var(--green);">ҮР ДҮН</div>
-    <div class="stitle" style="font-size:18px;color:var(--green);">Project Results</div><div class="bar" style="background:linear-gradient(90deg,var(--green),transparent)"></div>
-    <div class="g4" style="gap:8px;margin-bottom:14px;">
-      <div class="stat"><div class="snum">8</div><div class="slbl">COURSES</div></div>
-      <div class="stat"><div class="snum" style="color:var(--green);">56</div><div class="slbl">LESSONS</div></div>
-      <div class="stat"><div class="snum" style="color:var(--yellow);">350+</div><div class="slbl">TASKS</div></div>
-      <div class="stat"><div class="snum" style="color:var(--purple);">30</div><div class="slbl">DB MODELS</div></div>
-      <div class="stat"><div class="snum" style="color:var(--red);">55</div><div class="slbl">API ROUTES</div></div>
-      <div class="stat"><div class="snum" style="color:var(--cyan);">19</div><div class="slbl">ADMIN PAGES</div></div>
-      <div class="stat"><div class="snum" style="color:var(--green);">2</div><div class="slbl">LANGUAGES</div></div>
-      <div class="stat"><div class="snum" style="color:var(--yellow);">446</div><div class="slbl">i18n KEYS</div></div>
-    </div>
-    <div class="g2" style="gap:14px;">
-      <div>
-        <div style="font-family:var(--fp);font-size:9px;color:var(--green);margin-bottom:8px;letter-spacing:2px;">✅ АМЖИЛТТАЙ ХЭРЭГЖСЭН</div>
-        <div class="ci"><div class="ci-dot" style="background:var(--green)"></div><div class="ci-txt"><span class="ci-bold" style="color:var(--green);">Full-stack production system</span>Vercel + Neon cloud-д deployed</div></div>
-        <div class="ci"><div class="ci-dot" style="background:var(--cyan)"></div><div class="ci-txt"><span class="ci-bold" style="color:var(--cyan);">AI integration</span>Groq llama-3.3-70b bilingual tutor</div></div>
-        <div class="ci"><div class="ci-dot" style="background:var(--yellow)"></div><div class="ci-txt"><span class="ci-bold" style="color:var(--yellow);">Gamification system</span>XP, level, combo, HP, leaderboard</div></div>
-        <div class="ci"><div class="ci-dot" style="background:var(--purple)"></div><div class="ci-txt"><span class="ci-bold" style="color:var(--purple);">Secure authentication</span>OAuth + JWT dual system</div></div>
-        <div class="ci"><div class="ci-dot" style="background:var(--red)"></div><div class="ci-txt"><span class="ci-bold" style="color:var(--red);">Responsive UI</span>Mobile + Desktop + Tablet</div></div>
-      </div>
-      <div>
-        <div style="font-family:var(--fp);font-size:9px;color:var(--cyan);margin-bottom:8px;letter-spacing:2px;">ОНЦЛОГ ШИЙДЛҮҮД</div>
-        <div class="ci"><div class="ci-dot" style="background:var(--cyan)"></div><div class="ci-txt"><span class="ci-bold">21 улсын pixel flag</span>SVG pixel art country flags</div></div>
-        <div class="ci"><div class="ci-dot" style="background:var(--green)"></div><div class="ci-txt"><span class="ci-bold">3D pixel character</span>Three.js pixel art model</div></div>
-        <div class="ci"><div class="ci-dot" style="background:var(--yellow)"></div><div class="ci-txt"><span class="ci-bold">Inline admin CRUD</span>Course → Lesson → Task expand</div></div>
-        <div class="ci"><div class="ci-dot" style="background:var(--purple)"></div><div class="ci-txt"><span class="ci-bold">Real-time leaderboard</span>30s auto-refresh, public endpoint</div></div>
-      </div>
-    </div>
-  </div>
-  <div class="slide-num">14 / 16</div>
-</div>
-
-<!-- ═══════ SLIDE 15 — FUTURE ═══════ -->
-<div class="slide">
-  <div class="glow-line"></div><div class="corner tl"></div><div class="corner tr"></div><div class="corner bl"></div><div class="corner br"></div>
-  <div class="hdr"><svg class="logo-svg" width="28" height="28"><use href="#ah-logo"/></svg><span class="hdr-title">ARENAHUB</span><span class="hdr-right">FUTURE PLAN</span></div>
-  <div class="body">
-    <div class="slabel">ЦААШИД САЙЖРУУЛАХ БОЛОМЖ</div>
-    <div class="stitle" style="font-size:18px;">Future Improvements</div><div class="bar"></div>
-    <div class="g2" style="gap:14px;">
-      <div>
-        <div style="font-family:var(--fp);font-size:9px;color:var(--cyan);margin-bottom:10px;letter-spacing:2px;">ТӨЛӨВЛӨСӨН FEATURES</div>
-        <div class="ci"><div class="ci-dot" style="background:var(--cyan)"></div><div class="ci-txt"><span class="ci-bold">Real-time Multiplayer Contest</span>WebSocket ашиглан live coding battle</div></div>
-        <div class="ci"><div class="ci-dot" style="background:var(--green)"></div><div class="ci-txt"><span class="ci-bold">AI Voice Tutor</span>Text-to-speech AI тайлбар</div></div>
-        <div class="ci"><div class="ci-dot" style="background:var(--yellow)"></div><div class="ci-txt"><span class="ci-bold">Mobile Application</span>React Native / Expo cross-platform</div></div>
-        <div class="ci"><div class="ci-dot" style="background:var(--purple)"></div><div class="ci-txt"><span class="ci-bold">Real-time Collaboration</span>Pair programming — хамтарч код бичих</div></div>
-        <div class="ci"><div class="ci-dot" style="background:var(--red)"></div><div class="ci-txt"><span class="ci-bold">Advanced Analytics</span>Learning path optimization, teacher dashboard</div></div>
-        <div class="ci"><div class="ci-dot" style="background:var(--cyan)"></div><div class="ci-txt"><span class="ci-bold">Team Competitions</span>Group coding challenges</div></div>
-      </div>
-      <div>
-        <div style="font-family:var(--fp);font-size:9px;color:var(--yellow);margin-bottom:10px;letter-spacing:2px;">ТЕХНИК САЙЖРУУЛАЛТ</div>
-        <div class="ci"><div class="ci-dot" style="background:var(--yellow)"></div><div class="ci-txt"><span class="ci-bold">Upstash Redis</span>Serverless rate limiting (брутфорс)</div></div>
-        <div class="ci"><div class="ci-dot" style="background:var(--green)"></div><div class="ci-txt"><span class="ci-bold">isolated-vm</span>Аюулгүй code sandbox</div></div>
-        <div class="ci"><div class="ci-dot" style="background:var(--cyan)"></div><div class="ci-txt"><span class="ci-bold">Sentry monitoring</span>Production error tracking</div></div>
-        <div class="ci"><div class="ci-dot" style="background:var(--purple)"></div><div class="ci-txt"><span class="ci-bold">Vercel Blob</span>Screenshot cloud storage</div></div>
-        <div style="margin-top:14px;padding:12px;background:rgba(0,212,255,.04);border:1px solid rgba(0,212,255,.15);text-align:center;">
-          <div style="font-family:var(--fp);font-size:9px;color:var(--dim);margin-bottom:8px;letter-spacing:3px;">VISION</div>
-          <div style="font-size:9px;color:#b0c8e0;line-height:1.9;">ArenaHub-г Монголын <span style="color:var(--cyan);">IT боловсролын</span><br/>хамгийн <span style="color:var(--green);">innovative платформ</span> болгох</div>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="slide-num">15 / 16</div>
-</div>
-
-<!-- ═══════ SLIDE 16 — CONCLUSION ═══════ -->
-<div class="slide">
-  <div class="hero-bg"></div>
-  <div class="glow-line"></div><div class="corner tl"></div><div class="corner tr"></div><div class="corner bl"></div><div class="corner br"></div>
-  <div class="hdr"><svg class="logo-svg" width="28" height="28"><use href="#ah-logo"/></svg><span class="hdr-title">ARENAHUB</span><span class="hdr-right">CONCLUSION</span></div>
-  <div class="body" style="display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;position:relative;z-index:5;">
-    <div style="font-family:var(--fp);font-size:9px;color:var(--dim);letter-spacing:6px;margin-bottom:12px;">ДҮГНЭЛТ</div>
-    <svg width="56" height="56" style="margin-bottom:14px;"><use href="#ah-logo"/></svg>
-    <div style="font-family:var(--fp);font-weight:900;font-size:18px;color:var(--cyan);letter-spacing:4px;text-shadow:0 0 40px rgba(0,212,255,.5);margin-bottom:8px;">ARENAHUB</div>
-    <div style="max-width:580px;font-size:9px;color:#8090b0;line-height:2;margin-bottom:20px;">
-      ArenaHub нь <span style="color:var(--cyan);">modern full-stack architecture</span>,
-      <span style="color:var(--green);">AI-powered learning</span>,
-      <span style="color:var(--yellow);">gamification system</span> болон
-      <span style="color:var(--purple);">secure scalable platform</span>
-      зэрэг технологиудыг нэгтгэсэн бүрэн хэмжээний платформ юм.
-    </div>
-    <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-bottom:20px;">
-      <span class="badge bc">Next.js 15</span><span class="badge bg">PostgreSQL</span><span class="badge by">Groq AI</span>
-      <span class="badge bp">Prisma ORM</span><span class="badge bc">TypeScript</span><span class="badge br2">Gamification</span>
-      <span class="badge bg">OAuth</span><span class="badge by">Vercel</span><span class="badge bp">Three.js</span>
-    </div>
-    <div style="font-family:var(--fp);font-size:18px;color:var(--green);letter-spacing:4px;text-shadow:0 0 20px rgba(0,255,136,.4);">АНХААРАЛ ТАВЬСАНД БАЯРЛАЛАА</div>
-    <div style="font-family:var(--fp);font-size:9px;color:var(--dim);letter-spacing:3px;margin-top:8px;">АСУУЛТ БАЙВАЛ ХАРИУЛЪЯ</div>
-  </div>
-  <div class="slide-num">16 / 16</div>
-</div>
-
-</div><!-- /#_deck -->
-
-<div id="_prog" style="width:0"></div>
-<div id="_nav">
-  <button id="_p">◀ PREV</button>
-  <span id="_ctr">1/1</span>
-  <button id="_n">NEXT ▶</button>
-</div>
-<button id="_tb">✦ FADE</button>
-<button id="_fs" style="display:none">⛶ FULLSCREEN</button>
-<script>
-(function(){
-const sl=document.querySelectorAll('.slide');
-const TR=['fade','left','zoom','glitch'];
-const TL={fade:'FADE',left:'SLIDE',zoom:'ZOOM',glitch:'GLITCH'};
-let cur=0,ti=0,busy=false;
-
-function go(d){
-  if(busy||cur+d<0||cur+d>=sl.length)return;
-  busy=true;
-  const t=TR[ti];
-  const isDir=t==='left';
-  const oc='out-'+(isDir?(d>0?'left':'right'):t);
-  const ic='in-'+(isDir?(d>0?'left':'right'):t);
-  sl[cur].classList.add(oc);
-  setTimeout(()=>{
-    sl[cur].classList.remove('active',oc);
-    cur+=d;
-    sl[cur].classList.add('active',ic);
-    setTimeout(()=>{sl[cur].classList.remove(ic);busy=false;},500);
-    upd();
-  },380);
-}
-function upd(){
-  document.getElementById('_ctr').textContent=(cur+1)+'/'+sl.length;
-  document.getElementById('_prog').style.width=((cur+1)/sl.length*100)+'%';
-  document.getElementById('_p').disabled=cur===0;
-  document.getElementById('_n').disabled=cur===sl.length-1;
-}
-function ct(){ti=(ti+1)%TR.length;document.getElementById('_tb').textContent='✦ '+TL[TR[ti]];}
-function fs(){!document.fullscreenElement?document.documentElement.requestFullscreen():document.exitFullscreen();}
-
-document.getElementById('_p').onclick=()=>go(-1);
-document.getElementById('_n').onclick=()=>go(1);
-document.getElementById('_tb').onclick=ct;
-document.getElementById('_fs').onclick=fs;
-document.addEventListener('keydown',e=>{
-  if(['ArrowRight','Space',' '].includes(e.key)||e.code==='Space')go(1);
-  else if(e.key==='ArrowLeft')go(-1);
-  else if(e.key.toLowerCase()==='f')fs();
-  else if(e.key.toLowerCase()==='t')ct();
-  if([' ','ArrowRight','ArrowLeft'].includes(e.key))e.preventDefault();
-});
-sl[0].classList.add('active');
-upd();
-
-})();
-</script>
+      sl[0].classList.add('active');
+      upd();
+    })();
+  </script>
 </body>
+
 </html>
