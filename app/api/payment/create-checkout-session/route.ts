@@ -9,15 +9,15 @@ const SECRET = process.env.NEXTAUTH_SECRET || process.env.JWT_SECRET
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!)
 
 const PRODUCTS = {
-  pro_monthly:  { name: 'PRO — Сарын', productId: process.env.STRIPE_PRODUCT_PRO_MONTH, price: 1700 },
-  pro_yearly:   { name: 'PRO — Жилийн', productId: process.env.STRIPE_PRODUCT_PRO_YEAR, price: 17000 },
-  vip_monthly:  { name: 'VIP — Сарын', productId: process.env.STRIPE_PRODUCT_VIP_MONTH, price: 3400 },
-  vip_yearly:   { name: 'VIP — Жилийн', productId: process.env.STRIPE_PRODUCT_VIP_YEAR, price: 32000 },
-  contest_pro:  { name: 'Contest — PRO', productId: process.env.STRIPE_PRODUCT_CONTEST_PRO, price: 300 },
-  contest_free: { name: 'Contest — FREE', productId: process.env.STRIPE_PRODUCT_CONTEST_FREE, price: 1000 },
-  token_10:     { name: '10 AI Token', productId: process.env.STRIPE_PRODUCT_AI_TOKEN_10, price: 350 },
-  token_50:     { name: '50 AI Token', productId: process.env.STRIPE_PRODUCT_AI_TOKEN_50, price: 1500 },
-  token_200:    { name: '200+20 Token', productId: process.env.STRIPE_PRODUCT_AI_TOKEN_200, price: 4500 },
+  pro_monthly:  { name: 'PRO — Сарын', productId: process.env.STRIPE_PRODUCT_PRO_MONTH, price: 17000 },
+  pro_yearly:   { name: 'PRO — Жилийн', productId: process.env.STRIPE_PRODUCT_PRO_YEAR, price: 170000 },
+  vip_monthly:  { name: 'VIP — Сарын', productId: process.env.STRIPE_PRODUCT_VIP_MONTH, price: 34000 },
+  vip_yearly:   { name: 'VIP — Жилийн', productId: process.env.STRIPE_PRODUCT_VIP_YEAR, price: 320000 },
+  contest_pro:  { name: 'Contest — PRO', productId: process.env.STRIPE_PRODUCT_CONTEST_PRO, price: 3000 },
+  contest_free: { name: 'Contest — FREE', productId: process.env.STRIPE_PRODUCT_CONTEST_FREE, price: 10000 },
+  token_10:     { name: '10 AI Token', productId: process.env.STRIPE_PRODUCT_AI_TOKEN_10, price: 3500 },
+  token_50:     { name: '50 AI Token', productId: process.env.STRIPE_PRODUCT_AI_TOKEN_50, price: 15000 },
+  token_200:    { name: '200+20 Token', productId: process.env.STRIPE_PRODUCT_AI_TOKEN_200, price: 45000 },
 }
 
 export async function POST(req: NextRequest) {
