@@ -262,7 +262,7 @@ export default function PricingPage() {
                         <div style={{ marginBottom:10 }}>
                           <div style={{ display:'flex', alignItems:'baseline', gap:5 }}>
                             <span style={FP(28,'#c0d0e0')}>{plan.yearPrice}</span>
-                            <span style={FP(9,DIM2)}>/жил</span>
+                            <span style={FP(9,DIM2)}>{isMn ? '/жил' : '/yr'}</span>
                           </div>
                           <div style={{ ...FP(7,'#00ff41'), marginTop:6 }}>✓ {plan.yearNote}</div>
                         </div>
@@ -412,7 +412,10 @@ export default function PricingPage() {
                 ))}
               </div>
               <div style={{ padding:'14px 16px', background:BG, border:`1px solid #00e5ff14`, ...FM(12,DIM2), lineHeight:1.9 }}>
-                💡 <b style={{ color:'#c0d0e0' }}>PRO subscription</b> нь token худалдаахаас <b style={{ color:'#00e5ff' }}>2x хямд</b>. VIP нь <b style={{ color:'#ffd700' }}>4x хямд</b>.
+                {isMn
+                  ? <>💡 <b style={{ color:'#c0d0e0' }}>PRO subscription</b> нь token худалдаахаас <b style={{ color:'#00e5ff' }}>2x хямд</b>. VIP нь <b style={{ color:'#ffd700' }}>4x хямд</b>.</>
+                  : <>💡 <b style={{ color:'#c0d0e0' }}>PRO subscription</b> is <b style={{ color:'#00e5ff' }}>2x cheaper</b> than buying tokens. VIP is <b style={{ color:'#ffd700' }}>4x cheaper</b>.</>
+                }
               </div>
             </div>
           </div>
@@ -422,17 +425,17 @@ export default function PricingPage() {
         {tab === 'history' && (
           <div style={{ animation:'pr-in .3s ease' }}>
             <div style={{ textAlign:'center', marginBottom:36 }}>
-              <div style={{ ...FP(5,DIM2,5), marginBottom:14 }}>💳 ТӨЛБӨРИЙН ТҮҮХ</div>
-              <div style={{ ...FP(24,'#c0d0e0'), marginBottom:10, letterSpacing:2 }}>МИНИЙ ЗАХИАЛГУУД</div>
+              <div style={{ ...FP(5,DIM2,5), marginBottom:14 }}>💳 {isMn ? 'ТӨЛБӨРИЙН ТҮҮХ' : 'PAYMENT HISTORY'}</div>
+              <div style={{ ...FP(24,'#c0d0e0'), marginBottom:10, letterSpacing:2 }}>{isMn ? 'МИНИЙ ЗАХИАЛГУУД' : 'MY ORDERS'}</div>
             </div>
 
             {fetchingH ? (
-              <div style={{ padding:'60px', textAlign:'center', ...FP(8,DIM2) }}>АЧААЛЛАЖ БАЙНА...</div>
+              <div style={{ padding:'60px', textAlign:'center', ...FP(8,DIM2) }}>{isMn ? 'АЧААЛЛАЖ БАЙНА...' : 'LOADING...'}</div>
             ) : !session ? (
               <div style={{ background:BG2, border:`1px solid ${DIM}`, padding:'64px', textAlign:'center' }}>
                 <div style={{ fontSize:44, marginBottom:14 }}>🔒</div>
-                <div style={{ ...FP(9,DIM2), marginBottom:20 }}>Түүх харахын тулд нэвтэрнэ үү</div>
-                <a href="/login" style={{ ...FP(8,'#00e5ff'), padding:'11px 24px', border:'1px solid #00e5ff55', textDecoration:'none' }}>НЭВТРЭХ →</a>
+                <div style={{ ...FP(9,DIM2), marginBottom:20 }}>{isMn ? 'Түүх харахын тулд нэвтэрнэ үү' : 'Please log in to view history'}</div>
+                <a href="/login" style={{ ...FP(8,'#00e5ff'), padding:'11px 24px', border:'1px solid #00e5ff55', textDecoration:'none' }}>{isMn ? 'НЭВТРЭХ →' : 'LOGIN →'}</a>
               </div>
             ) : payments.length === 0 ? (
               <div style={{ background:BG2, border:`1px solid ${DIM}`, padding:'64px', textAlign:'center' }}>
@@ -488,7 +491,7 @@ export default function PricingPage() {
                         {isSelected && (
                           <div style={{ background:'rgba(0,255,65,.03)', borderBottom:`1px solid ${DIM}`, padding:'16px 24px 16px 27px' }}>
                             <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:10 }}>
-                              {([['ID', p.id.slice(0,20)+'...'],['Арга', p.method||'—'],['Metadata', JSON.stringify(p.metadata||{})],['Approved', p.approvedAt ? new Date(p.approvedAt).toLocaleDateString('mn-MN') : '—']] as [string,string][]).map(([k,v]) => (
+                              {([[' ID', p.id.slice(0,20)+'...'],[isMn?'Арга':'Method', p.method||'—'],['Metadata', JSON.stringify(p.metadata||{})],[isMn?'Баталсан':'Approved', p.approvedAt ? new Date(p.approvedAt).toLocaleDateString('mn-MN') : '—']] as [string,string][]).map(([k,v]) => (
                                 <div key={k} style={{ padding:'10px 14px', background:BG, border:`1px solid ${DIM}` }}>
                                   <div style={{ ...FP(5,DIM2,2), marginBottom:5 }}>{k}</div>
                                   <div style={FM(11,TEXT)}>{v}</div>
@@ -510,17 +513,17 @@ export default function PricingPage() {
         {tab === 'contest' && (
           <div style={{ animation:'pr-in .3s ease' }}>
             <div style={{ textAlign:'center', marginBottom:36 }}>
-              <div style={{ ...FP(5,DIM2,5), marginBottom:14 }}>⚔ CONTEST ENTRY ҮНЭ</div>
-              <div style={{ ...FP(24,'#c0d0e0'), marginBottom:10, letterSpacing:2 }}>7 ХОНОГ ТУТМЫН ШАЛГАЛТ</div>
-              <div style={FM(13,DIM2)}>Өрсөлдөж XP · Badge · AI token · Prize pool шагнал аваарай</div>
+              <div style={{ ...FP(5,DIM2,5), marginBottom:14 }}>⚔ {isMn ? 'CONTEST ENTRY ҮНЭ' : 'CONTEST ENTRY FEE'}</div>
+              <div style={{ ...FP(24,'#c0d0e0'), marginBottom:10, letterSpacing:2 }}>{isMn ? '7 ХОНОГ ТУТМЫН ШАЛГАЛТ' : 'WEEKLY CHALLENGE'}</div>
+              <div style={FM(13,DIM2)}>{isMn ? 'Өрсөлдөж XP · Badge · AI token · Prize pool шагнал аваарай' : 'Compete for XP · Badges · AI tokens · Prize pool'}</div>
             </div>
 
-            <SectionLabel label="ENTRY ҮНЭ" col="#ff6b35"/>
+            <SectionLabel label={isMn ? 'ENTRY ҮНЭ' : 'ENTRY FEE'} col="#ff6b35"/>
             <div style={{ display:'grid', gridTemplateColumns:'repeat(3,1fr)', gap:16, marginBottom:28 }}>
               {[
                 { tier:'🆓 FREE', fee: mn(10000), note: isMn?'Стандарт тариф':'Standard fee',         col:DIM2,      href:'/payment?item=contest' },
                 { tier:'⭐ PRO',  fee: mn(3000),  note: isMn?`${mn(7000)} хямд — 70% off`:`${mn(7000)} off — 70%`, col:'#00e5ff', href:'/payment?item=contest' },
-                { tier:'💎 VIP',  fee: isMn?'ҮНЭГҮЙ':'FREE', note: isMn?'Бүх contest — free entry':'All contests — free', col:'#ffd700', href:'/dashboard' },
+                { tier:'💎 VIP',  fee: isMn?'ҮНЭГҮЙ':'FREE', note: isMn?'Бүх contest — free entry':'All contests — free', col:'#ffd700', href:'/dashboard', isVip: true },
               ].map((p, i) => (
                 <div key={p.tier} style={{ background:BG2, border:`1px solid ${p.col}33`, padding:'0', position:'relative', overflow:'hidden', animation:`pr-in .3s ease ${i*0.1}s both` }}>
                   <div style={{ height:3, background:p.col }}/>
@@ -528,10 +531,10 @@ export default function PricingPage() {
                     <div style={{ ...FP(12,p.col,1), marginBottom:16 }}>{p.tier}</div>
                     <div style={{ ...FP(28,'#c0d0e0'), marginBottom:8 }}>{p.fee}</div>
                     <div style={{ ...FM(12,DIM2), marginBottom:22, lineHeight:1.7 }}>{p.note}</div>
-                    <a href={p.href} style={{ display:'block', padding:'12px', textAlign:'center', ...FP(9, p.fee==='ҮНЭГҮЙ'?BG:p.col, 2), textDecoration:'none', background: p.fee==='ҮНЭГҮЙ'?p.col:'transparent', border:`1px solid ${p.col}44`, transition:'all .2s', boxSizing:'border-box' }}
-                      onMouseEnter={e => { if (p.fee !== 'ҮНЭГҮЙ') (e.currentTarget as HTMLAnchorElement).style.background = `${p.col}14` }}
-                      onMouseLeave={e => { if (p.fee !== 'ҮНЭГҮЙ') (e.currentTarget as HTMLAnchorElement).style.background = 'transparent' }}>
-                      {p.fee === 'ҮНЭГҮЙ' ? 'ШУУД ОРОЛЦОХ' : '💳 БҮРТГҮҮЛЭХ'}
+                    <a href={p.href} style={{ display:'block', padding:'12px', textAlign:'center', ...FP(9, (p as any).isVip?BG:p.col, 2), textDecoration:'none', background: (p as any).isVip?p.col:'transparent', border:`1px solid ${p.col}44`, transition:'all .2s', boxSizing:'border-box' }}
+                      onMouseEnter={e => { if (!(p as any).isVip) (e.currentTarget as HTMLAnchorElement).style.background = `${p.col}14` }}
+                      onMouseLeave={e => { if (!(p as any).isVip) (e.currentTarget as HTMLAnchorElement).style.background = 'transparent' }}>
+                      {(p as any).isVip ? (isMn ? 'ШУУД ОРОЛЦОХ' : 'JOIN NOW') : (isMn ? '💳 БҮРТГҮҮЛЭХ' : '💳 REGISTER')}
                     </a>
                   </div>
                 </div>
@@ -539,12 +542,12 @@ export default function PricingPage() {
             </div>
 
             {loadingC ? (
-              <div style={{ padding:'40px', textAlign:'center', ...FP(8,DIM2) }}>АЧААЛЛАЖ БАЙНА...</div>
+              <div style={{ padding:'40px', textAlign:'center', ...FP(8,DIM2) }}>{isMn ? 'АЧААЛЛАЖ БАЙНА...' : 'LOADING...'}</div>
             ) : contests.length === 0 ? (
               <div style={{ background:BG2, border:`1px solid ${DIM}`, padding:'56px', textAlign:'center' }}>
                 <div style={{ fontSize:44, marginBottom:14 }}>⚔</div>
-                <div style={{ ...FP(9,DIM2), marginBottom:8 }}>Одоогоор идэвхтэй contest байхгүй</div>
-                <div style={FM(12,DIM2)}>Удахгүй шинэ challenge нэмэгдэнэ</div>
+                <div style={{ ...FP(9,DIM2), marginBottom:8 }}>{isMn ? 'Одоогоор идэвхтэй contest байхгүй' : 'No active contests right now'}</div>
+                <div style={FM(12,DIM2)}>{isMn ? 'Удахгүй шинэ challenge нэмэгдэнэ' : 'New challenges coming soon'}</div>
               </div>
             ) : contests.map(contest => {
               const end  = new Date(contest.endDate)
@@ -563,22 +566,22 @@ export default function PricingPage() {
                             <div style={{ width:8, height:8, background:'#ff2d55', borderRadius:'50%' }}/>
                             <div style={{ position:'absolute', inset:0, borderRadius:'50%', background:'#ff2d55', animation:'pr-ping 1.2s ease-out infinite' }}/>
                           </div>
-                          <div style={{ ...FP(6,'#ff2d55',2) }}>ИДЭВХТЭЙ</div>
+                          <div style={{ ...FP(6,'#ff2d55',2) }}>{isMn ? 'ИДЭВХТЭЙ' : 'ACTIVE'}</div>
                         </div>
                         <div style={{ ...FP(16,'#c0d0e0'), marginBottom:8 }}>{contest.title}</div>
                         <div style={FM(13,DIM2)}>{contest.description}</div>
                       </div>
                       <div style={{ textAlign:'right', flexShrink:0, paddingLeft:24 }}>
-                        <div style={{ ...FP(5,DIM2,2), marginBottom:6 }}>ДУУСАХ</div>
+                        <div style={{ ...FP(5,DIM2,2), marginBottom:6 }}>{isMn ? 'ДУУСАХ' : 'ENDS IN'}</div>
                         <div style={FP(22,'#ffd700')}>{days}д {hrs}ц {mins}м</div>
                       </div>
                     </div>
                     <div style={{ display:'grid', gridTemplateColumns:'repeat(4,1fr)', gap:12, marginBottom:20 }}>
                       {[
-                        ['ОРОЛЦОГЧ', String(contest.participantCount), '#00e5ff'],
+                        [isMn?'ОРОЛЦОГЧ':'PLAYERS', String(contest.participantCount), '#00e5ff'],
                         ['TASK',     String(contest.taskCount),        TEXT],
                         ['PRIZE',    `₮${(contest.prizePool||0).toLocaleString()}`, '#00ff41'],
-                        ['ТОП',      contest.topScore ? `${contest.topScore} XP` : '—', '#ffd700'],
+                        [isMn?'ТОП':'TOP',      contest.topScore ? `${contest.topScore} XP` : '—', '#ffd700'],
                       ].map(([l,v,col]) => (
                         <div key={l} style={{ background:BG, padding:'14px', textAlign:'center', border:`1px solid ${col}22`, position:'relative' }}>
                           <div style={{ position:'absolute', top:0, left:0, right:0, height:2, background:`linear-gradient(90deg,transparent,${col}44,transparent)` }}/>
@@ -589,9 +592,9 @@ export default function PricingPage() {
                     </div>
                     <div style={{ display:'grid', gridTemplateColumns:'repeat(3,1fr)', gap:10 }}>
                       {[
-                        ['🥇 1-р байр', [`₮${(contest.prizeFirst||0).toLocaleString()}`, '500 XP', '50 AI token', 'Gold badge'], '#ffd700'],
-                        ['🥈 2-р байр', [`₮${(contest.prizeSecond||0).toLocaleString()}`, '300 XP', '30 AI token', 'Silver badge'], TEXT],
-                        ['🥉 3-р байр', [`₮${(contest.prizeThird||0).toLocaleString()}`, '150 XP', '15 AI token', 'Bronze badge'], '#cd7f32'],
+                        [isMn?'🥇 1-р байр':'🥇 1st Place', [`₮${(contest.prizeFirst||0).toLocaleString()}`, '500 XP', '50 AI token', 'Gold badge'], '#ffd700'],
+                        [isMn?'🥈 2-р байр':'🥈 2nd Place', [`₮${(contest.prizeSecond||0).toLocaleString()}`, '300 XP', '30 AI token', 'Silver badge'], TEXT],
+                        [isMn?'🥉 3-р байр':'🥉 3rd Place', [`₮${(contest.prizeThird||0).toLocaleString()}`, '150 XP', '15 AI token', 'Bronze badge'], '#cd7f32'],
                       ].map(([place, rewards, col]) => (
                         <div key={String(place)} style={{ padding:'16px', background:BG, border:`1px solid ${String(col)}33` }}>
                           <div style={{ ...FP(10,String(col)), marginBottom:10 }}>{place}</div>
