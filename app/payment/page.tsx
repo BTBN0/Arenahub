@@ -58,6 +58,12 @@ function PaymentContent() {
   const [currency,       setCurrency]      = useState<'mnt' | 'usd'>('mnt')
   const timerRef = useRef<ReturnType<typeof setInterval>|null>(null)
 
+  const MNT_TO_USD = 3100
+  const displayAmount = currency === 'usd'
+    ? (item.amount / MNT_TO_USD).toFixed(2)
+    : item.amount.toLocaleString()
+  const currencySymbol = currency === 'usd' ? '$' : '₮'
+
   useEffect(() => { if (!loading && !isAuthenticated) router.replace('/login') }, [loading, isAuthenticated])
   if (loading || !user) return null
 
@@ -158,7 +164,7 @@ function PaymentContent() {
               </div>
               <div style={S.fm(12,'#5a6a8a')}>{item.desc}</div>
             </div>
-            <div style={S.fp(26,'#fff')}>{item.amount.toLocaleString()}₮</div>
+            <div style={S.fp(26,'#fff')}>{displayAmount}{currencySymbol}</div>
           </div>
         </div>
 
@@ -197,7 +203,7 @@ function PaymentContent() {
 
               <div style={{ ...S.fm(12,'#5a6a8a'), lineHeight:1.8, marginBottom:6 }}>
                 QPay / SocialPay / MonPay app-аар<br/>
-                QR scan хийж <b style={{ color:'#fff' }}>{item.amount.toLocaleString()}₮</b> төлнө
+                QR scan хийж <b style={{ color:'#fff' }}>{displayAmount}{currencySymbol}</b> төлнө
               </div>
               <div style={{ ...S.fp(6,'#3a4560'), letterSpacing:2 }}>DEMO — SIMULATE ДАРЖ ТУРШИНА УУ</div>
             </div>
