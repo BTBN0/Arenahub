@@ -437,6 +437,7 @@ enum PaymentMethod {
   SOCIALPAY
   QPAY
   MONPAY
+  STRIPE
 }
 
 model Payment {
